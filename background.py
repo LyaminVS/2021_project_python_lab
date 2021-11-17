@@ -3,6 +3,7 @@ def draw_map():
     рисует карту
     :return:
     """
+
     pass
 
 
