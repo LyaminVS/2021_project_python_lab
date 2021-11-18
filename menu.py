@@ -49,9 +49,10 @@ class OneInventorySlot:
         self.font = pygame.font.SysFont('cambria', 14)
         self.words = ""
         self.words_place = []
-        self.scale_item = None
         self.call = 0
-        self.i = 0
+        self.i = 0  # счетчик времени, отвечающий за время, которое слот горит серым от прикосновения
+        self.moving_object_from_slot = False
+        self.item = None
 
     def one_inventory_slot(self):
         """
@@ -89,21 +90,29 @@ class OneInventorySlot:
         Функция, отвечающая за отображение количества элементов в каждой ячейке.
         :param item: отображаемый объект
         """
-        if item != self.scale_item:
-            self.words = self.font.render(str(item.amount), True, ORANGE)
-            self.words_place = self.words.get_rect(
-                topright=(self.one_inventory_slot_width - 5, 5))
+        item_in_work = ""
+        if self.item is not None:
+            item_in_work = self.item
+        elif item is not None:
+            item_in_work = item
+        else:
+            pass
+
+        self.words = self.font.render(str(item_in_work.amount), True, ORANGE)
+        self.words_place = self.words.get_rect(
+            topright=(self.one_inventory_slot_width - 5, 5))
+
         self.one_inventory_slot_screen.blit(self.words, self.words_place)
 
     def scaling_item(self, item):
         """
         Функция, отвечающая за скейлинг обьекта, чтобы он не вылезал за рамки ячейки.
         :param item: объект, которому необходимо изменить размер.
-        :return: scale_item - объект с измененными размерами.
         """
         scale_item = pygame.transform.scale(item.image, (
             self.one_inventory_slot_width * 3 // 4, self.one_inventory_slot_height * 3 // 4))
-        return scale_item
+
+        self.item.image = scale_item
 
     def display_item(self, item):
         """
@@ -111,10 +120,9 @@ class OneInventorySlot:
         :param item: отображаемый объект
         """
         if item is not None:
-            if item != self.scale_item:
-                self.scale_item = self.scaling_item(item)
-
-            self.one_inventory_slot_screen.blit(self.scale_item,
+            self.item = item
+            self.scaling_item(item)
+            self.one_inventory_slot_screen.blit(self.item.image,
                                                 (self.one_inventory_slot_width // 8,
                                                  self.one_inventory_slot_height // 8))
 
@@ -130,7 +138,7 @@ class OneInventorySlot:
     def update_one_inventory_slot(self, item=None):
         if self.i > 0:
             self.i += 1
-        if self.i % 60 == 0:
+        if self.i % 30 == 0:
             self.color = LIGHT_GREY
             self.pressed = False
             self.i = 0
@@ -139,7 +147,7 @@ class OneInventorySlot:
             self.display_item(item)
             self.call += 1
         else:
-            self.display_item(self.scale_item)
+            self.display_item(self.item)
         screen.blit(self.one_inventory_slot_screen, (self.one_slot_x, self.one_slot_y))
 
 
@@ -172,38 +180,82 @@ class Inventory:
         self.columns = columns
         self.items = items
         self.slots = []
+        self.moving_objects = []
+        self.moving_object_from_slot = False
+        self.i = 0  # счетчик времени, отвечающий за то сколько можно ли двигать обьект в инвентаре.
+        # Если прошло 40 итераций, то можно
+
+    def fill_up_inventory(self):
+        i = 0
+
+        for material in self.items:
+            slot = self.slots[i]
+            slot.update_one_inventory_slot(material)
+            i += 1
+            if i > len(self.slots):
+                print("Инвентарь переполнен")
 
     def create_inventory(self):
         x = self.start_x
         y = self.start_y
         inventary_slot = OneInventorySlot(x, y)
-
         for i in range(self.columns):
             for j in range(self.rows):
                 inventary_slot = OneInventorySlot(x, y)
                 self.slots.append(inventary_slot)
-                inventary_slot.update_one_inventory_slot(self.items)
                 x += inventary_slot.one_inventory_slot_width
             x = self.start_x
             y += inventary_slot.one_inventory_slot_height
+        self.fill_up_inventory()
         return self.slots
+
+    def moving_objects_in_inventory(self):
+        for slot in self.slots:
+            if slot.pressed is True and slot.item is not None and slot.moving_object_from_slot is False \
+                    and self.moving_object_from_slot is False and len(self.moving_objects) == 0:
+                self.moving_objects.append(slot.item)
+                slot.item = None
+                self.moving_object_from_slot = True
+                slot.moving_object_from_slot = True  # Странно наверное так делать, но что поделать
+            if slot.pressed is True and slot.item is None and len(
+                    self.moving_objects) > 0 and self.moving_object_from_slot is True \
+                    and slot.moving_object_from_slot is False:
+                slot.item = self.moving_objects[0]
+                self.moving_objects.pop(0)
+                slot.moving_object_from_slot = True
+                self.i += 1
+        return self.slots
+
+    def update_inventory(self):
+        if self.i > 0:
+            self.i += 1
+        if self.i % 30 == 0 and self.i != 0:
+            self.moving_object_from_slot = False
+            self.i = 0
 
 
 finished = False
 inv = OneInventorySlot(0, 0)
 red1 = Redrect(inv.one_inventory_slot_screen, "cat.png")
 red2 = Redrect(inv.one_inventory_slot_screen, "cat2.png")
-materials = [red1, red2]
-inventory = Inventory(100, 100, 5, 7, red2)
+red3 = Redrect(inv.one_inventory_slot_screen, "cat3.png")
+materials = [red1, red3, red3, red2, red1, red1, red3]
+inventory = Inventory(100, 100, 5, 7, materials)
 slots = inventory.create_inventory()
 
 while not finished:
     clock.tick(30)
     screen.fill(WHITE)
+    inventory.update_inventory()
     for obj in slots:
         obj.update_one_inventory_slot()
+        if inventory.moving_object_from_slot is False:
+            obj.moving_object_from_slot = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
             for obj in slots:
                 obj.slot_pressed(event)
+                if obj.pressed is True:
+                    print(obj.item, obj.moving_object_from_slot, obj.j)
+    slots = inventory.moving_objects_in_inventory()
     pygame.display.update()
