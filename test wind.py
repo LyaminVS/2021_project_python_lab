@@ -15,6 +15,7 @@ clock = pg.time.Clock()
 
 finished = False
 
+
 while not finished:
     sc.fill((0,255,255))
     sc.blit(bg, bg_rect)
