@@ -5,6 +5,8 @@ class Objects:
     картинка
 
     """
+    def __init__(self, screen):
+        pass
     pass
 
 

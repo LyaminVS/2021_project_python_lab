@@ -3,6 +3,12 @@ class Menu:
 
 
 class StartMenu(Menu):
+    def __init__(self, screen):
+        pass
+
+
+    def draw(self):
+        pass
     pass
 
 
