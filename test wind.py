@@ -5,8 +5,7 @@ W = 1280
 H = 720
 pg.init()
 sc = pg.display.set_mode((W, H))
-bg = pg.image.load('background.png')
-bg_rect = bg.get_rect()
+
 
 FPS = 30
 
