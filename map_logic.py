@@ -43,22 +43,21 @@ def event_checker(event):
             obj.slot_pressed(event)
 
 
-def player_move(motion_key_click_event, all_objects):
+def player_move(motion_key_click_event):
     """
     Изменяет координату объекта относительно экрана и студента относительно карты
     Args:
-    motion_key_click_event - обработка нажатий мыши и клавиатуры
-    all_objects_array - массив со всеми объектами
-    """
+    motion_key_click_event - нажатие события на активную клавишу
+    обработка нажатий мыши и клавиатуры"""
     if motion_key_click_event.key == pygame.K_w:
         for obj in all_objects:
-            obj.y += player_speed * dt
+            obj.y += player_speed
     elif motion_key_click_event.key == pygame.K_s:
         for obj in all_objects:
-            obj.y -= player_speed * dt
+            obj.y -= player_speed
     elif motion_key_click_event.key == pygame.K_d:
         for obj in all_objects:
-            obj.x -= player_speed * dt
+            obj.x -= player_speed
     elif motion_key_click_event.key == pygame.K_a:
         for obj in all_objects:
-            obj.x += player_speed * dt
+            obj.x += player_speed
