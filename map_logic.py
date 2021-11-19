@@ -1,11 +1,19 @@
+import pygame
 motion_keys_numbers = [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]
 
 def collision():
     """
     расчитывает коллизию
     return:
+    collision_of_player_and_objects - массив данных, о том столкнулся ли игрок с объектом
     """
-    pass
+    collision_of_player_and_objects = []
+    for obj in all_objects():
+        if player.colliderect(obj.rect):
+            collision_of_player_and_objects.append(1)
+        else:
+            collision_of_player_and_objects.append(0)
+    return collision_of_player_and_objects
 
 
 def player_toggle_inventory():
@@ -24,36 +32,34 @@ def event_checker(event):
     """
     if event.type == pygame.KEYDOWN:
         if event.key in motion_keys_numbers:
-            player_move(event)
+            player_move(event, all_objects)
         elif event.key == pygame.K_e:
-            #функция для класса PlayerInventory()
+            # функция для класса PlayerInventory()
             pass
         elif event.key == pygame.K_ESCAPE:
             open_start_menu()
-    elif event.type == pygame.MOUSEBUTTONDOWN:
-        #взаимодействие с объектами
-        pass
+    elif event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
+        for obj in slots:
+            obj.slot_pressed(event)
 
 
-def player_move(motion_key_click_event):
+def player_move(motion_key_click_event, all_objects):
     """
     Изменяет координату объекта относительно экрана и студента относительно карты
     Args:
     motion_key_click_event - обработка нажатий мыши и клавиатуры
+    all_objects_array - массив со всеми объектами
     """
     if motion_key_click_event.key == pygame.K_w:
-        player.y -= player_speed*dt
         for obj in all_objects:
-            obj.y += player_speed*dt
-    elif motion_key_click_event.key==pygame.K_s:
-        player.y += player_speed*dt
+            obj.y += player_speed * dt
+    elif motion_key_click_event.key == pygame.K_s:
         for obj in all_objects:
-            obj.y -= player_speed*dt
-    elif motion_key_click_event.key==pygame.K_d:
-        player.x += player_speed*dt
+            obj.y -= player_speed * dt
+    elif motion_key_click_event.key == pygame.K_d:
         for obj in all_objects:
-            obj.x -= player_speed*dt
-    elif motion_key_click_event.key==pygame.K_a:
-        player.x -= player_speed*dt
+            obj.x -= player_speed * dt
+    elif motion_key_click_event.key == pygame.K_a:
         for obj in all_objects:
-            obj.x += player_speed*dt
+            obj.x += player_speed * dt
+    return all_objects
