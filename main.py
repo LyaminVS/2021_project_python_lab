@@ -178,5 +178,5 @@ def main():
 
 if __name__ == "__main__":
     params = Params()
-    # params.all_objects.append(objects.Objects(params.screen, "pics/cat.png", "name", 100, 100))
+    params.all_objects.append(objects.Objects(params.screen, "pics/cat.png", "name", 100, 100))
     main()
