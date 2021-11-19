@@ -1,5 +1,4 @@
 import pygame
-import menu
 
 
 class Objects(pygame.sprite.Sprite):
