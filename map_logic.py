@@ -62,4 +62,3 @@ def player_move(motion_key_click_event, all_objects):
     elif motion_key_click_event.key == pygame.K_a:
         for obj in all_objects:
             obj.x += player_speed * dt
-    return all_objects
