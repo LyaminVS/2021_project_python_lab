@@ -115,4 +115,4 @@ class Resources:
 
 class Taco(Resources):
     def __init__(self, screen):
-        super(Taco, self).__init__(screen, "taco.png", "taco")
+        super(Taco, self).__init__(screen, "pics/taco.png", "taco")
