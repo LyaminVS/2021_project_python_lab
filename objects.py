@@ -15,20 +15,10 @@ class Objects(pygame.sprite.Sprite):
         self.height = self.image.get_height()
         self.x = x_0
         self.y = y_0
+        self.menu = 0  # add
 
     def draw(self, x, y):
         self.surface.blit(self.y, (x, y))
-
-
-class Buildings(Objects):
-    """
-    меню взаимодействия
-    инвентарь постройки
-    """
-
-    def __init__(self, screen, image, x_0, y_0):
-        super().__init__()
-        self.menu = 0  # add
 
 
 class Player(pygame.sprite.Sprite):
@@ -60,6 +50,12 @@ class Resources:
     """
     от этого класса наследовать все ресурсы
     """
+
     def __init__(self, screen, image):
         self.image = pygame.image.load(image)
         self.surface = screen
+
+
+class Taco(Resources):
+    def __init__(self):
+        super(Shawarma, self).__init__()
