@@ -3,7 +3,7 @@ import background
 import map_logic
 # import menu
 import objects
-import sound
+# import sound
 import start_screen
 
 pygame.init()
@@ -51,6 +51,11 @@ class Params:
         все объекты на карте
         """
 
+        self.menu = "start_menu"
+        """
+        переменная показывает в каком меню находится игрок
+        """
+
 
 def open_start_menu():
     """
@@ -66,7 +71,9 @@ def line_to_object(line):
     :param line: строка файла
     :return:
     """
-    pass
+    name, image, x, y = line.split(";")
+    new_object = objects.Objects(params.screen, image, name, x, y)
+    return new_object
 
 
 def line_to_player(line):
@@ -75,7 +82,9 @@ def line_to_player(line):
     :param line: строка файла
     :return:
     """
-    pass
+    name, image, x, y = line.split(";")
+    new_player = objects.Objects(params.screen, image, name, x, y)
+    return new_player
 
 
 def get_player_from_file():
@@ -84,9 +93,11 @@ def get_player_from_file():
     :return: объект класса Player
     """
     player_file = open("player_save.txt")
-    player = line_to_player(player_file)
+    player_line = player_file.readline()
+    player = line_to_player(player_line)
     player_file.close()
     return player
+
 
 def get_obj_from_file():
     """
@@ -107,18 +118,19 @@ def create_start_position():
     создается объект игрока, а также объекты зданий в первый кадр игры
     :return:
     """
-    params.player = line_to_player()
+    params.player = get_player_from_file()
     params.objects = get_obj_from_file()
 
 
-def update_game():
+def update_game(event):
     """
     функция обновляет состояние игры
     :return:
     """
     background.draw_map()
     background.draw_objects()
-    map_logic.event_checker()
+    map_logic.event_checker(event)
+    map_logic.player_move(params.player, params.all_objects)
 
 
 def save_game():
@@ -131,6 +143,7 @@ def save_game():
     player_file.write(str(params.player) + "\n")
     for obj in params.all_objects:
         object_file.write(str(obj) + "\n")
+    player_file.write(str(params.player))
     player_file.close()
     object_file.close()
 
@@ -155,7 +168,7 @@ def main():
         else:
             if not params.player_created:
                 create_start_position()
-            update_game()
+            update_game(pygame.event)
         params.clock.tick(params.FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -163,7 +176,7 @@ def main():
     game_quit()
 
 
-
 if __name__ == "__main__":
     params = Params()
+    # params.all_objects.append(objects.Objects(params.screen, "pics/cat.png", "name", 100, 100))
     main()
