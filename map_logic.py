@@ -1,19 +1,20 @@
 import pygame
 motion_keys_numbers = [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]
 
-def collision():
+def collision(all_objects, player_class):
     """
     расчитывает коллизию
-    return:
-    collision_of_player_and_objects - массив данных, о том столкнулся ли игрок с объектом
     """
-    collision_of_player_and_objects = []
     for obj in all_objects():
-        if player.colliderect(obj.rect):
-            collision_of_player_and_objects.append(1)
-        else:
-            collision_of_player_and_objects.append(0)
-    return collision_of_player_and_objects
+        if player_class.colliderect(obj.rect):
+            if ((player_class.y+player_class.height) > obj.y) and (player_class.y < obj.y):
+                player.y = obj.y-player.height
+            if ((player_class.y + player_class.height) > (obj.y+obj.height)) and (player_class.y > obj.y):
+                player.y = obj.y - player.height
+            if ((player_class.y+player_class.height) > obj.y) and (player_class.y < obj.y):
+                player.y = obj.y-player.height
+            if ((player_class.y + player_class.height) > (obj.y+obj.height)) and (player_class.y > obj.y):
+                player.y = obj.y - player.height
 
 
 def player_toggle_inventory():
