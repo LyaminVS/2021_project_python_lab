@@ -1,5 +1,7 @@
 import pygame
 
+import objects
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 # FIXME ОЧЕНЬ НАДО ДОБАВИТЬ В MAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -15,23 +17,6 @@ RED = (255, 0, 0)
 GREEN = (0, 200, 0)
 ORANGE = (220, 150, 40)  # FIXME цвет шрифта, но мне не нравится.
 clock = pygame.time.Clock()
-
-
-# testclass
-class Redrect:
-    def __init__(self, surface, image: str):
-        self.amount = 15
-        self.image = pygame.image.load(image)
-        self.surface = surface
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-        self.image.set_colorkey(WHITE)
-
-    def draw(self, x, y):
-        self.surface.blit(self.image, (x, y))
-
-
-# Testclass
 
 
 class OneInventorySlot:
@@ -197,6 +182,7 @@ class Inventory:
         if self.items is not None:
             for material in self.items:
                 slot = self.slots[i]
+                material.surface = slot.one_inventory_slot_screen
                 slot.update_one_inventory_slot(material)
                 i += 1
 
@@ -245,14 +231,14 @@ class Inventory:
 
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
-        if self.i % 25 == 0 and self.i != 0:
+        if self.i % 21 == 0 and self.i != 0:
             self.moving_object_from_slot = False
             self.i = 0
 
         for obj in self.slots:
             obj.update_one_inventory_slot()
             if inventory.moving_object_from_slot is False:
-            # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
+                # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
@@ -263,12 +249,10 @@ class Inventory:
 
 finished = False
 
-inv = OneInventorySlot(0, 0)
-red1 = Redrect(inv.one_inventory_slot_screen, "cat.png")
-red2 = Redrect(inv.one_inventory_slot_screen, "cat2.png")
-red3 = Redrect(inv.one_inventory_slot_screen, "cat3.png")
+taco1 = objects.Taco(screen)
+landau = objects.Landau(screen)
+materials = [taco1, landau]
 
-materials = [red1, red3, red3, red2, red1, red1, red3, red2]
 inventory = Inventory(100, 100, 5, 7, materials)
 inventory.create_inventory()
 while not finished:
