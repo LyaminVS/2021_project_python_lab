@@ -5,6 +5,7 @@ class Objects(pygame.sprite.Sprite):
     """
     Класс объекта (пока только применим к зданиям).
     """
+
     def __init__(self, screen, image, name, x_0, y_0):
         """
         Конкструктор класса Objects.
@@ -45,6 +46,7 @@ class Player(pygame.sprite.Sprite):
     """
     Класс игрока, наследующий Spite для проверки коллизий.
     """
+
     def __init__(self, screen, name, x_0, y_0):
         """
         Конструктор класса Player.
@@ -90,6 +92,7 @@ class Resources:
     """
     Класс наследования всех ресурсов.
     """
+
     def __init__(self, screen, image, name):
         """
         Конструктор класса resources.
@@ -116,3 +119,8 @@ class Resources:
 class Taco(Resources):
     def __init__(self, screen):
         super(Taco, self).__init__(screen, "pics/taco.png", "taco")
+
+
+class Landau(Resources):
+    def __init__(self, screen):
+        super(Landau, self).__init__(screen, "pics/landavshiz.png", "taco")
