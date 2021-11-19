@@ -22,7 +22,7 @@ class Objects(pygame.sprite.Sprite):
         self.surface.blit(self.y, (x, y))
 
     def __str__(self):
-        line = str(self.name) + str(self.image) + str(self.x) + str(self.y)
+        line = ";".join((self.name, self.image, self.x, self.y))
         return line
 
 
@@ -53,7 +53,7 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.image.load("skin run left1.png")
 
     def __str__(self):
-        line = str(self.name) + str(self.image) + str(self.x) + str(self.y)
+        line = ";".join((self.name, self.image, self.x, self.y))
         return line
 
 
@@ -71,7 +71,7 @@ class Resources:
         self.height = self.image.get_height()
 
     def __str__(self):
-        line = str(self.name) + str(self.image) + str(self.width) + str(self.height)
+        line = ";".join((self.name, self.image, self.width, self.height))
         return line
 
 
