@@ -1,5 +1,5 @@
 import pygame
-import os
+
 
 class Objects(pygame.sprite.Sprite):
     """
@@ -17,7 +17,7 @@ class Objects(pygame.sprite.Sprite):
         super().__init__()
         self.name = name
         self.image = pygame.image.load(image)
-        self.image_name = os.path.abspath(image)
+        self.image_name = image
         self.surface = screen
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -37,7 +37,7 @@ class Objects(pygame.sprite.Sprite):
         """
         :return: параметры объекта одной строкой с разделителем ";"
         """
-        line = ";".join((str(self.name), self.image_name, str(self.x, self.y))
+        line = ";".join((self.name, self.image_name, str(self.x), str(self.y)))
         return line
 
 
@@ -63,6 +63,7 @@ class Player(pygame.sprite.Sprite):
         self.vx = 2
         self.vy = 2
         self.image = pygame.image.load("skin run right1.png")
+        self.image_name = "skin run right1.png"
         self.inventory = None
 
     def draw(self, right):
@@ -72,14 +73,16 @@ class Player(pygame.sprite.Sprite):
         """
         if right == 1:
             self.image = pygame.image.load("skin run right1.png")
+            self.image_name = "skin run right1.png"
         else:
             self.image = pygame.image.load("skin run left1.png")
+            self.image_name = "skin run left1.png"
 
     def __str__(self):
         """
         :return: параметры объекта одной строкой с разделителем ";"
         """
-        line = ";".join((self.name, self.image, self.x, self.y))
+        line = ";".join((self.name, self.image_name, str(self.x), str(self.y)))
         return line
 
 
@@ -96,6 +99,7 @@ class Resources:
         """
         self.name = name
         self.image = pygame.image.load(image)
+        self.image_name = image
         self.surface = screen
         self.amount = 15
         self.width = self.image.get_width()
@@ -105,7 +109,7 @@ class Resources:
         """
         :return: параметры объекта одной строкой с разделителем ";"
         """
-        line = ";".join((self.name, self.image, self.width, self.height))
+        line = ";".join((self.name, self.image_name, str(self.width), str(self.height)))
         return line
 
 
