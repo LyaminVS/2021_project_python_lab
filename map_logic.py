@@ -44,13 +44,13 @@ def player_move(motion_key_click_event, params_class):
     """
     if motion_key_click_event.key == pygame.K_w:
         for obj in params_class.all_objects:
-            obj.y += params_class.player.vy
+            obj.y -= params_class.player.vy
     elif motion_key_click_event.key == pygame.K_s:
         for obj in params_class.all_objects:
-            obj.y -= params_class.player.vy
+            obj.y += params_class.player.vy
     elif motion_key_click_event.key == pygame.K_d:
         for obj in params_class.all_objects:
-            obj.x -= params_class.player.vx
+            obj.x += params_class.player.vx
     elif motion_key_click_event.key == pygame.K_a:
         for obj in params_class.all_objects:
-            obj.x += params_class.vx
+            obj.x -= params_class.vx
