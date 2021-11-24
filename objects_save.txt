@@ -1,0 +1,1 @@
+name;pics/cat.png;100;100
