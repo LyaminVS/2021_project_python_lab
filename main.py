@@ -31,7 +31,7 @@ class Params:
         часы pygame
         """
 
-        self.game_started = False
+        self.game_started = True
         """
         если была нажата кнопка старт на стартовом экране то True, иначе False
         """
@@ -54,6 +54,11 @@ class Params:
         self.menu = "start_menu"
         """
         переменная показывает в каком меню находится игрок
+        """
+
+        self.map = [0, 0]
+        """
+        показывает положение карты
         """
 
 
@@ -118,7 +123,7 @@ def create_start_position():
     создается объект игрока, а также объекты зданий в первый кадр игры
     :return:
     """
-    params.player = get_player_from_file()
+    # params.player = get_player_from_file()
     params.objects = get_obj_from_file()
 
 
@@ -127,10 +132,10 @@ def update_game(event):
     функция обновляет состояние игры
     :return:
     """
-    background.draw_map()
-    background.draw_objects()
-    map_logic.event_checker(event)
-    map_logic.player_move(params.player, params.all_objects)
+    background.draw_map(params.screen, params.map[0], params.map[1], params.all_objects)
+    # print(event.get())
+    params.finished = map_logic.event_checker(event.get(), params)
+    # map_logic.player_move(params.player, params.all_objects)
 
 
 def save_game():
@@ -170,9 +175,7 @@ def main():
                 create_start_position()
             update_game(pygame.event)
         params.clock.tick(params.FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                params.finished = True
+        pygame.display.update()
     game_quit()
 
 
