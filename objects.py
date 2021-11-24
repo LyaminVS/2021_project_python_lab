@@ -67,18 +67,21 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("skin run right1.png")
         self.image_name = "skin run right1.png"
         self.inventory = None
-
-    def draw(self, right):
+        self.right = 0
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+    def draw(self):
         """
         Функция отрисовки игрока.
         :param right: параметр, проверяющий, в какую сторону движется игрок
         """
-        if right == 1:
+        if self.right == 1:
             self.image = pygame.image.load("skin run right1.png")
             self.image_name = "skin run right1.png"
         else:
             self.image = pygame.image.load("skin run left1.png")
             self.image_name = "skin run left1.png"
+
+        self.surface.blit(self.image, self.rect)
 
     def __str__(self):
         """
