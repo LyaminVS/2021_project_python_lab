@@ -2,6 +2,11 @@ import pygame
 
 import objects
 
+from start_screen import Button
+from start_screen import StartMenu
+from start_screen import PauseMenu
+from start_screen import OptionMenu
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 # FIXME ОЧЕНЬ НАДО ДОБАВИТЬ В MAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -137,27 +142,6 @@ class OneInventorySlot:
         screen.blit(self.one_inventory_slot_screen, (self.one_slot_x, self.one_slot_y))
 
 
-class PlayerInventory(OneInventorySlot):
-    """
-    инвентарь игрока и его отрисовка
-    """
-    pass
-
-
-class ObjectInventory(OneInventorySlot):
-    """
-    инвентарь объектов
-    """
-    pass
-
-
-class Craft(OneInventorySlot):
-    """
-    меню крафта
-    """
-    pass
-
-
 class Inventory:
     """
     Класс, отвечающий за создание инвентаря у объекта.
@@ -247,18 +231,44 @@ class Inventory:
         self.moving_objects_in_inventory()  # двигаем объекты в инвентаре
 
 
+class PlayerInventory(OneInventorySlot):
+    """
+    инвентарь игрока и его отрисовка
+    """
+    pass
+
+
+class ObjectInventory(OneInventorySlot):
+    """
+    инвентарь объектов
+    """
+    pass
+
+
+class Craft(OneInventorySlot):
+    """
+    меню крафта
+    """
+    pass
+
+
 finished = False
 
 taco1 = objects.Taco(screen)
 landau = objects.Landau(screen)
 materials = [taco1, landau]
 
+
+menu = OptionMenu()
 inventory = Inventory(100, 100, 5, 7, materials)
 inventory.create_inventory()
+
 while not finished:
     clock.tick(30)
     screen.fill(WHITE)
 
-    inventory.update_inventory()
+    finished, a, b = menu.draw()
+    print(a, b)
+#    inventory.update_inventory()
 
     pygame.display.update()
