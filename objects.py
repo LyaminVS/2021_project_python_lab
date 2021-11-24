@@ -58,14 +58,14 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.name = "player"
         self.surface = screen
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
         self.x = x_0
         self.y = y_0
         self.vx = 2
         self.vy = 2
-        self.image = pygame.image.load("skin run right1.png")
-        self.image_name = "skin run right1.png"
+        self.image = pygame.image.load("pics/skin run right1.png")
+        self.image_name = "pics/skin run right1.png"
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.inventory = None
         self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))

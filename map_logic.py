@@ -1,64 +1,58 @@
 import pygame
+
 motion_keys_numbers = [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]
 
-def collision(all_objects, player_class):
+
+def collision(params_class):
     """
     расчитывает коллизию
     """
-    for obj in all_objects():
-        if player_class.colliderect(obj.rect):
-            if ((player_class.y+player_class.height) > obj.y) and (player_class.y < obj.y):
-                player.y = obj.y-player.height
-            if ((player_class.y + player_class.height) > (obj.y+obj.height)) and (player_class.y > obj.y):
-                player.y = obj.y - player.height
-            if ((player_class.y+player_class.height) > obj.y) and (player_class.y < obj.y):
-                player.y = obj.y-player.height
-            if ((player_class.y + player_class.height) > (obj.y+obj.height)) and (player_class.y > obj.y):
-                player.y = obj.y - player.height
+    for obj in params_class.all_objects():
+        if params_class.player.colliderect(obj.rect):
+            if ((params_class.player.y + params_class.player.height) > obj.y) and (params_class.player.y < obj.y):
+                params_class.player.y = obj.y - params_class.player.height
+            if ((params_class.player.y + params_class.player.height) > (obj.y + obj.height)) and (params_class.player.y > obj.y):
+                params_class.player.y = obj.y - params_class.player.height
+            if ((params_class.player.y + params_class.player.height) > obj.y) and (params_class.player.y < obj.y):
+                params_class.player.y = obj.y - params_class.player.height
+            if ((params_class.player.y + params_class.player.height) > (obj.y + obj.height)) and (params_class.player.y > obj.y):
+                params_class.player.y = obj.y - params_class.player.height
 
 
-def player_toggle_inventory():
-    pass
-
-
-def player_toggle_object_inventory():
-    pass
-
-
-def event_checker(event):
+def event_checker(event_array, class_params):
     """
     Обработка нажатий мышью и на клавиатуру
     Args:
-    event - событие на проверку
+
     """
-    if event.type == pygame.KEYDOWN:
-        if event.key in motion_keys_numbers:
-            player_move(event, all_objects)
-        elif event.key == pygame.K_e:
-            # функция для класса PlayerInventory()
+    for checked_event in event_array:
+        if checked_event.type == pygame.QUIT:
+            pygame.quit()
+        if checked_event.type == pygame.KEYDOWN:
+            if checked_event.key in motion_keys_numbers:
+                player_move(checked_event, class_params)
+            elif checked_event.key == pygame.K_e:
+                # функция для класса PlayerInventory()
+                pass
+        elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             pass
-        elif event.key == pygame.K_ESCAPE:
-            open_start_menu()
-    elif event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-        for obj in slots:
-            obj.slot_pressed(event)
 
 
-def player_move(motion_key_click_event):
+def player_move(motion_key_click_event, params_class):
     """
     Изменяет координату объекта относительно экрана и студента относительно карты
     Args:
-    motion_key_click_event - нажатие события на активную клавишу
-    обработка нажатий мыши и клавиатуры"""
+    motion_key_click_event - обработка нажатий мыши и клавиатуры
+    """
     if motion_key_click_event.key == pygame.K_w:
-        for obj in all_objects:
-            obj.y += player_speed
+        for obj in params_class.all_objects:
+            obj.y -= params_class.player.vy
     elif motion_key_click_event.key == pygame.K_s:
-        for obj in all_objects:
-            obj.y -= player_speed
+        for obj in params_class.all_objects:
+            obj.y += params_class.player.vy
     elif motion_key_click_event.key == pygame.K_d:
-        for obj in all_objects:
-            obj.x -= player_speed
+        for obj in params_class.all_objects:
+            obj.x += params_class.player.vx
     elif motion_key_click_event.key == pygame.K_a:
-        for obj in all_objects:
-            obj.x += player_speed
+        for obj in params_class.all_objects:
+            obj.x -= params_class.player.vx

@@ -134,8 +134,8 @@ def update_game(event):
     """
     background.draw_map(params.screen, params.map[0], params.map[1], params.all_objects)
     # print(event.get())
-    params.finished = map_logic.event_checker(event.get(), params)
-    # map_logic.player_move(params.player, params.all_objects)
+    map_logic.event_checker(event.get(), params)
+    params.player.draw()
 
 
 def save_game():
@@ -182,4 +182,5 @@ def main():
 if __name__ == "__main__":
     params = Params()
     params.all_objects.append(objects.Objects(params.screen, "pics/cat.png", "name", 100, 100))
+    params.player = objects.Player(params.screen, "name", 640, 360)
     main()
