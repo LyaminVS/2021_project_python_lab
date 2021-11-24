@@ -70,6 +70,7 @@ class Player(pygame.sprite.Sprite):
         self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.move = 0
+        self.move_direction = None
 
     def draw(self):
         """
