@@ -43,18 +43,14 @@ def player_move(motion_key_click_event, params_class):
     motion_key_click_event - обработка нажатий мыши и клавиатуры
     """
     if motion_key_click_event.key == pygame.K_w:
-        params_class.player.y -= params_class.player.speed
         for obj in params_class.all_objects:
-            obj.y += params_class.player.speed
+            obj.y += params_class.player.vy
     elif motion_key_click_event.key == pygame.K_s:
-        params_class.player.y += params_class.player.speed
         for obj in params_class.all_objects:
-            obj.y -= params_class.player.speed
+            obj.y -= params_class.player.vy
     elif motion_key_click_event.key == pygame.K_d:
-        params_class.player.x += params_class.player.speed
         for obj in params_class.all_objects:
-            obj.x -= params_class.player.speed
+            obj.x -= params_class.player.vx
     elif motion_key_click_event.key == pygame.K_a:
-        params_class.player.x -= params_class.player.speed
         for obj in params_class.all_objects:
-            obj.x += params_class.player.speed
+            obj.x += params_class.vx
