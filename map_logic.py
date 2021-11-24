@@ -23,36 +23,39 @@ def event_checker(event_array, class_params):
     """
     Обработка нажатий мышью и на клавиатуру
     Args:
-
+    event_array - массив событий для обработки
+    params_class - params из модуля main
     """
     for checked_event in event_array:
         if checked_event.type == pygame.QUIT:
             pygame.quit()
-        if checked_event.type == pygame.KEYDOWN:
-            if checked_event.key in motion_keys_numbers:
-                player_move(checked_event, class_params)
-            elif checked_event.key == pygame.K_e:
-                # функция для класса PlayerInventory()
-                pass
+        if checked_event.type == pygame.KEYUP:
+            class_params.player.move = 0
+        if (checked_event.type == pygame.KEYDOWN) and (checked_event.key in motion_keys_numbers):
+            class_params.player.move = 1
+            class_params.player.move_direction = checked_event.key
+        if class_params.player.move == 1:
+            player_move(class_params)
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             pass
 
 
-def player_move(motion_key_click_event, params_class):
+def player_move(params_class):
     """
     Изменяет координату объекта относительно экрана и студента относительно карты
     Args:
-    motion_key_click_event - обработка нажатий мыши и клавиатуры
+    params_class - params из модуля main
     """
-    if motion_key_click_event.key == pygame.K_w:
+    if params_class.player.move_direction == pygame.K_w:
         for obj in params_class.all_objects:
             obj.y -= params_class.player.vy
-    elif motion_key_click_event.key == pygame.K_s:
+    elif params_class.player.move_direction == pygame.K_s:
         for obj in params_class.all_objects:
             obj.y += params_class.player.vy
-    elif motion_key_click_event.key == pygame.K_d:
+    elif params_class.player.move_direction == pygame.K_d:
         for obj in params_class.all_objects:
             obj.x += params_class.player.vx
-    elif motion_key_click_event.key == pygame.K_a:
+    elif params_class.player.move_direction == pygame.K_a:
         for obj in params_class.all_objects:
             obj.x -= params_class.player.vx
+            
