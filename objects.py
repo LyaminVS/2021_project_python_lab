@@ -69,6 +69,7 @@ class Player(pygame.sprite.Sprite):
         self.inventory = None
         self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.move = 0
 
     def draw(self):
         """
