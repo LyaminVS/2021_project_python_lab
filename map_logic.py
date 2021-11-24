@@ -17,7 +17,7 @@ def collision(all_objects, player_class):
                 player.y = obj.y - player.height
 
 
-def event_checker(event_array, class_params, class_player, def_finish):
+def event_checker(event_array, class_params):
     """
     Обработка нажатий мышью и на клавиатуру
     Args:
