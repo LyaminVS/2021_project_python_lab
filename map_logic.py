@@ -28,7 +28,7 @@ def event_checker(event_array, class_params):
     """
     for checked_event in event_array:
         if checked_event.type == pygame.QUIT:
-            pygame.quit()
+            class_params.finished = True
         if checked_event.type == pygame.KEYUP:
             class_params.player.move = 0
         if (checked_event.type == pygame.KEYDOWN) and (checked_event.key in motion_keys_numbers):
@@ -47,15 +47,11 @@ def player_move(params_class):
     params_class - params из модуля main
     """
     if params_class.player.move_direction == pygame.K_w:
-        for obj in params_class.all_objects:
-            obj.y -= params_class.player.vy
+        params_class.map[1] -= params_class.player.vy
     elif params_class.player.move_direction == pygame.K_s:
-        for obj in params_class.all_objects:
-            obj.y += params_class.player.vy
+        params_class.map[1] += params_class.player.vy
     elif params_class.player.move_direction == pygame.K_d:
-        for obj in params_class.all_objects:
-            obj.x += params_class.player.vx
+        params_class.map[0] += params_class.player.vx
     elif params_class.player.move_direction == pygame.K_a:
-        for obj in params_class.all_objects:
-            obj.x -= params_class.player.vx
+        params_class.map[0] -= params_class.player.vx
             

@@ -56,7 +56,7 @@ class Params:
         переменная показывает в каком меню находится игрок
         """
 
-        self.map = [0, 0]
+        self.map = [758, 2768]
         """
         показывает положение карты
         """
@@ -76,8 +76,9 @@ def line_to_object(line):
     :param line: строка файла
     :return:
     """
+
     name, image, x, y = line.split(";")
-    new_object = objects.Objects(params.screen, image, name, x, y)
+    new_object = objects.Objects(params.screen, image, name, int(x), int(y))
     return new_object
 
 
@@ -88,7 +89,7 @@ def line_to_player(line):
     :return:
     """
     name, image, x, y = line.split(";")
-    new_player = objects.Objects(params.screen, image, name, x, y)
+    new_player = objects.Objects(params.screen, image, name, int(x), int(y))
     return new_player
 
 
@@ -114,6 +115,7 @@ def get_obj_from_file():
     for line in objects_in_file:
         new_obj = line_to_object(line)
         all_objects.append(new_obj)
+
     objects_in_file.close()
     return all_objects
 
@@ -124,7 +126,8 @@ def create_start_position():
     :return:
     """
     # params.player = get_player_from_file()
-    params.objects = get_obj_from_file()
+
+    params.all_objects = get_obj_from_file()
 
 
 def update_game(event):
@@ -133,9 +136,8 @@ def update_game(event):
     :return:
     """
     background.draw_map(params.screen, params.map[0], params.map[1], params.all_objects)
-    # print(event.get())
-    map_logic.event_checker(event.get(), params)
     params.player.draw()
+    map_logic.event_checker(event.get(), params)
 
 
 def save_game():
@@ -168,19 +170,20 @@ def main():
     :return:
     """
     while not params.finished:
+        pygame.display.update()
         if not params.game_started:
             open_start_menu()
         else:
             if not params.player_created:
                 create_start_position()
+                params.player_created = True
             update_game(pygame.event)
         params.clock.tick(params.FPS)
-        pygame.display.update()
+
     game_quit()
 
 
 if __name__ == "__main__":
     params = Params()
-    params.all_objects.append(objects.Objects(params.screen, "pics/cat.png", "name", 100, 100))
     params.player = objects.Player(params.screen, "name", 640, 360)
     main()

@@ -32,7 +32,7 @@ class Objects(pygame.sprite.Sprite):
         :param x: координата отрисовки по х (левая верхняя)
         :param y: координата отрисовки по у (правая верхняя)
         """
-        self.surface.blit(self.y, (x, y))
+        self.surface.blit(self.image, (-x + self.x, -y + self.y))
 
     def __str__(self):
         """
@@ -60,8 +60,8 @@ class Player(pygame.sprite.Sprite):
         self.surface = screen
         self.x = x_0
         self.y = y_0
-        self.vx = 2
-        self.vy = 2
+        self.vx = 4
+        self.vy = 4
         self.image = pygame.image.load("pics/skin run right1.png")
         self.image_name = "pics/skin run right1.png"
         self.width = self.image.get_width()
