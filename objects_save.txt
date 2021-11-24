@@ -1,1 +1,3 @@
 name;pics/cat.png;100;100
+appliedmath;pics/applied math.png;579;3019
+nk;pics/nk.png;758;2768
