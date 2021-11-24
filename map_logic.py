@@ -28,13 +28,12 @@ def event_checker(event_array, class_params):
     for checked_event in event_array:
         if checked_event.type == pygame.KEYDOWN:
             if checked_event.key in motion_keys_numbers:
-                player_move(checked_event, class_params.all_objects)
+                player_move(checked_event, player_class, params_array)
             elif checked_event.key == pygame.K_e:
                 # функция для класса PlayerInventory()
                 pass
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
-            for obj in class_params.slots:
-                obj.slot_pressed(checked_event)
+            pass
 
 
 def player_move(motion_key_click_event, player_class, params_array):
