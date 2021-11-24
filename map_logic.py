@@ -26,6 +26,8 @@ def event_checker(event_array, class_params):
 
     """
     for checked_event in event_array:
+        if checked_event.type == pygame.QUIT:
+            pygame.quit()
         if checked_event.type == pygame.KEYDOWN:
             if checked_event.key in motion_keys_numbers:
                 player_move(checked_event, class_params)
