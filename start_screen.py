@@ -6,12 +6,12 @@ GREY = (50, 50, 50)
 
 def writing(text: str, xcenter, ycenter, font_size=16, font='Arial'):
     """
-    writes text on screen
-    :param text: text to appear on screen
-    :param xcenter: x coordinate of center
-    :param ycenter: y coordinate of center
-    :param font_size: size of the font, which is standart Arial
-    :param font: шрифт, который будет использован для надписи
+    Функция, отвечающая за написание текста на основном
+    :param text: текст, который должен появиться
+    :param xcenter: х координата центра
+    :param ycenter: y координата центра
+    :param font_size: размер шрифта, по умолчанию 16
+    :param font: шрифт, который будет использован для надписи, по умолчанию Arial
     """
     font = pygame.font.SysFont(font, font_size)
     words = font.render(text, True, (200, 0, 0))
@@ -21,37 +21,39 @@ def writing(text: str, xcenter, ycenter, font_size=16, font='Arial'):
 
 class Button:
     """
-    class of buttons on the screen.
+    Класс, отвечающий за прорисовку кнопок на экране, а также взаимодействие с ними.
     """
 
     def __init__(self, x, y, length, width, text: str, ):
         """
-        constructor of button class.
-        :param x: horizontal coordinate of a button
-        :param y: vertical coordinate of a button
-        :param length: length of a button
-        :param width: width of a button
-        :param text: text displayed on a button
+        :param x: горизонтальная координата левого верхнего угла кнопки.
+        :param y: вертикальная координата левого верхнего угла кнопки.
+        :param length: длина кнопки.
+        :param width: ширина/высота кнопки.
+        :param text: текст, который должен отображаться на кнопке.
         """
         self.x = x
         self.y = y
         self.length = length
         self.width = width
         self.text = text
-        self.first_condition = pygame.image.load("pics/cat4.png")
-        self.second_condition = pygame.image.load("pics/cat5.png")
-        self.image = self.first_condition
-        self.pressed = False
-        self.timer = 0
+        self.first_condition = pygame.image.load("pics/cat4.png")  # картинка кнопки, когда она не нажата
+        self.second_condition = pygame.image.load("pics/cat5.png")  # картинка кнопки, когда она нажата
+        self.image = self.first_condition  # изображение, которое отрисовывается на кнопке
+        self.pressed = False  # Нажата ли сейчас кнопка?
+        self.timer = 0  # Счетчик итераций, который включается во время нажатия кнопки и выключается после 30 циклов
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
     def scaling_image(self):
+        """
+        Функция, отвечающая за скейлинг изображения под необходимые размеры.
+        """
         scale_item = pygame.transform.scale(self.image, (self.length, self.width))
         self.image = scale_item
 
     def update(self):
         """
-        function drawing the button on a screen.
+        Функция, отвечающая за отображение кнопки и обновление ее состояний.
         """
         if self.pressed is True:
             self.image = self.second_condition
@@ -70,7 +72,8 @@ class Button:
 
     def is_button_pressed(self, event):
         """
-        checks if button is pressed.
+        Функция, отвечающая за проверку нажатия кнопки.
+        :param event: событие нажатия, если подавать несвязанные с нажатием события, то выдаст ошибку.
         """
 
         if self.x < event.pos[0] < self.x + self.length and self.y < event.pos[1] < self.y + self.width:
@@ -79,22 +82,38 @@ class Button:
 
 
 class Menu:
+    """
+    Функция, отвечающая за отрисовку основы меню.
+    """
+
     def __init__(self, amount, texts: list):
-        self.finished = False
-        self.buttons = []
-        self.variables = []
+        """
+        :param amount: количество планирующихся кнопок.
+        :param texts: массив с текстами, которые необходимо разместить на кнопках
+        """
+        self.finished = False  # Требуется ли выходить из программы?
+        self.buttons = []  # массив, в котором хранятся все кнопки, последняя кнопка - это всегда выход из игры
+        self.variables = []  # массив с переменными, отвечающими за переключение режимов игры(пауза, старт, конец)
         self.amount = amount
-        for a in range(amount):
-            self.buttons.append(Button(540, 200 + a * 100, 200, 75, texts[a]))
-            self.variables.append(False)
+        for a in range(self.amount):
+            self.buttons.append(Button(540, 200 + a * 100, 200, 75, texts[a]))  # размещает кнопки по центру экрана
+            self.variables.append(False)  # задает всем переменным состояний игры изначально False значение.
 
     def draw_background(self):
+        """
+        Функция, отвечающая за прорисовку заднего фона у меню. По умолчанию это серый прозрачный прямоугольник.
+        """
         background_surface = pygame.Surface((400, 250 + self.amount * 100))
         background = pygame.draw.rect(background_surface, GREY, (440, 20, 400, self.amount * 100))
         background_surface.set_alpha(100)
         START_MENU_SCREEN.blit(background_surface, background)
 
     def create_menu(self, text: str):
+        """
+        Функция, отвечающая за создание меню. Обновляет кнопки, проверяет нажатия на них, обновляет связанные
+        с ними переменные.
+        :param text: название меню, будет нарисовано над кнопками.
+        """
         self.finished = False
         self.draw_background()
         writing(text, 640, 100, 64, "Impact")
@@ -103,54 +122,80 @@ class Menu:
             button.update()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP:
-                for i in range(len(self.buttons)):
+                for i in range(len(self.buttons)):  # проверяем какая кнопка была нажата.
                     self.buttons[i].is_button_pressed(event)
-                    if self.buttons[i].pressed is True:
+                    if self.buttons[i].pressed is True:  # обновляем переменные состояний игры, связанные с кнопками
                         self.variables[i] = True
                     else:
                         self.variables[i] = False
-                    if i == len(self.variables) - 1 and self.variables[i] == 1:  # последний - это всегда выход из игры
+                    if i == len(self.variables) - 1 and self.variables[i] == 1:
+                        # последняя кнопка - это всегда выход из игры
                         self.finished = True
             if event.type == pygame.QUIT:
                 self.finished = True
 
 
 class StartMenu(Menu):
+    """
+    Класс, отвечающий за отрисовку стартового меню.
+    """
+
     def __init__(self):
         super().__init__(3, ["start", "options", "exit"])
-        self.start = False
-        self.options = False
+        self.start = False  # Если True, то надо начать игру
+        self.options = False  # Если True, то надо перейти в настройки
 
     def draw(self):
+        """
+        Функция, отвечающая за отрисовку стартового меню.
+        :return: self.finished, self.start, self.options
+        """
         super().create_menu("DOLGOPIO")
         self.start = self.variables[0]
         self.options = self.variables[1]
         return self.finished, self.start, self.options
 
 
-class OptionMenu(Menu):  # continue, music, exit
+class OptionMenu(Menu):
+    """
+    Класс, отвечающий за отрисовку меню настроек
+    """
+
     def __init__(self):
         super().__init__(3, ["continue", "music", "exit"])
-        self.continues = False
-        self.music = False
+        self.continues = False  # Если True, то продолжаем играть.
+        self.music = False  # Если True, то надо перейти в меню выбора музыки.
 
     def draw(self):
+        """
+        Класс, отвечающий за отрисовку меню настроек.
+        :return: self.finished, self.continues, self.music
+        """
         super().create_menu("OPTIONS")
         self.continues = self.variables[0]
         self.music = self.variables[1]
         return self.finished, self.continues, self.music
 
 
-class PauseMenu(Menu):  # continue, options, start_menu ,exit
+class PauseMenu(Menu):
+    """
+    Класс, отвечающий за отрисовку меню паузы.
+    """
+
     def __init__(self):
         super().__init__(4, ["continue", "options", "start_menu", "exit"])
-        self.continues = False
-        self.options = False
-        self.start_menu = False
+        self.continues = False  # Если True, то продолжаем игру
+        self.options = False  # Если True, то переходим в меню настроек
+        self.start_menu = False  # Если True, то возвращаемся в StartMenu
 
     def draw(self):
+        """
+        Функция, отвечающая за отрисовку меню паузы.
+        :return: self.finished, self.continues, self.options, self.start_menu
+        """
         super().create_menu("PAUSED")
         self.continues = self.variables[0]
         self.options = self.variables[1]
         self.start_menu = self.variables[2]
         return self.finished, self.continues, self.options, self.start_menu
+
