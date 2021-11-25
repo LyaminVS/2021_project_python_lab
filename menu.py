@@ -2,11 +2,6 @@ import pygame
 
 import objects
 
-from start_screen import Button
-from start_screen import StartMenu
-from start_screen import PauseMenu
-from start_screen import OptionMenu
-
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 # FIXME ОЧЕНЬ НАДО ДОБАВИТЬ В MAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -231,6 +226,32 @@ class Inventory:
         self.moving_objects_in_inventory()  # двигаем объекты в инвентаре
 
 
+class Craft(Inventory):
+    """
+    Класс, отвечающий за создание меню крафта.
+    """
+
+    def __init__(self, start_x, start_y, crafts):
+        self.crafts = crafts # объекты, которые можно скрафтить.
+        super().__init__(start_x, start_y, 3, 3, self.crafts)
+        self.craft_items = [] #материалы, необходимые для крафта элемента, на который игрок нажал
+
+    def updating(self):
+        """
+        Функция, занимающаяся обновлением меню крафта и обработкой нажатий игрока
+        """
+        for obj in self.slots:
+            obj.update_one_inventory_slot()
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
+                for obj in self.slots:
+                    obj.slot_pressed(event)
+                    if obj.pressed is True:
+                        for material in all_materials:
+                            if obj.item.name == material.name:
+                                self.craft_items = crafts[obj.item]
+
+
 class PlayerInventory(OneInventorySlot):
     """
     инвентарь игрока и его отрисовка
@@ -245,30 +266,26 @@ class ObjectInventory(OneInventorySlot):
     pass
 
 
-class Craft(OneInventorySlot):
-    """
-    меню крафта
-    """
-    pass
-
-
 finished = False
 
 taco1 = objects.Taco(screen)
 landau = objects.Landau(screen)
+all_materials = [objects.Taco(screen), objects.Landau(screen)]  # FIXME Реально надо добавить в main, я не шучу...
 materials = [taco1, landau]
+crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5, objects.Taco]}
 
+craft = Craft(400, 400, crafts)
+craft.create_inventory()
 
-menu = OptionMenu()
-inventory = Inventory(100, 100, 5, 7, materials)
+inventory = Inventory(100, 100, 4, 3, materials)
 inventory.create_inventory()
 
 while not finished:
-    clock.tick(30)
+    clock.tick(45)
     screen.fill(WHITE)
 
-    finished, a, b = menu.draw()
-    print(a, b)
-#    inventory.update_inventory()
-
+    craft.updating()
+    inventory.update_inventory()
     pygame.display.update()
+
+#FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.
