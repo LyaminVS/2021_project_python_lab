@@ -62,7 +62,7 @@ class OneInventorySlot:
         if self.i % 60 != 0 or self.i == 0 and event.type != tick:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
-                if event.type == pygame.MOUSEMOTION and self.pressed is False:
+                if event.type == pygame.MOUSEMOTION and not self.pressed:
                     self.color = GREY
                     self.i += 1
                 else:
@@ -78,9 +78,9 @@ class OneInventorySlot:
         item_in_work = ""  # объект, с которым будем работать. Если в ячейке что-то лежит, то работает с self.item,
         # если ячейка пустая и туда подается объект, то работаем с новым объектом,
         # если ничего не лежит и ничего не подается, то пропускаем.
-        if self.item is not None:
+        if self.item:
             item_in_work = self.item
-        elif item is not None:
+        elif item:
             item_in_work = item
         else:
             pass
@@ -105,7 +105,7 @@ class OneInventorySlot:
         Функция, отвечающая за отображение объекта в ячейке
         :param item: отображаемый объект
         """
-        if item is not None:  # Если на вход подается непустой объект.
+        if item:  # Если на вход подается непустой объект.
             self.item = item
             self.scaling_item(item)
             self.one_inventory_slot_screen.blit(self.item.image, (
@@ -158,7 +158,7 @@ class Inventory:
         Функция, отвечающая за наполнение инвентаря. Наполняет его элементами из self.items.
         """
         i = 0
-        if self.items is not None:
+        if self.items:
             for material in self.items:
                 slot = self.slots[i]
                 material.surface = slot.one_inventory_slot_screen
@@ -188,15 +188,15 @@ class Inventory:
         левой кнопкой мыши на ячейку, куда надо переместить.
         """
         for slot in self.slots:
-            if slot.pressed is True and slot.item is not None and slot.moving_object_from_slot is False \
-                    and self.moving_object_from_slot is False and self.moving_object is None:
+            if slot.pressed and slot.item and not slot.moving_object_from_slot \
+                    and not self.moving_object_from_slot and not self.moving_object:
                 # Если пользователь хочет достать какой-то элемент из ячейки.
                 self.moving_object = slot.item
                 slot.item = None
                 self.moving_object_from_slot = True
                 slot.moving_object_from_slot = True  # Странно наверное так делать, но что поделать
-            elif slot.pressed is True and slot.item is None and self.moving_object is not None \
-                    and self.moving_object_from_slot is True and slot.moving_object_from_slot is False:
+            elif slot.pressed and not slot.item and self.moving_object \
+                    and self.moving_object_from_slot and not slot.moving_object_from_slot:
                 # Если пользователь хочет положить объект, который достали в новую ячейку.
                 slot.item = self.moving_object
                 self.moving_object = None
@@ -225,7 +225,7 @@ class ObjectInventory(Inventory):
             self.i = 0
         for obj in self.slots:
             obj.update_one_inventory_slot()
-            if self.moving_object_from_slot is False:
+            if not self.moving_object_from_slot:
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
 
@@ -253,7 +253,7 @@ class Craft(Inventory):
     def int_update(self):
         pygame.draw.rect(screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
         pygame.draw.rect(screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
-        pygame.draw.rect(screen, BLACK, (self.start_x + 3, self.start_y -64 + 3, self.columns * 64 - 6, 64 - 6), 1)
+        pygame.draw.rect(screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.columns * 64 - 6, 64 - 6), 1)
         font = pygame.font.SysFont("Arial", 64)
         words = font.render("сraft", True, (0, 0, 0))
         place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
@@ -264,11 +264,10 @@ class Craft(Inventory):
     def visual_update(self, event):
         for obj in self.slots:
             obj.slot_pressed(event)
-            if obj.pressed is True:
-                if obj.item is not None:
-                    for material in all_materials:
-                        if obj.item.name == material.name:
-                            self.craft_items = crafts[obj.item]
+            if obj.pressed and obj.item:
+                for material in all_materials:
+                    if obj.item.name == material.name:
+                        self.craft_items = crafts[obj.item]
 
     def update(self):
         """
@@ -313,13 +312,13 @@ all_materials = [objects.Taco(screen), objects.Landau(screen)]  # FIXME Реал
 materialss = [taco1, landau]
 crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5, objects.Taco]}
 
-player = PlayerInventory()
+player = PlayerInventory(materialss)
 
 # while not finished:
-#     clock.tick(45)
-#     screen.fill(WHITE)
+#    clock.tick(45)
+#    screen.fill(WHITE)
 #
-#     player.update_all()
-#     pygame.display.update()
+#    player.update_all()
+#    pygame.display.update()
 
 # FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.
