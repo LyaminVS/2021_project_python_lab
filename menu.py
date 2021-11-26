@@ -4,7 +4,6 @@ import objects
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
-# FIXME ОЧЕНЬ НАДО ДОБАВИТЬ В MAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 tick = pygame.USEREVENT + 1
 pygame.time.set_timer(tick, 1000)
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
@@ -218,9 +217,7 @@ class ObjectInventory(Inventory):
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
 
-
     def int_update(self):
-
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
         if self.i % 21 == 0 and self.i != 0:
@@ -238,6 +235,7 @@ class ObjectInventory(Inventory):
         """
         self.int_update()
         for event in pygame.event.get():
+            print(123)
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.visual_update(event)
 

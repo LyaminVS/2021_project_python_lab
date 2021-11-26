@@ -45,7 +45,7 @@ def event_checker(event_array, class_params):
             class_params.player.vx *= 2
             class_params.player.vy *= 2
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
-            class_params.player.PlayerInventory.visual_update()
+            class_params.player.inventory.visual_update(checked_event)
         if class_params.player.vx != 0 or class_params.player.vy != 0:
             player_move(class_params)
 

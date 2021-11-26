@@ -192,5 +192,5 @@ def main():
 
 if __name__ == "__main__":
     game = Game()
-    game.player = objects.Player(game.screen, "name", 640, 360, menu.PlayerInventory(None))
+    game.player = objects.Player(game.screen, "name", 640, 360, menu.PlayerInventory([objects.Taco(game.screen), objects.Landau(game.screen)]))
     main()
