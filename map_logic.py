@@ -7,7 +7,7 @@ def collision(game):
     """
     расчитывает коллизию
     """
-    for obj in game.all_objects():
+    for obj in game.all_objects:
         game.map[0] += game.player.vx
         if pygame.sprite.collide_mask(obj, game.player):
             game.player.vx = 0
