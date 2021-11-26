@@ -1,7 +1,7 @@
 import pygame
 import background
 import map_logic
-# import menu
+import menu
 import objects
 # import sound
 import start_screen
@@ -59,6 +59,11 @@ class Params:
         self.map = [758, 2768]
         """
         показывает положение карты
+        """
+
+        self.inventory_opened = False
+        """
+        показывает открыт ли инвентарь
         """
 
 
@@ -185,5 +190,5 @@ def main():
 
 if __name__ == "__main__":
     params = Params()
-    params.player = objects.Player(params.screen, "name", 640, 360)
+    params.player = objects.Player(params.screen, "name", 640, 360, menu.Inventory(100, 100, 3, 4))
     main()
