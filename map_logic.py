@@ -48,6 +48,7 @@ def event_checker(event_array, class_params):
             pass
         if class_params.player.vx != 0 or class_params.player.vy != 0:
             player_move(class_params)
+        class_params.player.PlayerInventory.visual_update()
 
 
 def player_move(params_class):
