@@ -143,9 +143,8 @@ def update_game(event):
     background.draw_map(game.screen, game.map[0], game.map[1], game.all_objects)
     game.player.draw()
     map_logic.event_checker(event.get(), game)
-
     if game.inventory_opened:
-        game.player.inventory.update_all()
+        game.player.inventory.int_update()
 
 
 def save_game():
