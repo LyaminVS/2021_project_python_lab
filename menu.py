@@ -152,6 +152,7 @@ class Inventory:
         self.moving_object = None  # перемещаемый объект
         self.moving_object_from_slot = False  # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
+        self.create_inventory()
 
     def fill_up_inventory(self):
         """
@@ -203,27 +204,42 @@ class Inventory:
                 slot.moving_object_from_slot = True
                 self.i += 1  # запускает счетчик итераций, который потом отключает статус того, что перемещается объект
 
-    def update_inventory(self):
-        """
-        Функция, отвечающая за обновление инвентаря.
-        """
+
+class ObjectInventory(Inventory):
+    """
+    инвентарь объектов
+    """
+
+    def __init__(self, start_x=100, start_y=100, rows=1, columns=1, items=None):
+        super().__init__(start_x, start_y, rows, columns, items)
+
+    def visual_update(self, event):
+        for obj in self.slots:
+            obj.slot_pressed(event)
+        self.moving_objects_in_inventory()
+
+
+    def int_update(self):
 
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
         if self.i % 21 == 0 and self.i != 0:
             self.moving_object_from_slot = False
             self.i = 0
-
         for obj in self.slots:
             obj.update_one_inventory_slot()
-            if inventory.moving_object_from_slot is False:
+            if self.moving_object_from_slot is False:
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
+
+    def update(self):
+        """
+        Функция, отвечающая за обновление инвентаря.
+        """
+        self.int_update()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-                for obj in self.slots:
-                    obj.slot_pressed(event)
-        self.moving_objects_in_inventory()  # двигаем объекты в инвентаре
+                self.visual_update(event)
 
 
 class Craft(Inventory):
@@ -232,38 +248,56 @@ class Craft(Inventory):
     """
 
     def __init__(self, start_x, start_y, crafts):
-        self.crafts = crafts # объекты, которые можно скрафтить.
+        self.crafts = crafts  # объекты, которые можно скрафтить.
         super().__init__(start_x, start_y, 3, 3, self.crafts)
-        self.craft_items = [] #материалы, необходимые для крафта элемента, на который игрок нажал
+        self.craft_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
-    def updating(self):
+    def int_update(self):
+        pygame.draw.rect(screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
+        pygame.draw.rect(screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
+        pygame.draw.rect(screen, BLACK, (self.start_x + 3, self.start_y -64 + 3, self.columns * 64 - 6, 64 - 6), 1)
+        font = pygame.font.SysFont("Arial", 64)
+        words = font.render("сraft", True, (0, 0, 0))
+        place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
+        screen.blit(words, place)
+        for obj in self.slots:
+            obj.update_one_inventory_slot()
+
+    def visual_update(self, event):
+        for obj in self.slots:
+            obj.slot_pressed(event)
+            if obj.pressed is True:
+                if obj.item is not None:
+                    for material in all_materials:
+                        if obj.item.name == material.name:
+                            self.craft_items = crafts[obj.item]
+
+    def update(self):
         """
         Функция, занимающаяся обновлением меню крафта и обработкой нажатий игрока
         """
-        for obj in self.slots:
-            obj.update_one_inventory_slot()
+        self.int_update()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-                for obj in self.slots:
-                    obj.slot_pressed(event)
-                    if obj.pressed is True:
-                        for material in all_materials:
-                            if obj.item.name == material.name:
-                                self.craft_items = crafts[obj.item]
+                self.visual_update(event)
 
 
-class PlayerInventory(OneInventorySlot):
+class PlayerInventory:
     """
     инвентарь игрока и его отрисовка
     """
-    pass
 
+    def __init__(self, materials=None):
+        self.inventory = ObjectInventory(200, 100, 7, 7, materials)
+        self.craft_inventory = Craft(648, 228, crafts)
 
-class ObjectInventory(OneInventorySlot):
-    """
-    инвентарь объектов
-    """
-    pass
+    def update_all(self):
+        self.inventory.int_update()
+        self.craft_inventory.int_update()
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
+                self.inventory.visual_update(event)
+                self.craft_inventory.visual_update(event)
 
 
 finished = False
@@ -271,21 +305,16 @@ finished = False
 taco1 = objects.Taco(screen)
 landau = objects.Landau(screen)
 all_materials = [objects.Taco(screen), objects.Landau(screen)]  # FIXME Реально надо добавить в main, я не шучу...
-materials = [taco1, landau]
+materialss = [taco1, landau]
 crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5, objects.Taco]}
 
-craft = Craft(400, 400, crafts)
-craft.create_inventory()
+player = PlayerInventory()
 
-inventory = Inventory(100, 100, 4, 3, materials)
-inventory.create_inventory()
+# while not finished:
+#     clock.tick(45)
+#     screen.fill(WHITE)
+#
+#     player.update_all()
+#     pygame.display.update()
 
-while not finished:
-    clock.tick(45)
-    screen.fill(WHITE)
-
-    craft.updating()
-    inventory.update_inventory()
-    pygame.display.update()
-
-#FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.
+# FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.

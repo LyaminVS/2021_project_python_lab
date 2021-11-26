@@ -56,8 +56,12 @@ def player_move(params_class):
     Args:
     params_class - params из модуля main
     """
-    params_class.map[0] += params_class.player.vx
-    params_class.map[1] -= params_class.player.vy
+    if params_class.player.vx != 0:
+        params_class.map[0] += params_class.player.vx
+        params_class.player.right = (params_class.player.right + 1) % 2
+    if params_class.player.vy != 0:
+        params_class.map[1] -= params_class.player.vy
+        params_class.player.right = (params_class.player.right + 1) % 2
     params_class.player.vx = 0
     params_class.player.vy = 0
             
