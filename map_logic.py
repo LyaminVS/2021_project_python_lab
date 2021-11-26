@@ -9,11 +9,11 @@ def collision(game):
     """
     for obj in game.all_objects():
         game.map[0] += game.player.vx
-        if game.player.colliderect(obj.rect):
+        if pygame.sprite.collide_mask(obj, game.player):
             game.player.vx = 0
         game.map[0] -= game.player.vx
         game.map[1] -= game.player.vy
-        if game.player.colliderect(obj.rect):
+        if pygame.sprite.collide_mask(obj, game.player):
             game.player.vy = 0
         game.map[1] += game.player.vy
 
