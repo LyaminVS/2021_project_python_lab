@@ -47,7 +47,6 @@ def event_checker(event_array, game):
             game.player.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             player_move(game)
-        game.player.visual_update()
 
 
 def player_move(game):
