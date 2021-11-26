@@ -291,9 +291,16 @@ class PlayerInventory:
         self.inventory = ObjectInventory(200, 100, 7, 7, materials)
         self.craft_inventory = Craft(648, 228, crafts)
 
-    def update_all(self):
+    def int_update(self):
         self.inventory.int_update()
         self.craft_inventory.int_update()
+
+    def visual_update(self, event):
+        self.inventory.visual_update(event)
+        self.craft_inventory.visual_update(event)
+
+    def update_all(self):
+        self.int_update()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.inventory.visual_update(event)
