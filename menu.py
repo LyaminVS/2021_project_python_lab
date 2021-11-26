@@ -257,7 +257,7 @@ class Craft(Inventory):
         pygame.draw.rect(screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
         pygame.draw.rect(screen, BLACK, (self.start_x + 3, self.start_y -64 + 3, self.columns * 64 - 6, 64 - 6), 1)
         font = pygame.font.SysFont("Arial", 64)
-        words = font.render("Craft", True, (200, 0, 0))
+        words = font.render("сraft", True, (0, 0, 0))
         place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
         screen.blit(words, place)
         for obj in self.slots:
@@ -287,7 +287,7 @@ class PlayerInventory:
     инвентарь игрока и его отрисовка
     """
 
-    def __init__(self, materials):
+    def __init__(self, materials=None):
         self.inventory = ObjectInventory(200, 100, 7, 7, materials)
         self.craft_inventory = Craft(648, 228, crafts)
 
@@ -308,7 +308,7 @@ all_materials = [objects.Taco(screen), objects.Landau(screen)]  # FIXME Реал
 materialss = [taco1, landau]
 crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5, objects.Taco]}
 
-player = PlayerInventory(materialss)
+player = PlayerInventory()
 
 while not finished:
     clock.tick(45)
