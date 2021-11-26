@@ -145,7 +145,7 @@ def update_game(event):
     map_logic.event_checker(event.get(), game)
 
     if game.inventory_opened:
-        game.player.inventory.update_inventory()
+        game.player.inventory.update_all()
 
 
 def save_game():
@@ -193,6 +193,5 @@ def main():
 
 if __name__ == "__main__":
     game = Game()
-    game.player = objects.Player(game.screen, "name", 640, 360, menu.Inventory(100, 100, 3, 4))
-    game.player.inventory.create_inventory()
+    game.player = objects.Player(game.screen, "name", 640, 360, menu.PlayerInventory(None))
     main()

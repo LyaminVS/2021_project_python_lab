@@ -310,11 +310,11 @@ crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5,
 
 player = PlayerInventory()
 
-while not finished:
-    clock.tick(45)
-    screen.fill(WHITE)
-
-    player.update_all()
-    pygame.display.update()
+# while not finished:
+#     clock.tick(45)
+#     screen.fill(WHITE)
+#
+#     player.update_all()
+#     pygame.display.update()
 
 # FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.
