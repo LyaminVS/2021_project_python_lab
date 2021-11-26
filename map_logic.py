@@ -27,6 +27,8 @@ def event_checker(event_array, class_params):
     params_class - params из модуля main
     """
     for checked_event in event_array:
+        if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_e):
+            class_params.inventory_opened = True
         if checked_event.type == pygame.QUIT:
             class_params.finished = True
         if checked_event.type == pygame.KEYUP:
