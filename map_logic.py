@@ -10,12 +10,12 @@ def collision(game):
     for obj in game.all_objects():
         game.map[0] += game.player.vx
         if game.player.colliderect(obj.rect):
-            game.map[0] -= game.player.vx
             game.player.vx = 0
+        game.map[0] -= game.player.vx
         game.map[1] -= game.player.vy
         if game.player.colliderect(obj.rect):
-            game.map[1] += game.player.vy
             game.player.vy = 0
+        game.map[1] += game.player.vy
 
 
 def event_checker(event_array, game):
