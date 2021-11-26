@@ -9,7 +9,7 @@ import start_screen
 pygame.init()
 
 
-class Params:
+class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
         """
@@ -71,7 +71,7 @@ def open_start_menu():
     """
     открывает стартовое меню игры
     """
-    start_menu = start_screen.StartMenu(params.screen)
+    start_menu = start_screen.StartMenu(game.screen)
     start_menu.draw()
 
 
@@ -83,7 +83,7 @@ def line_to_object(line):
     """
 
     name, image, x, y = line.split(";")
-    new_object = objects.Objects(params.screen, image, name, int(x), int(y))
+    new_object = objects.Objects(game.screen, image, name, int(x), int(y))
     return new_object
 
 
@@ -94,7 +94,7 @@ def line_to_player(line):
     :return:
     """
     name, image, x, y = line.split(";")
-    new_player = objects.Objects(params.screen, image, name, int(x), int(y))
+    new_player = objects.Objects(game.screen, image, name, int(x), int(y))
     return new_player
 
 
@@ -132,7 +132,7 @@ def create_start_position():
     """
     # params.player = get_player_from_file()
 
-    params.all_objects = get_obj_from_file()
+    game.all_objects = get_obj_from_file()
 
 
 def update_game(event):
@@ -140,9 +140,12 @@ def update_game(event):
     функция обновляет состояние игры
     :return:
     """
-    background.draw_map(params.screen, params.map[0], params.map[1], params.all_objects)
-    params.player.draw()
-    map_logic.event_checker(event.get(), params)
+    background.draw_map(game.screen, game.map[0], game.map[1], game.all_objects)
+    game.player.draw()
+    map_logic.event_checker(event.get(), game)
+
+    if game.inventory_opened:
+        game.player.inventory.update_inventory()
 
 
 def save_game():
@@ -152,10 +155,10 @@ def save_game():
     """
     player_file = open("player_save.txt", "w")
     object_file = open("objects_save.txt", "w")
-    player_file.write(str(params.player) + "\n")
-    for obj in params.all_objects:
+    player_file.write(str(game.player) + "\n")
+    for obj in game.all_objects:
         object_file.write(str(obj) + "\n")
-    player_file.write(str(params.player))
+    player_file.write(str(game.player))
     player_file.close()
     object_file.close()
 
@@ -174,21 +177,22 @@ def main():
     основной цикл программы
     :return:
     """
-    while not params.finished:
+    while not game.finished:
         pygame.display.update()
-        if not params.game_started:
+        if not game.game_started:
             open_start_menu()
         else:
-            if not params.player_created:
+            if not game.player_created:
                 create_start_position()
-                params.player_created = True
+                game.player_created = True
             update_game(pygame.event)
-        params.clock.tick(params.FPS)
+        game.clock.tick(game.FPS)
 
     game_quit()
 
 
 if __name__ == "__main__":
-    params = Params()
-    params.player = objects.Player(params.screen, "name", 640, 360, menu.Inventory(100, 100, 3, 4))
+    game = Game()
+    game.player = objects.Player(game.screen, "name", 640, 360, menu.Inventory(100, 100, 3, 4))
+    game.player.inventory.create_inventory()
     main()
