@@ -3,22 +3,14 @@ import pygame
 motion_keys_numbers = [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]
 
 
-def collision(game):
+def collision(game, direction):
     """
     расчитывает коллизию
     """
     for obj in game.all_objects:
-        game.map[0] += game.player.vx
-        if obj.collide_rect.colliderect(game.player.collide_rect):
+        if (obj.collide_rect.colliderect(game.player.collide_rect)) and (direction == 0):
             game.map[0] -= game.player.vx
-            game.player.vx = -game.player.vx
-        else:
-            game.map[0] -= game.player.vx
-        game.map[1] -= game.player.vy
-        if obj.collide_rect.colliderect(game.player.collide_rect):
-            game.map[1] += game.player.vy
-            game.player.vy = -game.player.vy
-        else:
+        if (obj.collide_rect.colliderect(game.player.collide_rect)) and (direction == 1):
             game.map[1] += game.player.vy
 
 
@@ -59,9 +51,13 @@ def player_move(game):
     Args:
     game - params из модуля main
     """
-    collision(game)
+    collision(game, 0)
     game.map[0] += game.player.vx
-    game.map[1] -= game.player.vy
+    collision(game, 0)
     game.player.vx = 0
+    collision(game, 1)
+    game.map[1] -= game.player.vy
+    collision(game, 1)
     game.player.vy = 0
+
 
