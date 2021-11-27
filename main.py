@@ -89,9 +89,19 @@ class Game:
         :param line: строка файла
         :return:
         """
+        resources_in_file = open("save_files/player_resources_save")
+        resources = []
+        for resource in resources_in_file:
+            resource = resource.strip()
+            if resource == "taco":
+                resources.append(objects.Taco(self.screen))
+            if resource == "landau":
+                resources.append(objects.Landau(self.screen))
+            if resource == "brain":
+                resources.append(objects.Brain(self.screen))
         name, image, x, y = line.split(";")
-        new_player = objects.Player(self.screen, name, int(x), int(y), menu.PlayerInventory(self.screen, self.crafts))
-        print(new_player)
+        new_player = objects.Player(self.screen, name, int(x), int(y), resources)
+        new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, resources)
         return new_player
 
     def get_player_from_file(self):
@@ -99,7 +109,7 @@ class Game:
         преобразовывает файл в объект класса Player
         :return: объект класса Player
         """
-        player_file = open("player_save.txt")
+        player_file = open("save_files/player_save.txt")
         player_line = player_file.readline()
         player = self.line_to_player(player_line)
         player_file.close()
@@ -111,7 +121,7 @@ class Game:
         :return: массив объектов класса Object
         """
         all_objects = []
-        objects_in_file = open("objects_save.txt")
+        objects_in_file = open("save_files/objects_save.txt")
         for line in objects_in_file:
             new_obj = self.line_to_object(line)
             all_objects.append(new_obj)
@@ -142,12 +152,15 @@ class Game:
         функция сохраняет игру
         :return:
         """
-        player_file = open("player_save.txt", "w")
-        object_file = open("objects_save.txt", "w")
+        player_file = open("save_files/player_save.txt", "w")
+        object_file = open("save_files/objects_save.txt", "w")
+        player_resources_file = open("save_files/player_resources_save", "w")
         player_file.write(str(self.player) + "\n")
         for obj in self.all_objects:
             object_file.write(str(obj) + "\n")
-        player_file.write(str(self.player))
+        for res in self.player.resources:
+            player_resources_file.write((str(res.name)).lower() + "\n")
+        player_resources_file.close()
         player_file.close()
         object_file.close()
 
@@ -173,7 +186,6 @@ class Game:
                 self.screen.fill((255, 255, 255))
                 self.finished, self.game_started, self.option_menu = self.start_menu.draw()
             else:
-
                 self.update_game(pygame.event)
             self.clock.tick(self.FPS)
         self.game_quit()
@@ -181,6 +193,4 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    # game.player = objects.Player(game.screen, "name", 640, 360,
-    #                              menu.PlayerInventory(game.screen, game.crafts, [objects.Taco(game.screen), objects.Landau(game.screen)]))
     game.main()
