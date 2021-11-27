@@ -3,15 +3,21 @@ import pygame
 motion_keys_numbers = [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]
 
 
-def collision(game, direction):
+def collision(game):
     """
     расчитывает коллизию
     """
     for obj in game.all_objects:
-        if (obj.collide_rect.colliderect(game.player.collide_rect)) and (direction == 0):
-            game.map[0] -= game.player.vx
-        if (obj.collide_rect.colliderect(game.player.collide_rect)) and (direction == 1):
-            game.map[1] += game.player.vy
+        if obj.collide_rect.colliderect(game.player.collide_rect):
+            game.map[0] -= 3*game.player.vx_for_collision
+            if obj.collide_rect.colliderect(game.player.collide_rect):
+                game.map[1] += 3*game.player.vy_for_collision
+                if obj.collide_rect.colliderect(game.player.collide_rect):
+                    game.map[0] -= 6 * game.player.vx_for_collision
+                    if obj.collide_rect.colliderect(game.player.collide_rect):
+                        game.map[1] += 6 * game.player.vy_for_collision
+            game.player.vy = 0
+            game.player.vx = 0
 
 
 def event_checker(event_array, game):
@@ -43,6 +49,7 @@ def event_checker(event_array, game):
             game.player.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             player_move(game)
+        collision(game)
 
 
 def player_move(game):
@@ -51,13 +58,16 @@ def player_move(game):
     Args:
     game - params из модуля main
     """
-    collision(game, 0)
+    collision(game)
+    if game.player.vx != 0:
+        game.player.vx_direction_for_collision = game.player.vx/abs(game.player.vx)
+    if game.player.vy != 0:
+        game.player.vy_direction_for_collision = game.player.vy/abs(game.player.vy)
+    game.player.vx_for_collision = game.player.vx
+    game.player.vy_for_collision = game.player.vy
     game.map[0] += game.player.vx
-    collision(game, 0)
-    game.player.vx = 0
-    collision(game, 1)
     game.map[1] -= game.player.vy
-    collision(game, 1)
+    game.player.vx = 0
     game.player.vy = 0
-
+    collision(game)
 
