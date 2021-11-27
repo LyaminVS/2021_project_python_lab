@@ -27,6 +27,8 @@ class Objects(pygame.sprite.Sprite):
         self.inventory = None
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
+        
+        
     def draw(self, x, y):
         """
         Функция отрисовки объекта.
