@@ -2,8 +2,9 @@ import pygame
 
 import objects
 
-# pygame.init()
-# screens = pygame.display.set_mode((1280, 720))
+pygame.init()
+screens = pygame.display.set_mode((1280, 720))
+
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -13,7 +14,7 @@ DARK_GREY = (40, 40, 40)
 RED = (255, 0, 0)
 GREEN = (0, 200, 0)
 ORANGE = (220, 150, 40)  # FIXME цвет шрифта, но мне не нравится.
-# clock = pygame.time.Clock()
+clock = pygame.time.Clock()
 
 
 class OneInventorySlot:
@@ -202,11 +203,13 @@ class Inventory:
                 slot.moving_object_from_slot = True
                 self.i += 1  # запускает счетчик итераций, который потом отключает статус того, что перемещается объект
             elif slot.pressed and slot.item and self.moving_object and slot.item.name == self.moving_object.name \
-                and self.moving_object_from_slot and not slot.moving_object_from_slot:
+                    and self.moving_object_from_slot and not slot.moving_object_from_slot:
                 slot.item.amount += self.moving_object.amount
                 self.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1
+
+
 class ObjectInventory(Inventory):
     """
     инвентарь объектов
@@ -253,13 +256,13 @@ class Craft(Inventory):
         super().__init__(screen, start_x, start_y, 3, 3, self.crafts)
         self.craft_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
-    def int_update(self):
+    def int_update(self, font_size=64, text="craft"):
         pygame.draw.rect(self.screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
         pygame.draw.rect(self.screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
         pygame.draw.rect(self.screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.columns * 64 - 6, 64 - 6),
                          1)
-        font = pygame.font.SysFont("Arial", 64)
-        words = font.render("сraft", True, (0, 0, 0))
+        font = pygame.font.SysFont("Arial", font_size)
+        words = font.render(text, True, (0, 0, 0))
         place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
         self.screen.blit(words, place)
         for obj in self.slots:
@@ -290,25 +293,41 @@ class PlayerInventory:
     def __init__(self, screen, crafts, materials=None):
         self.inventory = ObjectInventory(screen, 200, 100, 7, 7, materials)
         self.craft_inventory = Craft(screen, 648, 228, crafts)
+        self.font_size = 64
+        self.text = "craft"
 
     def craft_items(self):
         crafted_items = self.craft_inventory.craft_items.copy()
-        for i in range(1, len(crafted_items), 3):
-            amount = crafted_items[i - 1]
-            for slot in self.inventory.slots:
+        resource_checker = 0
 
-                if not slot.item:
-                    slot.item = crafted_items[i + 1]
-                    crafted_items[i + 1] = None
-                    if slot.item:
-                        slot.item.amount = amount
-                elif isinstance(slot.item, crafted_items[i]) and slot.item.amount >= crafted_items[i - 1]:
-                    slot.item.amount -= crafted_items[i - 1]
-                    crafted_items[i - 1] = 0
+        for i in range(2, len(crafted_items), 2):
+            self.font_size = 64
+            self.text = "craft"
+            for slot in self.inventory.slots:
+                if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                    resource_checker += 1
+        if crafted_items and resource_checker >= (len(crafted_items) - 1) // 2:
+            amount = crafted_items[0]
+            for slot in self.inventory.slots:
+                for i in range(2, len(crafted_items), 2):
+                    if slot.item and crafted_items[-1] and slot.item.name == crafted_items[-1].name:
+                        slot.item.amount += crafted_items[0]
+                        crafted_items[-1] = None
+                    elif slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                        slot.item.amount -= crafted_items[i - 1]
+                        crafted_items[i - 1] = 0
+                    elif not slot.item:
+                        slot.item = crafted_items[-1]
+                        crafted_items[-1] = None
+                        if slot.item:
+                            slot.item.amount = amount
+        elif crafted_items:
+            self.font_size = 24
+            self.text = "not enough materials"
         self.craft_inventory.craft_items = []
 
     def int_update(self, items):
-        self.craft_inventory.int_update()
+        self.craft_inventory.int_update(self.font_size, self.text)
         self.craft_items()
         self.inventory.int_update(items)
 
@@ -322,3 +341,25 @@ class PlayerInventory:
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.inventory.visual_update(event)
                 self.craft_inventory.visual_update(event)
+
+
+finished = False
+
+taco1 = objects.Taco(screens)
+landau = objects.Landau(screens)
+all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
+materialss = [taco1, landau]
+crafts = {
+    objects.Taco(screens): [1, 2, "Landau", objects.Taco(screens)],
+    objects.Landau(screens): [1, 3, "Taco", objects.Landau(screens)],
+    objects.Brain(screens): [1, 5, "Taco", 5, "Landau", objects.Brain(screens)]
+    }
+# # TODO Заменить screens на экран из main
+# player = PlayerInventory(screens, crafts, materialss)
+#
+# while not finished:
+#     clock.tick(45)
+#     screens.fill(WHITE)
+#
+#     player.update_all(materialss)
+#     pygame.display.update()
