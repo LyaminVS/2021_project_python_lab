@@ -1,2 +1,0 @@
-player;pics/kin run left1.png;640;360
-player;pics/kin run left1.png;640;360

@@ -1,6 +1,5 @@
 import pygame
 
-
 class Objects(pygame.sprite.Sprite):
     """
     Класс объекта (пока только применим к зданиям).
@@ -51,7 +50,7 @@ class Player(pygame.sprite.Sprite):
     Класс игрока, наследующий Spite для проверки коллизий.
     """
 
-    def __init__(self, screen, name, x_0, y_0, inventory=None):
+    def __init__(self, screen, name, x_0, y_0, resources=[]):
         """
         Конструктор класса Player.
         :param screen: экран отрисовки
@@ -70,14 +69,14 @@ class Player(pygame.sprite.Sprite):
         self.image_name = "pics/skin run right1.png"
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.inventory = inventory
         self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
         self.move = 0
         self.move_direction = None
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.resources = []
+        self.resources = resources
+        self.inventory = None
 
     def draw(self):
         """
@@ -118,14 +117,12 @@ class Resources:
         self.image_name = image
         self.surface = screen
         self.amount = 15
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
 
     def __str__(self):
         """
         :return: параметры объекта одной строкой с разделителем ";"
         """
-        line = ";".join((self.name, self.image_name, str(self.width), str(self.height)))
+        line = ";".join((self.image_name, self.name))
         return line
 
 

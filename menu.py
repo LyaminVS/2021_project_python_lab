@@ -1,6 +1,5 @@
 import pygame
 
-import objects
 
 # pygame.init()
 # screens = pygame.display.set_mode((1280, 720))
@@ -290,7 +289,7 @@ class PlayerInventory:
     def craft_items(self):
         craft_items = self.craft_inventory.craft_items
 
-        print(self.craft_inventory.craft_items)
+        # print(self.craft_inventory.craft_items)
 
         for slot in self.inventory.slots:
             for i in range(1, len(craft_items), 3):
