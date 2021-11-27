@@ -236,7 +236,6 @@ class ObjectInventory(Inventory):
         """
         self.int_update()
         for event in pygame.event.get():
-            print(123)
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.visual_update(event)
 
@@ -285,9 +284,18 @@ class PlayerInventory:
     инвентарь игрока и его отрисовка
     """
 
-    def __init__(self, screen, materials=None):
+    def __init__(self, screen, crafts, materials=None):
         self.inventory = ObjectInventory(screen, 200, 100, 7, 7, materials)
         self.craft_inventory = Craft(screen, 648, 228, crafts)
+
+    def craft_items(self):
+        for slot in self.inventory.slots:
+            for i in range(1, len(self.craft_inventory.craft_items), 2):
+                if slot.item == self.craft_inventory.craft_items[i]:
+                   pass
+
+
+
 
     def int_update(self):
         self.inventory.int_update()
@@ -313,7 +321,7 @@ all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реа
 materialss = [taco1, landau]
 crafts = {objects.Taco(screens): [2, objects.Landau], objects.Landau(screens): [5, objects.Taco]}
 
-player = PlayerInventory(screens, materialss)
+player = PlayerInventory(screens, crafts materialss)
 
 #while not finished:
 #    clock.tick(45)
@@ -321,5 +329,3 @@ player = PlayerInventory(screens, materialss)
 #
 #    player.update_all()
 #    pygame.display.update()
-
-# FIXME Заменить счетчики итераций на таймеры, иначе крафт и инвентарь одновременно не работают.
