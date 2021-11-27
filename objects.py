@@ -17,7 +17,7 @@ class Objects(pygame.sprite.Sprite):
         """
         super().__init__()
         self.name = name
-        self.image = pygame.image.load(image)
+        self.image = pygame.image.load(image).convert_alpha()
         self.image_name = image
         self.surface = screen
         self.width = self.image.get_width()
@@ -25,7 +25,8 @@ class Objects(pygame.sprite.Sprite):
         self.x = x_0
         self.y = y_0
         self.inventory = None
-
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
     def draw(self, x, y):
         """
         Функция отрисовки объекта.
@@ -69,6 +70,7 @@ class Player(pygame.sprite.Sprite):
         self.inventory = inventory
         self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.mask = pygame.mask.from_surface(self.image)
         self.move = 0
         self.move_direction = None
 
