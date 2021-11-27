@@ -331,11 +331,11 @@ crafts = {objects.Taco(screens): [2, objects.Landau, objects.Taco(screens)],
 # TODO заменить screens на экран из основной части
 player = PlayerInventory(screens, crafts, materialss)
 
-while not finished:
-    clock.tick(45)
-    screens.fill(WHITE)
+#while not finished:
+#    clock.tick(45)
+#    screens.fill(WHITE)
 
-    player.update_all(materialss)
-    pygame.display.update()
+#   player.update_all(materialss)
+#    pygame.display.update()
 
 # TODO Написать str к инвентарю игрока
