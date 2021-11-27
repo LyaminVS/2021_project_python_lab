@@ -296,7 +296,6 @@ class PlayerInventory:
         for i in range(1, len(crafted_items), 3):
             amount = crafted_items[i - 1]
             for slot in self.inventory.slots:
-
                 if not slot.item:
                     slot.item = crafted_items[i + 1]
                     crafted_items[i + 1] = None
