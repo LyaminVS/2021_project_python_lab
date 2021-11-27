@@ -211,13 +211,13 @@ class ObjectInventory(Inventory):
     def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
         super().__init__(screen, start_x, start_y, rows, columns, items)
 
-    def visual_update(self, event, items=None):
+    def visual_update(self, event):
         for obj in self.slots:
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
-        self.fill_up_inventory(items)
 
-    def int_update(self):
+
+    def int_update(self, items):
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
         if self.i % 41 == 0 and self.i != 0:
@@ -228,15 +228,15 @@ class ObjectInventory(Inventory):
             if not self.moving_object_from_slot:
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
-
+        self.fill_up_inventory(items)
     def update(self, items=None):
         """
         Функция, отвечающая за обновление инвентаря.
         """
-        self.int_update()
+        self.int_update(items)
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-                self.visual_update(event, items)
+                self.visual_update(event)
 
 
 class Craft(Inventory):
@@ -266,6 +266,7 @@ class Craft(Inventory):
             obj.slot_pressed(event)
             if obj.pressed and obj.item:
                 self.craft_items = crafts[obj.item]
+                print("lol")
 
     def update(self):
         """
@@ -282,41 +283,41 @@ class PlayerInventory:
     инвентарь игрока и его отрисовка
     """
 
-    def __init__(self, screen, crafts, materials=None, items=None):
+    def __init__(self, screen, crafts, materials=None):
         self.inventory = ObjectInventory(screen, 200, 100, 7, 7, materials)
         self.craft_inventory = Craft(screen, 648, 228, crafts)
 
     def craft_items(self):
         craft_items = self.craft_inventory.craft_items
-        crafting_items = craft_items
+
         print(self.craft_inventory.craft_items)
 
         for slot in self.inventory.slots:
             for i in range(1, len(craft_items), 3):
+                amount = craft_items[i-1]
                 if not slot.item:
                     slot.item = craft_items[i + 1]
-                    slot.item.amount = craft_items[i-1]
-                    crafting_items[i + 1] = None
+                    craft_items[i + 1] = None
+                    slot.item.amount = amount
 
-
-                elif isinstance(slot.item, crafting_items[i]) and slot.item.amount >= craft_items[i - 1]:
+                elif isinstance(slot.item, craft_items[i]) and slot.item.amount >= craft_items[i - 1]:
                     slot.item.amount -= craft_items[i - 1]
                     craft_items[i - 1] = 0
 
-    def int_update(self):
+    def int_update(self, items):
         self.craft_inventory.int_update()
         self.craft_items()
-        self.inventory.int_update()
+        self.inventory.int_update(items)
 
-    def visual_update(self, event, items):
+    def visual_update(self, event):
         self.craft_inventory.visual_update(event)
-        self.inventory.visual_update(event, items)
+        self.inventory.visual_update(event)
 
     def update_all(self, items):
-        self.int_update()
+        self.int_update(items)
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-                self.inventory.visual_update(event, items)
+                self.inventory.visual_update(event)
                 self.craft_inventory.visual_update(event)
 
 
@@ -324,18 +325,18 @@ finished = False
 
 taco1 = objects.Taco(screens)
 landau = objects.Landau(screens)
-#all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
+# all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
 materialss = [taco1, landau]
 crafts = {objects.Taco(screens): [2, objects.Landau, objects.Taco(screens)],
           objects.Landau(screens): [5, objects.Taco, objects.Landau(screens)]}
 # TODO заменить screens на экран из основной части
 player = PlayerInventory(screens, crafts, materialss)
 
-#while not finished:
-#    clock.tick(45)
-#    screens.fill(WHITE)
+while not finished:
+    clock.tick(45)
+    screens.fill(WHITE)
 
-#   player.update_all(materialss)
-#    pygame.display.update()
+    player.update_all(materialss)
+    pygame.display.update()
 
 # TODO Написать str к инвентарю игрока
