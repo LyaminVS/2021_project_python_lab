@@ -3,7 +3,7 @@ import pygame
 import objects
 
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screens = pygame.display.set_mode((1280, 720))
 tick = pygame.USEREVENT + 1
 pygame.time.set_timer(tick, 1000)
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
@@ -23,13 +23,13 @@ class OneInventorySlot:
     отображение ячейки инвентаря
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, screen):
         self.one_inventory_slot_width = self.one_inventory_slot_height = 64
         self.one_slot_x = x  # координата х левого верхнего угла у ячейки инвентаря.
         self.one_slot_y = y  # координата у левого верхнего угла у ячейки инвентаря.
         self.color = LIGHT_GREY  # цвет ячейки.
         self.pressed = False  # Нажата ли кнопка?
-        self.one_inventory_slot_screen = pygame.Surface((self.one_inventory_slot_width, self.one_inventory_slot_height))
+        self.screen = screen
         # экран, на который отрисовывается ячейка инвентаря.
         self.font = pygame.font.SysFont('cambria', 14)  # шрифт для счетчика количества предметов.
         self.number = ""  # текстовый вариант количества предметов в ячейке.
@@ -43,14 +43,14 @@ class OneInventorySlot:
         """
         Функция, отрисовывающая одну ячейку инвентаря.
         """
-        pygame.draw.rect(self.one_inventory_slot_screen, self.color,
-                         (0, 0, self.one_inventory_slot_width, self.one_inventory_slot_height))
-        pygame.draw.rect(self.one_inventory_slot_screen, DARK_GREY,
-                         (0, 0, self.one_inventory_slot_width, self.one_inventory_slot_height), 3)
-        pygame.draw.rect(self.one_inventory_slot_screen, BLACK,
-                         (0, 0, self.one_inventory_slot_width, self.one_inventory_slot_height), 1)
-        pygame.draw.rect(self.one_inventory_slot_screen, BLACK,
-                         (3, 3, self.one_inventory_slot_width - 6, self.one_inventory_slot_height - 6), 1)
+        pygame.draw.rect(self.screen, self.color, (
+            self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height))
+        pygame.draw.rect(self.screen, DARK_GREY, (
+            self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height), 3)
+        pygame.draw.rect(self.screen, BLACK, (
+            self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height), 1)
+        pygame.draw.rect(self.screen, BLACK, (
+            3 + self.one_slot_x, 3 + self.one_slot_y, self.one_inventory_slot_width - 6, self.one_inventory_slot_height - 6), 1)
 
     def slot_pressed(self, event):
         """
@@ -87,8 +87,8 @@ class OneInventorySlot:
 
         self.number = self.font.render(str(item_in_work.amount), True, ORANGE)
         self.number_place = self.number.get_rect(
-            topright=(self.one_inventory_slot_width - 5, 5))
-        self.one_inventory_slot_screen.blit(self.number, self.number_place)
+            topright=(self.one_slot_x + self.one_inventory_slot_width - 5, self.one_slot_y + 5))
+        self.screen.blit(self.number, self.number_place)
 
     def scaling_item(self, item):
         """
@@ -108,8 +108,8 @@ class OneInventorySlot:
         if item:  # Если на вход подается непустой объект.
             self.item = item
             self.scaling_item(item)
-            self.one_inventory_slot_screen.blit(self.item.image, (
-                self.one_inventory_slot_width // 8, self.one_inventory_slot_height // 8))
+            self.screen.blit(self.item.image, (
+                self.one_slot_x + self.one_inventory_slot_width // 8, self.one_slot_y + self.one_inventory_slot_height // 8))
 
             self.amount_of_items(item)
 
@@ -133,7 +133,7 @@ class OneInventorySlot:
         else:
             self.display_item(self.item)  # если уже запускали, то работаем с сохраненным объектом
 
-        screen.blit(self.one_inventory_slot_screen, (self.one_slot_x, self.one_slot_y))
+
 
 
 class Inventory:
@@ -141,7 +141,7 @@ class Inventory:
     Класс, отвечающий за создание инвентаря у объекта.
     """
 
-    def __init__(self, start_x=100, start_y=100, rows=1, columns=1, items=None):
+    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None, ):
         self.start_x = start_x  # левая верхняя координата х первой ячейки инвентаря.
         self.start_y = start_y  # левая верхняя координата y первой ячейки инвентаря.
         self.rows = rows  # количество строк в инвентаре
@@ -151,6 +151,7 @@ class Inventory:
         self.moving_object = None  # перемещаемый объект
         self.moving_object_from_slot = False  # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
+        self.screen = screen
         self.create_inventory()
 
     def fill_up_inventory(self):
@@ -161,7 +162,7 @@ class Inventory:
         if self.items:
             for material in self.items:
                 slot = self.slots[i]
-                material.surface = slot.one_inventory_slot_screen
+                material.surface = slot.screen
                 slot.update_one_inventory_slot(material)
                 i += 1
 
@@ -171,10 +172,10 @@ class Inventory:
         """
         x = self.start_x
         y = self.start_y
-        inventary_slot = OneInventorySlot(x, y)
+        inventary_slot = OneInventorySlot(x, y,self.screen)
         for i in range(self.columns):
             for j in range(self.rows):
-                inventary_slot = OneInventorySlot(x, y)
+                inventary_slot = OneInventorySlot(x, y, self.screen)
                 self.slots.append(inventary_slot)
                 x += inventary_slot.one_inventory_slot_width
             x = self.start_x
@@ -209,8 +210,8 @@ class ObjectInventory(Inventory):
     инвентарь объектов
     """
 
-    def __init__(self, start_x=100, start_y=100, rows=1, columns=1, items=None):
-        super().__init__(start_x, start_y, rows, columns, items)
+    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
+        super().__init__(screen, start_x, start_y, rows, columns, items)
 
     def visual_update(self, event):
         for obj in self.slots:
@@ -245,19 +246,19 @@ class Craft(Inventory):
     Класс, отвечающий за создание меню крафта.
     """
 
-    def __init__(self, start_x, start_y, crafts):
+    def __init__(self, screen, start_x, start_y, crafts):
         self.crafts = crafts  # объекты, которые можно скрафтить.
-        super().__init__(start_x, start_y, 3, 3, self.crafts)
+        super().__init__(screen, start_x, start_y, 3, 3, self.crafts)
         self.craft_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
     def int_update(self):
-        pygame.draw.rect(screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
-        pygame.draw.rect(screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
-        pygame.draw.rect(screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.columns * 64 - 6, 64 - 6), 1)
+        pygame.draw.rect(self.screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
+        pygame.draw.rect(self.screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
+        pygame.draw.rect(self.screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.columns * 64 - 6, 64 - 6), 1)
         font = pygame.font.SysFont("Arial", 64)
         words = font.render("сraft", True, (0, 0, 0))
         place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
-        screen.blit(words, place)
+        self.screen.blit(words, place)
         for obj in self.slots:
             obj.update_one_inventory_slot()
 
@@ -284,9 +285,9 @@ class PlayerInventory:
     инвентарь игрока и его отрисовка
     """
 
-    def __init__(self, materials=None):
-        self.inventory = ObjectInventory(200, 100, 7, 7, materials)
-        self.craft_inventory = Craft(648, 228, crafts)
+    def __init__(self, screen, materials=None):
+        self.inventory = ObjectInventory(screen, 200, 100, 7, 7, materials)
+        self.craft_inventory = Craft(screen, 648, 228, crafts)
 
     def int_update(self):
         self.inventory.int_update()
@@ -306,17 +307,17 @@ class PlayerInventory:
 
 finished = False
 
-taco1 = objects.Taco(screen)
-landau = objects.Landau(screen)
-all_materials = [objects.Taco(screen), objects.Landau(screen)]  # FIXME Реально надо добавить в main, я не шучу...
+taco1 = objects.Taco(screens)
+landau = objects.Landau(screens)
+all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
 materialss = [taco1, landau]
-crafts = {objects.Taco(screen): [2, objects.Landau], objects.Landau(screen): [5, objects.Taco]}
+crafts = {objects.Taco(screens): [2, objects.Landau], objects.Landau(screens): [5, objects.Taco]}
 
-player = PlayerInventory(materialss)
+player = PlayerInventory(screens, materialss)
 
-# while not finished:
+#while not finished:
 #    clock.tick(45)
-#    screen.fill(WHITE)
+#    screens.fill(WHITE)
 #
 #    player.update_all()
 #    pygame.display.update()
