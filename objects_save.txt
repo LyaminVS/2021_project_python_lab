@@ -2,3 +2,4 @@ appliedmath;pics/applied math.png;579;3019
 nk;pics/nk.png;758;2768
 6;pics/6.png;477;4528
 ksp;pics/ksp.png;3274;3113
+cifra;cifra.png;1514;658
