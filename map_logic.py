@@ -11,13 +11,15 @@ def collision(game):
         game.map[0] += game.player.vx
         if obj.collide_rect.colliderect(game.player.collide_rect):
             game.map[0] -= game.player.vx
-            game.player.vx = 0
-        game.map[0] -= game.player.vx
+            game.player.vx = -game.player.vx
+        else:
+            game.map[0] -= game.player.vx
         game.map[1] -= game.player.vy
         if obj.collide_rect.colliderect(game.player.collide_rect):
             game.map[1] += game.player.vy
-            game.player.vy = 0
-        game.map[1] += game.player.vy
+            game.player.vy = -game.player.vy
+        else:
+            game.map[1] += game.player.vy
 
 
 def event_checker(event_array, game):
