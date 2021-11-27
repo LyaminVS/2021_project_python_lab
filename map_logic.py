@@ -9,10 +9,15 @@ def collision(game):
     """
     for obj in game.all_objects:
         if obj.collide_rect.colliderect(game.player.collide_rect):
-            game.map[0] -= 5*game.player.vx_for_collision
-            game.map[1] += 5*game.player.vy_for_collision
-            game.player.vx = 0
+            game.map[0] -= 3*game.player.vx_for_collision
+            if obj.collide_rect.colliderect(game.player.collide_rect):
+                game.map[1] += 3*game.player.vy_for_collision
+                if obj.collide_rect.colliderect(game.player.collide_rect):
+                    game.map[0] -= 6 * game.player.vx_for_collision
+                    if obj.collide_rect.colliderect(game.player.collide_rect):
+                        game.map[1] += 6 * game.player.vy_for_collision
             game.player.vy = 0
+            game.player.vx = 0
 
 
 def event_checker(event_array, game):
@@ -54,6 +59,10 @@ def player_move(game):
     game - params из модуля main
     """
     collision(game)
+    if game.player.vx != 0:
+        game.player.vx_direction_for_collision = game.player.vx/abs(game.player.vx)
+    if game.player.vy != 0:
+        game.player.vy_direction_for_collision = game.player.vy/abs(game.player.vy)
     game.player.vx_for_collision = game.player.vx
     game.player.vy_for_collision = game.player.vy
     game.map[0] += game.player.vx
@@ -61,5 +70,4 @@ def player_move(game):
     game.player.vx = 0
     game.player.vy = 0
     collision(game)
-
 
