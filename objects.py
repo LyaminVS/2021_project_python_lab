@@ -80,6 +80,8 @@ class Player(pygame.sprite.Sprite):
         self.resources = resources
         self.vx_for_collision = 0
         self.vy_for_collision = 0
+        self.vx_direction_for_collision = 0
+        self.vy_direction_for_collision = 0
 
     def draw(self):
         """
