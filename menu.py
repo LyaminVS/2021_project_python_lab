@@ -59,7 +59,7 @@ class OneInventorySlot:
         :return: Если нажали на слот, то DARK_GREY, если навели курсор на слот, то GREY, если ничего, то LIGHT_GREY
         """
 
-        if self.i % 60 != 0 or self.i == 0 and event.type != tick:
+        if self.i % 60 != 0 or self.i == 0:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
                 if event.type == pygame.MOUSEMOTION and not self.pressed:
@@ -289,21 +289,22 @@ class PlayerInventory:
         self.craft_inventory = Craft(screen, 648, 228, crafts)
 
     def craft_items(self):
+        craft_items = self.craft_inventory.craft_items
         for slot in self.inventory.slots:
-            for i in range(1, len(self.craft_inventory.craft_items), 2):
-                if slot.item == self.craft_inventory.craft_items[i]:
-                   pass
-
-
-
+            for i in range(1, len(craft_items), 2):
+                if slot.item == craft_items[i] and slot.item.amount >= craft_items[i-1]:
+                    slot.item.amount -= craft_items[i-1]
 
     def int_update(self):
-        self.inventory.int_update()
         self.craft_inventory.int_update()
+        self.inventory.int_update()
+
 
     def visual_update(self, event):
-        self.inventory.visual_update(event)
         self.craft_inventory.visual_update(event)
+        self.craft_items()
+        self.inventory.visual_update(event)
+
 
     def update_all(self):
         self.int_update()
@@ -321,11 +322,11 @@ all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реа
 materialss = [taco1, landau]
 crafts = {objects.Taco(screens): [2, objects.Landau], objects.Landau(screens): [5, objects.Taco]}
 
-player = PlayerInventory(screens, crafts materialss)
+player = PlayerInventory(screens, crafts, materialss)
 
-#while not finished:
-#    clock.tick(45)
-#    screens.fill(WHITE)
-#
-#    player.update_all()
-#    pygame.display.update()
+while not finished:
+    clock.tick(45)
+    screens.fill(WHITE)
+
+    player.update_all()
+    pygame.display.update()
