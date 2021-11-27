@@ -77,6 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.move = 0
         self.move_direction = None
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.resources = []
 
     def draw(self):
         """
@@ -136,3 +137,8 @@ class Taco(Resources):
 class Landau(Resources):
     def __init__(self, screen):
         super(Landau, self).__init__(screen, "pics/landavshiz.png", "Landau")
+
+
+class Brain(Resources):
+    def __init__(self, screen):
+        super(Brain, self).__init__(screen, "pics/cat.png", "Brain")

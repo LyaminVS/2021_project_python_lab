@@ -2,8 +2,8 @@ import pygame
 
 import objects
 
-pygame.init()
-screens = pygame.display.set_mode((1280, 720))
+# pygame.init()
+# screens = pygame.display.set_mode((1280, 720))
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -13,7 +13,7 @@ DARK_GREY = (40, 40, 40)
 RED = (255, 0, 0)
 GREEN = (0, 200, 0)
 ORANGE = (220, 150, 40)  # FIXME цвет шрифта, но мне не нравится.
-clock = pygame.time.Clock()
+# clock = pygame.time.Clock()
 
 
 class OneInventorySlot:
@@ -322,24 +322,3 @@ class PlayerInventory:
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.inventory.visual_update(event)
                 self.craft_inventory.visual_update(event)
-
-
-finished = False
-
-taco1 = objects.Taco(screens)
-landau = objects.Landau(screens)
-# all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
-materialss = [taco1, landau]
-crafts = {objects.Taco(screens): [2, objects.Landau, objects.Taco(screens)],
-          objects.Landau(screens): [5, objects.Taco, objects.Landau(screens)]}
-# TODO заменить screens на экран из основной части
-player = PlayerInventory(screens, crafts, materialss)
-
-while not finished:
-    clock.tick(45)
-    screens.fill(WHITE)
-
-    player.update_all(materialss)
-    pygame.display.update()
-
-# TODO Написать str к инвентарю игрока
