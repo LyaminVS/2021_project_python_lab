@@ -9,15 +9,30 @@ def collision(game):
     """
     for obj in game.all_objects:
         if obj.collide_rect.colliderect(game.player.collide_rect):
-            game.map[0] -= game.player.vx_for_collision
+            game.map[0] -= 1.5*game.player.vx
             if obj.collide_rect.colliderect(game.player.collide_rect):
-                game.map[1] += game.player.vy_for_collision
+                game.map[0] += 1.5*game.player.vx_for_collision
+                game.map[1] += 1.5*game.player.vy_for_collision
                 if obj.collide_rect.colliderect(game.player.collide_rect):
-                    game.map[0] -= 2 * game.player.vx_direction_for_collision
+                    game.map[0] -= 1.5*game.player.vx_for_collision
                     if obj.collide_rect.colliderect(game.player.collide_rect):
-                        game.map[1] += 2 * game.player.vy_direction_for_collision
-            game.player.vy = 0
-            game.player.vx = 0
+                        game.map[0] -= 3*game.player.vx_direction_for_collision
+                        if obj.collide_rect.colliderect(game.player.collide_rect):
+                            game.map[0] += 3 * game.player.vx_direction_for_collision
+                            game.map[1] += 3 * game.player.vy_direction_for_collision
+                            if obj.collide_rect.colliderect(game.player.collide_rect):
+                                game.map[0] -= 3 * game.player.vx_direction_for_collision
+                    else:
+                        game.player.vx_for_collision = 0
+                        game.player.vx = 0
+                        game.player.vy_for_collision = 0
+                        game.player.vy = 0
+                else:
+                    game.player.vy_for_collision = 0
+                    game.player.vy = 0
+            else:
+                game.player.vx_for_collision = 0
+                game.player.vx = 0
 
 
 def event_checker(event_array, game):
@@ -59,12 +74,6 @@ def player_move(game):
     game - params из модуля main
     """
     collision(game)
-    if game.player.vx != 0:
-        game.player.vx_direction_for_collision = game.player.vx/abs(game.player.vx)
-    if game.player.vy != 0:
-        game.player.vy_direction_for_collision = game.player.vy/abs(game.player.vy)
-    game.player.vx_for_collision = game.player.vx
-    game.player.vy_for_collision = game.player.vy
     game.map[0] += game.player.vx
     game.map[1] -= game.player.vy
     game.player.vx = 0
