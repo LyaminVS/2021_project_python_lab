@@ -9,13 +9,13 @@ def collision(game):
     """
     for obj in game.all_objects:
         if obj.collide_rect.colliderect(game.player.collide_rect):
-            game.map[0] -= 3*game.player.vx_for_collision
+            game.map[0] -= game.player.vx_for_collision
             if obj.collide_rect.colliderect(game.player.collide_rect):
-                game.map[1] += 3*game.player.vy_for_collision
+                game.map[1] += game.player.vy_for_collision
                 if obj.collide_rect.colliderect(game.player.collide_rect):
-                    game.map[0] -= 6 * game.player.vx_for_collision
+                    game.map[0] -= 2 * game.player.vx_direction_for_collision
                     if obj.collide_rect.colliderect(game.player.collide_rect):
-                        game.map[1] += 6 * game.player.vy_for_collision
+                        game.map[1] += 2 * game.player.vy_direction_for_collision
             game.player.vy = 0
             game.player.vx = 0
 
