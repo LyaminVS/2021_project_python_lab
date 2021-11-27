@@ -137,3 +137,8 @@ class Taco(Resources):
 class Landau(Resources):
     def __init__(self, screen):
         super(Landau, self).__init__(screen, "pics/landavshiz.png", "Landau")
+
+
+class Brain(Resources):
+    def __init__(self, screen):
+        super(Brain, self).__init__(screen, "pics/cat.png", "Brain")
