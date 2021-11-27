@@ -193,6 +193,4 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    # game.player = objects.Player(game.screen, "name", 640, 360,
-    #                              menu.PlayerInventory(game.screen, game.crafts, [objects.Taco(game.screen), objects.Landau(game.screen)]))
     game.main()
