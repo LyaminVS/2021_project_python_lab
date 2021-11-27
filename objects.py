@@ -78,6 +78,8 @@ class Player(pygame.sprite.Sprite):
         self.move_direction = None
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.resources = []
+        self.vx_for_collision = 0
+        self.vy_for_collision = 0
 
     def draw(self):
         """
