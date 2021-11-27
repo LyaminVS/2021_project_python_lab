@@ -63,7 +63,7 @@ class Player(pygame.sprite.Sprite):
         self.y = y_0
         self.vx = 4
         self.vy = 4
-        self.image = pygame.image.load("pics/skin run right1.png")
+        self.image = pygame.image.load("pics/skin run right1.png").convert_alpha()
         self.image_name = "pics/skin run right1.png"
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -108,7 +108,7 @@ class Resources:
         :param name: имя ресурса
         """
         self.name = name
-        self.image = pygame.image.load(image)
+        self.image = pygame.image.load(image).convert_alpha()
         self.image_name = image
         self.surface = screen
         self.amount = 15
