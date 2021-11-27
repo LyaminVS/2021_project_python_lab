@@ -90,7 +90,8 @@ class Game:
         :return:
         """
         name, image, x, y = line.split(";")
-        new_player = objects.Objects(self.screen, image, name, int(x), int(y))
+        new_player = objects.Player(self.screen, name, int(x), int(y), menu.PlayerInventory(self.screen, self.crafts))
+        print(new_player)
         return new_player
 
     def get_player_from_file(self):
@@ -122,8 +123,7 @@ class Game:
         создается объект игрока, а также объекты зданий в первый кадр игры
         :return:
         """
-        # params.player = get_player_from_file()
-
+        self.player = self.get_player_from_file()
         self.all_objects = self.get_obj_from_file()
 
     def update_game(self, event):
@@ -135,7 +135,7 @@ class Game:
         self.player.draw()
         map_logic.event_checker(event.get(), self)
         if self.inventory_opened:
-            self.player.inventory.int_update()
+            self.player.inventory.int_update(self.player.resources)
 
     def save_game(self):
         """
@@ -165,15 +165,15 @@ class Game:
         :return:
         """
         while not self.finished:
+            if not self.player_created:
+                self.create_start_position()
+                self.player_created = True
             pygame.display.update()
             if not self.game_started:
                 self.screen.fill((255, 255, 255))
                 self.finished, self.game_started, self.option_menu = self.start_menu.draw()
-                map_logic.event_checker(pygame.event.get(), self)
             else:
-                if not self.player_created:
-                    self.create_start_position()
-                    self.player_created = True
+
                 self.update_game(pygame.event)
             self.clock.tick(self.FPS)
         self.game_quit()
@@ -181,6 +181,6 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    game.player = objects.Player(game.screen, "name", 640, 360,
-                                 menu.PlayerInventory(game.screen, game.crafts, [objects.Taco(game.screen), objects.Landau(game.screen)]))
+    # game.player = objects.Player(game.screen, "name", 640, 360,
+    #                              menu.PlayerInventory(game.screen, game.crafts, [objects.Taco(game.screen), objects.Landau(game.screen)]))
     game.main()
