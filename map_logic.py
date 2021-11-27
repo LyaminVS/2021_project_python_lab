@@ -10,10 +10,12 @@ def collision(game):
     for obj in game.all_objects:
         game.map[0] += game.player.vx
         if pygame.sprite.collide_mask(obj, game.player):
+            game.map[0] -= game.player.vx
             game.player.vx = 0
         game.map[0] -= game.player.vx
         game.map[1] -= game.player.vy
         if pygame.sprite.collide_mask(obj, game.player):
+            game.map[1] += game.player.vy
             game.player.vy = 0
         game.map[1] += game.player.vy
 
