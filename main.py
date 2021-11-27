@@ -92,8 +92,13 @@ class Game:
         resources_in_file = open("save_files/player_resources_save")
         resources = []
         for resource in resources_in_file:
-            resource = resource.split(";")
-            resources.append(objects.Resources(self.screen, resource[0], resource[1]))
+            resource = resource.strip()
+            if resource == "taco":
+                resources.append(objects.Taco(self.screen))
+            if resource == "landau":
+                resources.append(objects.Landau(self.screen))
+            if resource == "brain":
+                resources.append(objects.Brain(self.screen))
         name, image, x, y = line.split(";")
         new_player = objects.Player(self.screen, name, int(x), int(y), resources)
         new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, resources)
@@ -154,7 +159,7 @@ class Game:
         for obj in self.all_objects:
             object_file.write(str(obj) + "\n")
         for res in self.player.resources:
-            player_resources_file.write(str(res) + "\n")
+            player_resources_file.write((str(res.name)).lower() + "\n")
         player_resources_file.close()
         player_file.close()
         object_file.close()
