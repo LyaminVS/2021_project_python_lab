@@ -25,16 +25,17 @@ class Objects(pygame.sprite.Sprite):
         self.x = x_0
         self.y = y_0
         self.inventory = None
+        self.collide_rect = pygame.Rect(0, 0, 0, 0)
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        
-        
+
     def draw(self, x, y):
         """
         Функция отрисовки объекта.
         :param x: координата отрисовки по х (левая верхняя)
         :param y: координата отрисовки по у (правая верхняя)
         """
+        self.collide_rect = pygame.Rect(-x + self.x, -y + self.y, self.width, self.height)
         self.surface.blit(self.image, (-x + self.x, -y + self.y))
 
     def __str__(self):
@@ -50,7 +51,7 @@ class Player(pygame.sprite.Sprite):
     Класс игрока, наследующий Spite для проверки коллизий.
     """
 
-    def __init__(self, screen, name, x_0, y_0, inventory = None):
+    def __init__(self, screen, name, x_0, y_0, inventory=None):
         """
         Конструктор класса Player.
         :param screen: экран отрисовки
@@ -75,11 +76,13 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.move = 0
         self.move_direction = None
+        self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
         """
         Функция отрисовки игрока.
         """
+        self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         if self.right == 1:
             self.image = pygame.image.load("pics/skin run right1.png")
             self.image_name = "pics/skin run right1.png"
