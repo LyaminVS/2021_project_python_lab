@@ -4,8 +4,6 @@ import objects
 
 pygame.init()
 screens = pygame.display.set_mode((1280, 720))
-tick = pygame.USEREVENT + 1
-pygame.time.set_timer(tick, 1000)
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -59,7 +57,7 @@ class OneInventorySlot:
         :return: Если нажали на слот, то DARK_GREY, если навели курсор на слот, то GREY, если ничего, то LIGHT_GREY
         """
 
-        if self.i % 60 != 0 or self.i == 0:
+        if self.i // 60 == 0 or self.i == 0:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
                 if event.type == pygame.MOUSEMOTION and not self.pressed:
@@ -221,7 +219,7 @@ class ObjectInventory(Inventory):
     def int_update(self):
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
-        if self.i % 21 == 0 and self.i != 0:
+        if self.i % 41 == 0 and self.i != 0:
             self.moving_object_from_slot = False
             self.i = 0
         for obj in self.slots:
