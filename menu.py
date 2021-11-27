@@ -1,5 +1,6 @@
 import pygame
 
+import objects
 
 # pygame.init()
 # screens = pygame.display.set_mode((1280, 720))
@@ -200,8 +201,12 @@ class Inventory:
                 self.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1  # запускает счетчик итераций, который потом отключает статус того, что перемещается объект
-
-
+            elif slot.pressed and slot.item and self.moving_object and slot.item.name == self.moving_object.name \
+                and self.moving_object_from_slot and not slot.moving_object_from_slot:
+                slot.item.amount += self.moving_object.amount
+                self.moving_object = None
+                slot.moving_object_from_slot = True
+                self.i += 1
 class ObjectInventory(Inventory):
     """
     инвентарь объектов
@@ -215,7 +220,6 @@ class ObjectInventory(Inventory):
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
 
-
     def int_update(self, items):
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
@@ -228,6 +232,7 @@ class ObjectInventory(Inventory):
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
         self.fill_up_inventory(items)
+
     def update(self, items=None):
         """
         Функция, отвечающая за обновление инвентаря.
@@ -263,7 +268,7 @@ class Craft(Inventory):
     def visual_update(self, event):
         for obj in self.slots:
             obj.slot_pressed(event)
-            if obj.pressed and obj.item:
+            if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
                 self.craft_items = crafts[obj.item]
                 print("lol")
 
@@ -287,21 +292,20 @@ class PlayerInventory:
         self.craft_inventory = Craft(screen, 648, 228, crafts)
 
     def craft_items(self):
-        craft_items = self.craft_inventory.craft_items
+        crafted_items = self.craft_inventory.craft_items.copy()
+        for i in range(1, len(crafted_items), 3):
+            amount = crafted_items[i - 1]
+            for slot in self.inventory.slots:
 
-        # print(self.craft_inventory.craft_items)
-
-        for slot in self.inventory.slots:
-            for i in range(1, len(craft_items), 3):
-                amount = craft_items[i-1]
                 if not slot.item:
-                    slot.item = craft_items[i + 1]
-                    craft_items[i + 1] = None
-                    slot.item.amount = amount
-
-                elif isinstance(slot.item, craft_items[i]) and slot.item.amount >= craft_items[i - 1]:
-                    slot.item.amount -= craft_items[i - 1]
-                    craft_items[i - 1] = 0
+                    slot.item = crafted_items[i + 1]
+                    crafted_items[i + 1] = None
+                    if slot.item:
+                        slot.item.amount = amount
+                elif isinstance(slot.item, crafted_items[i]) and slot.item.amount >= crafted_items[i - 1]:
+                    slot.item.amount -= crafted_items[i - 1]
+                    crafted_items[i - 1] = 0
+        self.craft_inventory.craft_items = []
 
     def int_update(self, items):
         self.craft_inventory.int_update()
