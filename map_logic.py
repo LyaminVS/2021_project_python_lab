@@ -8,31 +8,40 @@ def collision(game):
     расчитывает коллизию
     """
     for obj in game.all_objects:
+        number_of_steps = 1
+        game.map[0] += number_of_steps * game.player.vx
+        obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
         if obj.collide_rect.colliderect(game.player.collide_rect):
-            game.map[0] -= 1.5*game.player.vx
-            if obj.collide_rect.colliderect(game.player.collide_rect):
-                game.map[0] += 1.5*game.player.vx_for_collision
-                game.map[1] += 1.5*game.player.vy_for_collision
-                if obj.collide_rect.colliderect(game.player.collide_rect):
-                    game.map[0] -= 1.5*game.player.vx_for_collision
-                    if obj.collide_rect.colliderect(game.player.collide_rect):
-                        game.map[0] -= 3*game.player.vx_direction_for_collision
-                        if obj.collide_rect.colliderect(game.player.collide_rect):
-                            game.map[0] += 3 * game.player.vx_direction_for_collision
-                            game.map[1] += 3 * game.player.vy_direction_for_collision
-                            if obj.collide_rect.colliderect(game.player.collide_rect):
-                                game.map[0] -= 3 * game.player.vx_direction_for_collision
-                    else:
-                        game.player.vx_for_collision = 0
-                        game.player.vx = 0
-                        game.player.vy_for_collision = 0
-                        game.player.vy = 0
-                else:
-                    game.player.vy_for_collision = 0
-                    game.player.vy = 0
-            else:
-                game.player.vx_for_collision = 0
+            while obj.collide_rect.colliderect(game.player.collide_rect):
+                game.map[0] -= number_of_steps * game.player.vx
+                obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
                 game.player.vx = 0
+        else:
+            game.map[0] -= number_of_steps * game.player.vx
+            obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+        game.map[1] -= number_of_steps * game.player.vy
+        obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+        if obj.collide_rect.colliderect(game.player.collide_rect):
+            game.map[1] += number_of_steps * game.player.vy
+            obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+            game.player.vy = 0
+        else:
+            game.map[1] += number_of_steps * game.player.vy
+            obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+        game.map[0] += number_of_steps * game.player.vx
+        game.map[1] -= number_of_steps * game.player.vy
+        obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+        if obj.collide_rect.colliderect(game.player.collide_rect):
+            game.map[0] -= number_of_steps * game.player.vx
+            game.player.vx = 0
+            game.map[1] += number_of_steps * game.player.vy
+            game.player.vy = 0
+            obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+        else:
+            game.map[0] -= number_of_steps * game.player.vx
+            game.map[1] += number_of_steps * game.player.vy
+            obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
+
 
 
 def event_checker(event_array, game):
@@ -64,7 +73,6 @@ def event_checker(event_array, game):
             game.player.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             player_move(game)
-        collision(game)
 
 
 def player_move(game):
@@ -78,5 +86,3 @@ def player_move(game):
     game.map[1] -= game.player.vy
     game.player.vx = 0
     game.player.vy = 0
-    collision(game)
-
