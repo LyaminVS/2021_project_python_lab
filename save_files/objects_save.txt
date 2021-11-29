@@ -4,3 +4,4 @@ nk;pics/nk.png;758;2768
 ksp;pics/ksp.png;3274;3113
 cifra;pics/cifra.png;1514;658
 bio;pics/bio.png;2920;96
+gk;pics/gk.png;2350;523
