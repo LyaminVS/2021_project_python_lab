@@ -64,8 +64,8 @@ class Player(pygame.sprite.Sprite):
         self.surface = screen
         self.x = x_0
         self.y = y_0
-        self.vx = 4
-        self.vy = 4
+        self.vx = 0
+        self.vy = 0
         self.image = pygame.image.load("pics/skin run right1.png").convert_alpha()
         self.image_name = "pics/skin run right1.png"
         self.width = self.image.get_width()
