@@ -99,9 +99,11 @@ class Game:
         resources = []
         for line in resources_in_file:
             line.strip()
-            resources.append(self.name_to_class(line))
+            if line != "":
+                resources.append(self.name_to_class(line))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
         new_object.resources = resources
+        new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
         return new_object
 
     def line_to_player(self, line):
@@ -142,6 +144,7 @@ class Game:
             new_obj = self.line_to_object(line)
             all_objects.append(new_obj)
         objects_in_file.close()
+        print(all_objects)
         return all_objects
 
     def create_start_position(self):
@@ -158,10 +161,13 @@ class Game:
         :return:
         """
         background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
+        for obj in self.all_objects:
+            if obj.inventory_opened:
+                obj.inventory.int_update(obj.resources)
         self.player.draw()
         map_logic.event_checker(event.get(), self)
-        if self.inventory_opened:
-            self.player.inventory.int_update(self.player.resources)
+        # if self.inventory_opened:
+        #     self.player.inventory.int_update(self.player.resources)
 
     def save_game(self):
         """

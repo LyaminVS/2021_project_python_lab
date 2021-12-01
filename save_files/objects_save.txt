@@ -5,5 +5,5 @@ ksp;pics/ksp.png;3274;3113
 cifra;pics/cifra.png;1514;658
 bio;pics/bio.png;2920;96
 gk;pics/gk.png;2350;523
-arctic; ;207;97
+arctic;pics/arctic.png;207;97
 lk;pics/lk.png;3212;1476

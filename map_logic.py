@@ -52,12 +52,19 @@ def event_checker(event_array, game):
         if pygame.key.get_pressed()[pygame.K_LSHIFT]:
             game.player.vx *= 2
             game.player.vy *= 2
-        elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
+        if checked_event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            for obj in game.all_objects:
+                if obj.x < pos[0] + game.map[0] < obj.x + obj.width and obj.y < pos[1] + game.map[1] < obj.y + obj.height:
+                    obj.inventory_opened = True
+        elif (checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION) and game.inventory_opened:
             game.player.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             collision(game)
             player_move(game)
-
+        # for obj in game.all_objects:
+        #     if obj.inventory_opened:
+        #         obj.inventory.visual_update(pygame.event)
 
 def collision(game):
     """

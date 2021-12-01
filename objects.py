@@ -29,6 +29,7 @@ class Objects(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.resources = []
+        self.inventory_opened = False
 
     def draw(self, x, y):
         """
@@ -114,7 +115,6 @@ class Player(pygame.sprite.Sprite):
                 self.image = pygame.image.load("pics/skin run left2.png")
                 self.image_name = "pics/skin run left2.png"
         self.surface.blit(self.image, self.rect)
-
         
     def __str__(self):
         """
