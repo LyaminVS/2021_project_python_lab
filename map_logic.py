@@ -57,7 +57,7 @@ def event_checker(event_array, game):
             for obj in game.all_objects:
                 if obj.x < pos[0] + game.map[0] < obj.x + obj.width and obj.y < pos[1] + game.map[1] < obj.y + obj.height:
                     obj.inventory_opened = True
-        elif (checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION) and game.inventory_opened:
+        elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             game.player.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             collision(game)

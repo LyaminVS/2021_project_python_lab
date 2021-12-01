@@ -95,12 +95,11 @@ class Game:
         name, image, x, y = line.split(";")
         resources_in_file = []
         if os.path.exists("save_files/object_inventory_save/" + name + ".txt"):
-            resources_in_file = open("save_files/object_inventory_save/" + name + ".txt", "r")
+            resources_in_file = open("save_files/object_inventory_save/" + name + ".txt")
         resources = []
         for line in resources_in_file:
-            line.strip()
-            if line != "":
-                resources.append(self.name_to_class(line))
+            line = line.strip()
+            resources.append(self.name_to_class(line))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
         new_object.resources = resources
         new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
@@ -144,7 +143,6 @@ class Game:
             new_obj = self.line_to_object(line)
             all_objects.append(new_obj)
         objects_in_file.close()
-        print(all_objects)
         return all_objects
 
     def create_start_position(self):
@@ -166,8 +164,8 @@ class Game:
                 obj.inventory.int_update(obj.resources)
         self.player.draw()
         map_logic.event_checker(event.get(), self)
-        # if self.inventory_opened:
-        #     self.player.inventory.int_update(self.player.resources)
+        if self.inventory_opened:
+            self.player.inventory.int_update(self.player.resources)
 
     def save_game(self):
         """
