@@ -71,7 +71,11 @@ class Game:
 
         self.start_menu = start_screen.StartMenu()
 
-        self.crafts = {objects.Taco(self.screen): [2, objects.Landau], objects.Landau(self.screen): [5, objects.Taco]}
+        self.crafts = {
+            objects.Taco(self.screen): [1, 2, "Landau", objects.Taco(self.screen)],
+            objects.Landau(self.screen): [1, 3, "Taco", objects.Landau(self.screen)],
+            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)]
+        }
 
     def name_to_class(self, name):
         if name == "taco":

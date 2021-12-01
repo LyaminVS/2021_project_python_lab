@@ -2,8 +2,8 @@ import pygame
 
 import objects
 
-pygame.init()
-screens = pygame.display.set_mode((1280, 720))
+#pygame.init()
+#screens = pygame.display.set_mode((1280, 720))
 
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
@@ -272,7 +272,7 @@ class Craft(Inventory):
         for obj in self.slots:
             obj.slot_pressed(event)
             if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
-                self.craft_items = crafts[obj.item]
+                self.craft_items = self.crafts[obj.item]
                 print("lol")
 
     def update(self):
@@ -345,15 +345,14 @@ class PlayerInventory:
 
 finished = False
 
-taco1 = objects.Taco(screens)
-landau = objects.Landau(screens)
-all_materials = [objects.Taco(screens), objects.Landau(screens)]  # FIXME Реально надо добавить в main, я не шучу...
-materialss = [taco1, landau]
-crafts = {
-    objects.Taco(screens): [1, 2, "Landau", objects.Taco(screens)],
-    objects.Landau(screens): [1, 3, "Taco", objects.Landau(screens)],
-    objects.Brain(screens): [1, 5, "Taco", 5, "Landau", objects.Brain(screens)]
-    }
+#taco1 = objects.Taco(screens)
+#landau = objects.Landau(screens)
+#materialss = [taco1, landau]
+#crafts = {
+#    objects.Taco(screens): [1, 2, "Landau", objects.Taco(screens)],
+#    objects.Landau(screens): [1, 3, "Taco", objects.Landau(screens)],
+#    objects.Brain(screens): [1, 5, "Taco", 5, "Landau", objects.Brain(screens)]
+#    }
 # # TODO Заменить screens на экран из main
 # player = PlayerInventory(screens, crafts, materialss)
 #
