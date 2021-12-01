@@ -127,9 +127,9 @@ def collision(game):
 
 def player_move(game):
     """
-    Изменяет координату объекта относительно экрана и студента относительно карты
+    Изменяет координату карты относительно экрана
     Args:
-    game - params из модуля main
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
     game.map[0] += game.player.vx
     game.map[1] -= game.player.vy
