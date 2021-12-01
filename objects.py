@@ -78,20 +78,43 @@ class Player(pygame.sprite.Sprite):
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.resources = resources
 
-    def draw(self):
+        def draw(self):
         """
         Функция отрисовки игрока.
         """
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        if self.right == 1:
-            self.image = pygame.image.load("pics/skin run right1.png")
-            self.image_name = "pics/skin run right1.png"
-        else:
-            self.image = pygame.image.load("pics/skin run left1.png")
-            self.image_name = "pics/kin run left1.png"
-
+        if self.right == 0 and self.up == 0:
+            self.image = pygame.image.load("pics/skin stay.png")
+            self.image_name = "pics/skin run stay.png"
+        elif self.right == 0:
+            if self.up == 1:
+                self.image = pygame.image.load("pics/skin run up1.png")
+                self.image_name = "pics/skin run up1.png"
+            elif self.up == 2:
+                self.image = pygame.image.load("pics/skin run up2.png")
+                self.image_name = "pics/skin run up2.png"
+            if self.up == -1:
+                self.image = pygame.image.load("pics/skin run down1.png")
+                self.image_name = "pics/skin run down1.png"
+            elif self.up == -2:
+                self.image = pygame.image.load("pics/skin run down2.png")
+                self.image_name = "pics/skin run down2.png"
+        elif self.right != 0:
+            if self.right == 1:
+                self.image = pygame.image.load("pics/skin run right1.png")
+                self.image_name = "pics/skin run right1.png"
+            elif self.right == 2:
+                self.image = pygame.image.load("pics/skin run right2.png")
+                self.image_name = "pics/skin run right2.png"
+            if self.right == -1:
+                self.image = pygame.image.load("pics/skin run left1.png")
+                self.image_name = "pics/skin run right1.png"
+            elif self.right == -2:
+                self.image = pygame.image.load("pics/skin run left2.png")
+                self.image_name = "pics/skin run right2.png"
         self.surface.blit(self.image, self.rect)
 
+        
     def __str__(self):
         """
         :return: параметры объекта одной строкой с разделителем ";"
