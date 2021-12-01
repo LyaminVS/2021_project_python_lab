@@ -17,6 +17,9 @@ def event_checker(event_array, game):
             game.finished = True
         if checked_event.type == pygame.KEYUP:
             game.player.move = 0
+        if pygame.key.get_pressed() not in motion_keys_numbers:
+            game.player.up = 0
+            game.player.right = 0
         if pygame.key.get_pressed()[pygame.K_w]:
             game.player.vy = 2
         if pygame.key.get_pressed()[pygame.K_s]:
@@ -74,6 +77,8 @@ def player_move(game):
     Args:
     game - params из модуля main
     """
+    game.player.up = game.player.vy
+    game.player.right = game.player.vx
     game.map[0] += game.player.vx
     game.map[1] -= game.player.vy
     game.player.vx = 0
