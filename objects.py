@@ -28,6 +28,7 @@ class Objects(pygame.sprite.Sprite):
         self.collide_rect = pygame.Rect(0, 0, 0, 0)
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
+        self.resources = []
 
     def draw(self, x, y):
         """

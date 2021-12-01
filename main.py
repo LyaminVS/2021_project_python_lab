@@ -5,6 +5,7 @@ import menu
 import objects
 # import sound
 import start_screen
+import os.path
 
 pygame.init()
 
@@ -72,6 +73,14 @@ class Game:
 
         self.crafts = {objects.Taco(self.screen): [2, objects.Landau], objects.Landau(self.screen): [5, objects.Taco]}
 
+    def name_to_class(self, name):
+        if name == "taco":
+            return objects.Taco(self.screen)
+        if name == "landau":
+            return objects.Landau(self.screen)
+        if name == "brain":
+            return objects.Brain(self.screen)
+
     def line_to_object(self, line):
         """
         преобразовывает строку в объект класса Object
@@ -80,7 +89,15 @@ class Game:
         """
 
         name, image, x, y = line.split(";")
+        resources_in_file = []
+        if os.path.exists("save_files/object_inventory_save/" + name + ".txt"):
+            resources_in_file = open("save_files/object_inventory_save/" + name + ".txt", "r")
+        resources = []
+        for line in resources_in_file:
+            line.strip()
+            resources.append(self.name_to_class(line))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
+        new_object.resources = resources
         return new_object
 
     def line_to_player(self, line):
@@ -93,12 +110,7 @@ class Game:
         resources = []
         for resource in resources_in_file:
             resource = resource.strip()
-            if resource == "taco":
-                resources.append(objects.Taco(self.screen))
-            if resource == "landau":
-                resources.append(objects.Landau(self.screen))
-            if resource == "brain":
-                resources.append(objects.Brain(self.screen))
+            resources.append(self.name_to_class(resource))
         name, image, x, y = line.split(";")
         new_player = objects.Player(self.screen, name, int(x), int(y), resources)
         new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, resources)
@@ -155,8 +167,12 @@ class Game:
         player_file = open("save_files/player_save.txt", "w")
         object_file = open("save_files/objects_save.txt", "w")
         player_resources_file = open("save_files/player_resources_save", "w")
+
         player_file.write(str(self.player) + "\n")
         for obj in self.all_objects:
+            object_inventory_file = open("save_files/object_inventory_save/" + obj.name + ".txt", "w")
+            for res in obj.resources:
+                object_inventory_file.write((str(res.name)).lower() + "\n")
             object_file.write(str(obj) + "\n")
         for res in self.player.resources:
             player_resources_file.write((str(res.name)).lower() + "\n")
