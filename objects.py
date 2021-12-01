@@ -109,10 +109,10 @@ class Player(pygame.sprite.Sprite):
                 self.image_name = "pics/skin run right2.png"
             if self.right == -1:
                 self.image = pygame.image.load("pics/skin run left1.png")
-                self.image_name = "pics/skin run right1.png"
+                self.image_name = "pics/skin run left1.png"
             elif self.right == -2:
                 self.image = pygame.image.load("pics/skin run left2.png")
-                self.image_name = "pics/skin run right2.png"
+                self.image_name = "pics/skin run left2.png"
         self.surface.blit(self.image, self.rect)
 
         
