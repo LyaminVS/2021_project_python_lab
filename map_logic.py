@@ -24,10 +24,14 @@ def event_checker(event_array, game):
             game.player.vy = 2
         if pygame.key.get_pressed()[pygame.K_s]:
             game.player.vy = -2
+        if pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_w]:
+            game.player.vy = 0
         if pygame.key.get_pressed()[pygame.K_d]:
             game.player.vx = 2
         if pygame.key.get_pressed()[pygame.K_a]:
             game.player.vx = -2
+        if pygame.key.get_pressed()[pygame.K_d] and pygame.key.get_pressed()[pygame.K_a]:
+            game.player.vx = 0
         if pygame.key.get_pressed()[pygame.K_LSHIFT]:
             game.player.vx *= 2
             game.player.vy *= 2
