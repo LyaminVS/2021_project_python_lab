@@ -70,6 +70,21 @@ def collision(game):
     """
     расчитывает коллизию
     """
+    number_of_steps = max(abs(game.player.vx), abs(game.player.vy))
+    game.map[0] += number_of_steps * game.player.vx
+    if game.map[0] <= 0 or game.map[0] >= (5120-1280):
+        game.map[0] -= number_of_steps * game.player.vx
+        game.player.vx = 0
+        game.player.right = 0
+    else:
+        game.map[0] -= number_of_steps * game.player.vx
+    game.map[1] -= number_of_steps * game.player.vy
+    if game.map[1] <= 0 or game.map[1] >= (5040-720):
+        game.map[1] += number_of_steps * game.player.vy
+        game.player.vy = 0
+        game.player.up = 0
+    else:
+        game.map[1] += number_of_steps * game.player.vy
     for obj in game.all_objects:
         number_of_steps = max(abs(game.player.vx), abs(game.player.vy))
         game.map[0] += number_of_steps * game.player.vx
