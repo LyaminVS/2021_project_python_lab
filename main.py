@@ -102,7 +102,7 @@ class Game:
             resources.append(self.name_to_class(line))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
         new_object.resources = resources
-        new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
+        new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4, resources)
         return new_object
 
     def line_to_player(self, line):
