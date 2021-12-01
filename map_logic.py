@@ -66,11 +66,16 @@ def event_checker(event_array, game):
         #     if obj.inventory_opened:
         #         obj.inventory.visual_update(pygame.event)
 
+        
 def collision(game):
     """
-    расчитывает коллизию
+    Совершает предварительное перемещение на number_of_steps шагов вперёд, проверяет столкнулся ли игрок с каким-то
+    объектом или вышел ли за границы карты, и в зависимости от данного факта присваевает нулевое значение составляющим
+    скорости игрока, после этого возвращает в исходное до предварительного перемещения состояние.
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
-    number_of_steps = max(abs(game.player.vx), abs(game.player.vy))
+    number_of_steps = 1
     game.map[0] += number_of_steps * game.player.vx
     if game.map[0] <= 0 or game.map[0] >= (5120-1280):
         game.map[0] -= number_of_steps * game.player.vx
@@ -86,7 +91,6 @@ def collision(game):
     else:
         game.map[1] += number_of_steps * game.player.vy
     for obj in game.all_objects:
-        number_of_steps = max(abs(game.player.vx), abs(game.player.vy))
         game.map[0] += number_of_steps * game.player.vx
         obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
         if obj.collide_rect.colliderect(game.player.collide_rect):
