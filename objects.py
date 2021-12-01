@@ -77,8 +77,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.resources = resources
+        self.up = 0
 
-        def draw(self):
+    def draw(self):
         """
         Функция отрисовки игрока.
         """
