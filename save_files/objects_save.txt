@@ -1,6 +1,6 @@
-appliedmath;pics/applied_math_v2.png;110;1450
-nk;pics/nk_v2.png;160;1300
-6;pics/6_v2.png;20;2650
+appliedmath;pics/applied_math_v2.png;110;2170
+nk;pics/nk_v2.png;160;2020
+6;pics/6_v2.png;20;3370
 ksp;pics/ksp_v2.png;3760;2550
 cifra;pics/cifra_v2.png;2190;160
 bio;pics/bio_v2.png;3670;100
