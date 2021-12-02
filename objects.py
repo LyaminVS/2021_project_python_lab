@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = pygame.image.load("pics/skin run left2.png")
                 self.image_name = "pics/skin run left2.png"
         self.surface.blit(self.image, self.rect)
-        
+
     def __str__(self):
         """
         :return: параметры объекта одной строкой с разделителем ";"
@@ -139,6 +139,8 @@ class Resources:
         self.name = name
         self.image = pygame.image.load(image).convert_alpha()
         self.image_name = image
+        self.width = self.image.get_width()
+        self.height = self.image.get_width()
         self.surface = screen
         self.amount = 15
         self.width = self.image.get_width()
@@ -170,4 +172,4 @@ class Brain(Resources):
 
 class Palatka(Resources):
     def __init__(self, screen):
-        super(Palatka, self).__init__(screen, "pics/cat.png", "Palatka", True)
+        super(Palatka, self).__init__(screen, "pics/shawarma.png", "Palatka", True)

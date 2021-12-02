@@ -20,7 +20,7 @@ def event_checker(event_array, game):
             game.finished = True
         if checked_event.type == pygame.KEYUP:
             game.player.move = 0
-        if pygame.key.get_pressed()[pygame.K_w]:
+        if pygame.key.get_pressed()[pygame.K_w]:  # Pycharm пишет, что эта строка повторяется с 15 строкой снизу от этой
             game.player.vy = 4
             if game.player.up == 1:
                 game.player.up = 2
@@ -35,12 +35,12 @@ def event_checker(event_array, game):
         if pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_w]:
             game.player.vy = 0
             game.player.up = 0
-        if pygame.key.get_pressed()[pygame.K_d]:
+        if pygame.key.get_pressed()[pygame.K_d]:  # Pycharm пишет что эта строка повторяется с 15 строкой сверху от этой
             game.player.vx = 4
             if game.player.right == 1:
                 game.player.right = 2
             else:
-                game.player.right = 1
+                game.player.right = 1  #
         if pygame.key.get_pressed()[pygame.K_a]:
             game.player.vx = -4
             if game.player.right == -1:
@@ -60,13 +60,20 @@ def event_checker(event_array, game):
         if checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
-                if obj.x < pos[0] + game.map[0] < obj.x + obj.width and obj.y < pos[1] + game.map[1] < obj.y + obj.height:
+                if obj.x < pos[0] + game.map[0] < obj.x + obj.width and \
+                        obj.y < pos[1] + game.map[1] < obj.y + obj.height:
                     obj.inventory_opened = True
         if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_ESCAPE):
-            for obj in game.all_objects:
-                obj.inventory_opened = False
+            if game.player.inventory.building:
+                game.player.inventory.building = False
+            elif game.inventory_opened:
+                game.inventory_opened = False
+            else:
+                for obj in game.all_objects:
+                    obj.inventory_opened = False
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
-            game.player.inventory.visual_update(checked_event)
+            if game.inventory_opened:
+                game.player.inventory.visual_update(checked_event)
             for obj in game.all_objects:
                 if obj.inventory_opened:
                     obj.inventory.visual_update(checked_event)
@@ -75,7 +82,6 @@ def event_checker(event_array, game):
             player_move(game)
 
 
-        
 def collision(game):
     """
     Совершает предварительное перемещение на number_of_steps шагов вперёд, проверяет столкнулся ли игрок с каким-то
@@ -86,14 +92,14 @@ def collision(game):
     """
     number_of_steps = 1
     game.map[0] += number_of_steps * game.player.vx
-    if game.map[0] <= 0 or game.map[0] >= (5120-1280):
+    if game.map[0] <= 0 or game.map[0] >= (game.map_dimensions[0] - 1280):
         game.map[0] -= number_of_steps * game.player.vx
         game.player.vx = 0
         game.player.right = 0
     else:
         game.map[0] -= number_of_steps * game.player.vx
     game.map[1] -= number_of_steps * game.player.vy
-    if game.map[1] <= 0 or game.map[1] >= (5040-720):
+    if game.map[1] <= 0 or game.map[1] >= (game.map_dimensions[1] - 720):
         game.map[1] += number_of_steps * game.player.vy
         game.player.vy = 0
         game.player.up = 0

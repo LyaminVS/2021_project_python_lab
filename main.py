@@ -17,6 +17,11 @@ class Game:
         Холст для рисования
         """
 
+        self.map_dimensions = [5120, 4320]
+        """
+        Размеры используемой карты
+        """
+
         self.FPS = 30
         """
         Количество кадров в секунду
@@ -24,7 +29,7 @@ class Game:
 
         self.finished = False
         """
-        False если программа завешшена, иначе True
+        False если программа завершена, иначе True
         """
 
         self.clock = pygame.time.Clock()
@@ -36,7 +41,10 @@ class Game:
         """
         если была нажата кнопка старт на стартовом экране то True, иначе False
         """
-
+        self.player_building = False
+        """
+        True если игрок запустил строительство, False если нет.
+        """
         self.player_created = False
         """
         True если игрок создан, иначе False
@@ -57,7 +65,7 @@ class Game:
         переменная показывает в каком меню находится игрок
         """
 
-        self.map = [758, 2968]
+        self.map = [1000, 2200]  # было 758, 2986
         """
         показывает положение карты
         """
@@ -74,11 +82,16 @@ class Game:
         self.crafts = {
             objects.Taco(self.screen): [1, 2, "Landau", objects.Taco(self.screen)],
             objects.Landau(self.screen): [1, 3, "Taco", objects.Landau(self.screen)],
-            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)],
-            objects.Palatka(self.screen): [1, 2, "Landau", objects.Palatka(self.screen)]
+            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)]
         }
         """
-        словарь содержащий все резепты крафта
+        словарь содержащий все рецепты крафта
+        """
+        self.builds = {
+            objects.Palatka(self.screen): [1, 15, "Landau", objects.Palatka(self.screen)]
+        }
+        """
+        словарь содержащий все рецепты строительства
         """
 
         self.timer = 0
@@ -124,7 +137,7 @@ class Game:
             resources.append(self.name_to_class(resource))
         name, image, x, y = line.split(";")
         new_player = objects.Player(self.screen, name, int(x), int(y), resources)
-        new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, resources)
+        new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, self.builds, resources)
         return new_player
 
     def get_player_from_file(self):
@@ -164,6 +177,7 @@ class Game:
         функция обновляет состояние игры
         :return:
         """
+
         background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
         self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
@@ -171,11 +185,11 @@ class Game:
                 if obj.name == "ksp" and len(obj.resources) < 16:
                     obj.resources.append(objects.Taco(self.screen))
             if obj.inventory_opened:
-                obj.inventory.int_update(obj.resources)
+                obj.inventory.int_update()
         self.player.draw()
         map_logic.event_checker(event.get(), self)
         if self.inventory_opened:
-            self.player.inventory.int_update(self.player.resources)
+            self.player.inventory.int_update()
 
     def save_game(self):
         """

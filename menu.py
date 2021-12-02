@@ -1,9 +1,8 @@
 import pygame
+import copy
 
-import objects
-
-#pygame.init()
-#screens = pygame.display.set_mode((1280, 720))
+# pygame.init()
+# screens = pygame.display.set_mode((1280, 720))
 
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
@@ -127,7 +126,8 @@ class OneInventorySlot:
             self.i = 0
 
         self.one_inventory_slot()
-
+        if self.item and self.item.amount == 0:
+            self.item = None
         if self.call == 0:  # если ни разу не запускали и подаем объект, то работать будем с ним
             self.display_item(item)
             self.call += 1
@@ -223,7 +223,7 @@ class ObjectInventory(Inventory):
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
 
-    def int_update(self, items):
+    def int_update(self, items=[]):
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
         if self.i % 41 == 0 and self.i != 0:
@@ -246,24 +246,24 @@ class ObjectInventory(Inventory):
                 self.visual_update(event)
 
 
-class Craft(Inventory):
+class Make(Inventory):
     """
     Класс, отвечающий за создание меню крафта.
     """
 
-    def __init__(self, screen, start_x, start_y, crafts):
-        self.crafts = crafts  # объекты, которые можно скрафтить.
-        super().__init__(screen, start_x, start_y, 3, 3, self.crafts)
-        self.craft_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
+    def __init__(self, screen, start_x, start_y, rows, columns, makes):
+        self.makes = makes  # объекты, которые можно скрафтить.
+        super().__init__(screen, start_x, start_y, rows, columns, self.makes)
+        self.making_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
     def int_update(self, font_size=64, text="craft"):
-        pygame.draw.rect(self.screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.columns * 64, 64))
-        pygame.draw.rect(self.screen, BLACK, (self.start_x, self.start_y - 64, self.columns * 64, 64), 1)
-        pygame.draw.rect(self.screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.columns * 64 - 6, 64 - 6),
+        pygame.draw.rect(self.screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.rows * 64, 64))
+        pygame.draw.rect(self.screen, BLACK, (self.start_x, self.start_y - 64, self.rows * 64, 64), 1)
+        pygame.draw.rect(self.screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.rows * 64 - 6, 64 - 6),
                          1)
         font = pygame.font.SysFont("Arial", font_size)
         words = font.render(text, True, (0, 0, 0))
-        place = words.get_rect(center=(self.start_x + self.columns * 32, self.start_y - 32))
+        place = words.get_rect(center=(self.start_x + self.rows * 32, self.start_y - 32))
         self.screen.blit(words, place)
         for obj in self.slots:
             obj.update_one_inventory_slot()
@@ -272,8 +272,7 @@ class Craft(Inventory):
         for obj in self.slots:
             obj.slot_pressed(event)
             if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
-                self.craft_items = self.crafts[obj.item]
-                print("lol")
+                self.making_items = self.makes[obj.item]
 
     def update(self):
         """
@@ -285,19 +284,41 @@ class Craft(Inventory):
                 self.visual_update(event)
 
 
+class Craft(Make):
+    def __init__(self, screen, start_x, start_y, crafts):
+        super(Craft, self).__init__(screen, start_x, start_y, 3, 3, crafts)
+
+    def int_update(self, font_size=64, text="craft"):
+        super().int_update(font_size, text)
+
+
+class Build(Make):
+    def __init__(self, screen, start_x, start_y, builds):
+        super(Build, self).__init__(screen, start_x, start_y, 3, 2, builds)
+
+    def int_update(self, font_size=64, text="Build"):
+        super().int_update(font_size, text)
+
+
 class PlayerInventory:
     """
     инвентарь игрока и его отрисовка
     """
 
-    def __init__(self, screen, crafts, materials=None):
-        self.inventory = ObjectInventory(screen, 200, 100, 7, 7, materials)
-        self.craft_inventory = Craft(screen, 648, 228, crafts)
+    def __init__(self, screen, crafts, builds, materials=None):
+        self.screen = screen
+        self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials)
+        self.craft_inventory = Craft(screen, 948, 164, crafts)
+        self.build_inventory = Build(screen, 948, 420, builds)
         self.font_size = 64
         self.text = "craft"
+        self.building = False  # Строит ли игрок сейчас?
+        self.pressed_building = None
+        self.building_pressed_item = None
+        self.building_surface = None
 
     def craft_items(self):
-        crafted_items = self.craft_inventory.craft_items.copy()
+        crafted_items = self.craft_inventory.making_items.copy()
         resource_checker = 0
 
         for i in range(2, len(crafted_items), 2):
@@ -317,23 +338,57 @@ class PlayerInventory:
                         slot.item.amount -= crafted_items[i - 1]
                         crafted_items[i - 1] = 0
                     elif not slot.item:
-                        slot.item = crafted_items[-1]
+                        slot.item = copy.copy(crafted_items[-1])
                         crafted_items[-1] = None
                         if slot.item:
                             slot.item.amount = amount
         elif crafted_items:
-            self.font_size = 24
+            self.font_size = 20
             self.text = "not enough materials"
-        self.craft_inventory.craft_items = []
+        self.craft_inventory.making_items = []
 
-    def int_update(self, items):
-        self.craft_inventory.int_update(self.font_size, self.text)
-        self.craft_items()
-        self.inventory.int_update(items)
+    def animation(self, event, pressed_item):
+        mouse_x = event.pos[0]
+        mouse_y = event.pos[1]
+
+        if pressed_item != self.building_pressed_item:
+            scaling = 0
+        else:
+            scaling = 1
+
+        if pressed_item and scaling == 0:
+            self.building_pressed_item = copy.copy(pressed_item)
+            self.building_pressed_item.image = pygame.transform.scale(pressed_item.image,
+                                                                      (pressed_item.width, pressed_item.height))
+        self.building_surface = self.building_pressed_item.image.get_rect(center=(mouse_x, mouse_y))
+
+    def build_items(self):
+        for slot in self.build_inventory.slots:
+            if slot.pressed and slot.item:
+                self.building = True
+                self.pressed_building = slot.item
+
+    def int_update(self, items=[]):
+        if not self.building:
+            self.craft_inventory.int_update(self.font_size, self.text)
+            self.build_inventory.int_update()
+            self.craft_items()
+            self.build_items()
+            self.inventory.int_update(items)
+        elif self.building_pressed_item:
+            for slot in self.build_inventory.slots:
+                slot.pressed = False
+            self.screen.blit(self.building_pressed_item.image, self.building_surface)
 
     def visual_update(self, event):
-        self.craft_inventory.visual_update(event)
-        self.inventory.visual_update(event)
+
+        if not self.building:
+            self.craft_inventory.visual_update(event)
+            self.build_inventory.visual_update(event)
+            self.inventory.visual_update(event)
+        else:
+            if event.type == pygame.MOUSEMOTION:
+                self.animation(event, self.pressed_building)
 
     def update_all(self, items):
         self.int_update(items)
@@ -345,10 +400,10 @@ class PlayerInventory:
 
 finished = False
 
-#taco1 = objects.Taco(screens)
-#landau = objects.Landau(screens)
-#materialss = [taco1, landau]
-#crafts = {
+# taco1 = objects.Taco(screens)
+# landau = objects.Landau(screens)
+# materialss = [taco1, landau]
+# crafts = {
 #    objects.Taco(screens): [1, 2, "Landau", objects.Taco(screens)],
 #    objects.Landau(screens): [1, 3, "Taco", objects.Landau(screens)],
 #    objects.Brain(screens): [1, 5, "Taco", 5, "Landau", objects.Brain(screens)]
