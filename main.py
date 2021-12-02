@@ -74,8 +74,14 @@ class Game:
         self.crafts = {
             objects.Taco(self.screen): [1, 2, "Landau", objects.Taco(self.screen)],
             objects.Landau(self.screen): [1, 3, "Taco", objects.Landau(self.screen)],
-            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)]
+            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)],
+            objects.Palatka(self.screen): [1, 2, "Landau", objects.Palatka(self.screen)]
         }
+        """
+        словарь содержащий все резепты крафта
+        """
+
+        self.timer = 0
 
     def name_to_class(self, name):
         if name == "taco":
@@ -159,7 +165,11 @@ class Game:
         :return:
         """
         background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
+        self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
+            if self.timer == self.FPS - 1:
+                if obj.name == "ksp" and len(obj.resources) < 16:
+                    obj.resources.append(objects.Taco(self.screen))
             if obj.inventory_opened:
                 obj.inventory.int_update(obj.resources)
         self.player.draw()

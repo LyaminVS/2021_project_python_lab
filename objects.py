@@ -129,7 +129,7 @@ class Resources:
     Класс наследования всех ресурсов.
     """
 
-    def __init__(self, screen, image, name):
+    def __init__(self, screen, image, name, is_building):
         """
         Конструктор класса resources.
         :param screen: поверхность отрисовки
@@ -143,6 +143,7 @@ class Resources:
         self.amount = 15
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        self.is_building = is_building
 
     def __str__(self):
         """
@@ -154,14 +155,19 @@ class Resources:
 
 class Taco(Resources):
     def __init__(self, screen):
-        super(Taco, self).__init__(screen, "pics/taco.png", "Taco")
+        super(Taco, self).__init__(screen, "pics/taco.png", "Taco", False)
 
 
 class Landau(Resources):
     def __init__(self, screen):
-        super(Landau, self).__init__(screen, "pics/landavshiz.png", "Landau")
+        super(Landau, self).__init__(screen, "pics/landavshiz.png", "Landau", False)
 
 
 class Brain(Resources):
     def __init__(self, screen):
-        super(Brain, self).__init__(screen, "pics/cat.png", "Brain")
+        super(Brain, self).__init__(screen, "pics/cat.png", "Brain", False)
+
+
+class Palatka(Resources):
+    def __init__(self, screen):
+        super(Palatka, self).__init__(screen, "pics/cat.png", "Palatka", True)

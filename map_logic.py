@@ -21,13 +21,13 @@ def event_checker(event_array, game):
         if checked_event.type == pygame.KEYUP:
             game.player.move = 0
         if pygame.key.get_pressed()[pygame.K_w]:
-            game.player.vy = 2
+            game.player.vy = 4
             if game.player.up == 1:
                 game.player.up = 2
             else:
                 game.player.up = 1
         if pygame.key.get_pressed()[pygame.K_s]:
-            game.player.vy = -2
+            game.player.vy = -4
             if game.player.up == -1:
                 game.player.up = -2
             else:
@@ -36,13 +36,13 @@ def event_checker(event_array, game):
             game.player.vy = 0
             game.player.up = 0
         if pygame.key.get_pressed()[pygame.K_d]:
-            game.player.vx = 2
+            game.player.vx = 4
             if game.player.right == 1:
                 game.player.right = 2
             else:
                 game.player.right = 1
         if pygame.key.get_pressed()[pygame.K_a]:
-            game.player.vx = -2
+            game.player.vx = -4
             if game.player.right == -1:
                 game.player.right = -2
             else:
@@ -57,7 +57,7 @@ def event_checker(event_array, game):
         if pygame.key.get_pressed()[pygame.K_LSHIFT]:
             game.player.vx *= 2
             game.player.vy *= 2
-        if checked_event.type == pygame.MOUSEBUTTONDOWN:
+        if checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
                 if obj.x < pos[0] + game.map[0] < obj.x + obj.width and obj.y < pos[1] + game.map[1] < obj.y + obj.height:
@@ -70,9 +70,9 @@ def event_checker(event_array, game):
         if game.player.vx != 0 or game.player.vy != 0:
             collision(game)
             player_move(game)
-        # for obj in game.all_objects:
-        #     if obj.inventory_opened:
-        #         obj.inventory.visual_update(pygame.event)
+        for obj in game.all_objects:
+            if obj.inventory_opened:
+                obj.inventory.visual_update(pygame.event)
 
         
 def collision(game):
