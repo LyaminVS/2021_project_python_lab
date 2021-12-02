@@ -67,12 +67,13 @@ def event_checker(event_array, game):
                 obj.inventory_opened = False
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             game.player.inventory.visual_update(checked_event)
+            for obj in game.all_objects:
+                if obj.inventory_opened:
+                    obj.inventory.visual_update(checked_event)
         if game.player.vx != 0 or game.player.vy != 0:
             collision(game)
             player_move(game)
-        for obj in game.all_objects:
-            if obj.inventory_opened:
-                obj.inventory.visual_update(pygame.event)
+
 
         
 def collision(game):
