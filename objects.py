@@ -47,6 +47,7 @@ class Objects(pygame.sprite.Sprite):
         """
         :return: параметры объекта одной строкой с разделителем ";"
         """
+        print(self.image_name)
         line = ";".join((self.name, self.image_name, str(self.x), str(self.y)))
         return line
 

@@ -102,7 +102,7 @@ class Game:
     def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse:
-                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image, "shawarma",
+                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name, "shawarma",
                                              self.map[0] + square.x, self.map[1] + square.y)
                 new_object.resources = []
                 new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
