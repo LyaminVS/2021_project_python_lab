@@ -21,13 +21,13 @@ def event_checker(event_array, game):
         if checked_event.type == pygame.KEYUP:
             game.player.move = 0
         if pygame.key.get_pressed()[pygame.K_w]:  # Pycharm пишет, что эта строка повторяется с 15 строкой снизу от этой
-            game.player.vy = 4
+            game.player.vy = game.player.v_max
             if game.player.up == 1:
                 game.player.up = 2
             else:
                 game.player.up = 1
         if pygame.key.get_pressed()[pygame.K_s]:
-            game.player.vy = -4
+            game.player.vy = -game.player.v_max
             if game.player.up == -1:
                 game.player.up = -2
             else:
@@ -36,13 +36,13 @@ def event_checker(event_array, game):
             game.player.vy = 0
             game.player.up = 0
         if pygame.key.get_pressed()[pygame.K_d]:  # Pycharm пишет что эта строка повторяется с 15 строкой сверху от этой
-            game.player.vx = 4
+            game.player.vx = game.player.v_max
             if game.player.right == 1:
                 game.player.right = 2
             else:
                 game.player.right = 1  #
         if pygame.key.get_pressed()[pygame.K_a]:
-            game.player.vx = -4
+            game.player.vx = -game.player.v_max
             if game.player.right == -1:
                 game.player.right = -2
             else:
