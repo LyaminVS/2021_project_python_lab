@@ -201,12 +201,16 @@ class Game:
         функция обновляет состояние игры
         :return:
         """
-        background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
+        background.draw_map(self.screen, self.map[0], self.map[1])
         background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
-        if self.player.inventory.building:
-            self.set_building()
         for square in self.grid:
             square.update()
+        background.draw_objects(self.all_objects, self.map[0], self.map[1])
+
+
+        if self.player.inventory.building:
+            self.set_building()
+
         self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
             if self.timer == self.FPS - 1:

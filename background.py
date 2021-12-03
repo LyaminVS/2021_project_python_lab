@@ -2,7 +2,7 @@ import pygame
 from start_screen import Button
 
 
-def draw_map(sc, x, y, objects):
+def draw_map(sc, x, y):
     """
     рисует карту
     :return:
@@ -10,8 +10,6 @@ def draw_map(sc, x, y, objects):
 
     bg = pygame.image.load('pics/background.png')
     sc.blit(bg, (-x, -y))
-
-    draw_objects(objects, x, y)
 
 
 def draw_objects(objects_list, x, y):
