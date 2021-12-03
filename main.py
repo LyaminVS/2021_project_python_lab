@@ -99,6 +99,19 @@ class Game:
 
         self.timer = 0
 
+    def set_building(self):
+        for square in self.grid:
+            if square.pressed_by_mouse:
+                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image, "shawarma",
+                                             self.map[0] + square.x, self.map[1] + square.y)
+                self.grid.remove(square)
+                new_object.resources = []
+                new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
+                self.all_objects.append(new_object)
+                print(square.x)
+
+
+
     def name_to_class(self, name):
         if name == "taco":
             return objects.Taco(self.screen)
@@ -199,9 +212,11 @@ class Game:
                 obj.inventory.int_update()
 
         map_logic.event_checker(event.get(), self)
-
+        if self.player.inventory.building:
+            self.set_building()
         for square in self.grid:
             square.update()
+
         self.player.draw()
         if self.inventory_opened:
             self.player.inventory.int_update()

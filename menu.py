@@ -2,8 +2,6 @@ import pygame
 import copy
 
 
-# pygame.init()
-# screens = pygame.display.set_mode((1280, 720))
 
 # FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 WHITE = (255, 255, 255)
@@ -14,7 +12,6 @@ DARK_GREY = (40, 40, 40)
 RED = (255, 0, 0)
 GREEN = (0, 200, 0)
 ORANGE = (220, 150, 40)  # FIXME цвет шрифта, но мне не нравится.
-clock = pygame.time.Clock()
 
 
 class OneInventorySlot:
@@ -224,7 +221,9 @@ class ObjectInventory(Inventory):
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
 
-    def int_update(self, items=[]):
+    def int_update(self, items=None):
+        if not items:
+            items = []
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
         if self.i % 41 == 0 and self.i != 0:
@@ -369,7 +368,9 @@ class PlayerInventory:
                 self.building = True
                 self.pressed_building = slot.item
 
-    def int_update(self, items=[]):
+    def int_update(self, items=None):
+        if not items:
+            items = []
         if not self.building:
             self.craft_inventory.int_update(self.font_size, self.text)
             self.build_inventory.int_update()
@@ -397,24 +398,3 @@ class PlayerInventory:
             if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
                 self.inventory.visual_update(event)
                 self.craft_inventory.visual_update(event)
-
-
-finished = False
-
-# taco1 = objects.Taco(screens)
-# landau = objects.Landau(screens)
-# materialss = [taco1, landau]
-# crafts = {
-#    objects.Taco(screens): [1, 2, "Landau", objects.Taco(screens)],
-#    objects.Landau(screens): [1, 3, "Taco", objects.Landau(screens)],
-#    objects.Brain(screens): [1, 5, "Taco", 5, "Landau", objects.Brain(screens)]
-#    }
-# # TODO Заменить screens на экран из main
-# player = PlayerInventory(screens, crafts, materialss)
-#
-# while not finished:
-#     clock.tick(45)
-#     screens.fill(WHITE)
-#
-#     player.update_all(materialss)
-#     pygame.display.update()
