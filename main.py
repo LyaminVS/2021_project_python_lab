@@ -167,11 +167,19 @@ class Game:
         objects_in_file.close()
         return all_objects
 
+    def get_map_from_file(self):
+        map_array = []
+        map_in_file = open("save_files/map_save.txt")
+        for line in map_in_file:
+            map_array.append(int(line))
+        return map_array
+
     def create_start_position(self):
         """
         создается объект игрока, а также объекты зданий в первый кадр игры
         :return:
         """
+        self.map = self.get_map_from_file()
         self.player = self.get_player_from_file()
         self.all_objects = self.get_obj_from_file()
 
@@ -206,7 +214,8 @@ class Game:
         player_file = open("save_files/player_save.txt", "w")
         object_file = open("save_files/objects_save.txt", "w")
         player_resources_file = open("save_files/player_resources_save", "w")
-
+        map_file = open("save_files/map_save.txt", "w")
+        map_file.write(str(self.map[0]) + "\n" + str(self.map[1]))
         player_file.write(str(self.player) + "\n")
         for obj in self.all_objects:
             object_inventory_file = open("save_files/object_inventory_save/" + obj.name + ".txt", "w")
@@ -218,6 +227,7 @@ class Game:
         player_resources_file.close()
         player_file.close()
         object_file.close()
+        map_file.close()
 
     def game_quit(self):
         """
