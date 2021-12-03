@@ -65,11 +65,10 @@ class Game:
         переменная показывает в каком меню находится игрок
         """
 
-        self.map = [1000, 2200]  # было 758, 2986
+        self.map = [1500, 3000]  # было 758, 2986
         """
         показывает положение карты
         """
-
         self.inventory_opened = False
         """
         показывает открыт ли инвентарь
@@ -77,8 +76,12 @@ class Game:
 
         self.option_menu = False
 
-        self.start_menu = start_screen.StartMenu()
+        self.start_menu = start_screen.StartMenu(self.screen)
 
+        self.grid = background.create_grid(-self.map[0] + 1600, -self.map[1] + 3350, 2, 3, self.screen)
+        """
+        Сетка с местами, на которых можно строить
+        """
         self.crafts = {
             objects.Taco(self.screen): [1, 2, "Landau", objects.Taco(self.screen)],
             objects.Landau(self.screen): [1, 3, "Taco", objects.Landau(self.screen)],
@@ -177,8 +180,8 @@ class Game:
         функция обновляет состояние игры
         :return:
         """
-
         background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
+        background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
         self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
             if self.timer == self.FPS - 1:
@@ -186,8 +189,12 @@ class Game:
                     obj.resources.append(objects.Taco(self.screen))
             if obj.inventory_opened:
                 obj.inventory.int_update()
-        self.player.draw()
+
         map_logic.event_checker(event.get(), self)
+
+        for square in self.grid:
+            square.update()
+        self.player.draw()
         if self.inventory_opened:
             self.player.inventory.int_update()
 
@@ -225,6 +232,10 @@ class Game:
         основной цикл программы
         :return:
         """
+        for square in self.grid:
+            square.first_condition = pygame.image.load("pics/yellow.png")
+            square.second_condition = pygame.image.load("pics/green.png")
+
         while not self.finished:
             if not self.player_created:
                 self.create_start_position()
