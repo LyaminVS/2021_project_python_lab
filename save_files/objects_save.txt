@@ -2,9 +2,12 @@ appliedmath;pics/applied_math_v2.png;110;2170
 nk;pics/nk_v2.png;160;2020
 6;pics/6_v2.png;20;3370
 ksp;pics/ksp_v2.png;3760;2550
-cifra;pics/cifra_v2.png;2190;160
+cifra1;pics/cifra1_v2.png;2190;160
+cifra2;pics/cifra2_v2.png;2090;850
 bio;pics/bio_v2.png;3670;100
 gk1;pics/gk1_v2.png;2650;160
 gk2;pics/gk2_v2.png;2910;350
-arctic;pics/arctic_v2.png;340;170
+arctic1;pics/arctic1_v2.png;340;170
+arctic2;pics/arctic2_v2.png;770;539
+arctic3;pics/arctic3_v2.png;770;620
 lk;pics/lk_v2.png;3540;1150
