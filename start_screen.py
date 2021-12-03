@@ -46,7 +46,8 @@ class Button:
         self.third_condition = pygame.image.load("pics/cat5.png") # картинка для того, чтобы спрятать кнопку
         self.image = self.first_condition  # изображение, которое отрисовывается на кнопке
         self.pressed = False  # Нажата ли сейчас кнопка?
-        self.timer = 0  # Счетчик итераций, который включается во время нажатия кнопки и выключается после 20 циклов
+        self.pressed_by_mouse = False # Нажата ли кнопка мышкой?
+        self.timer = 0  # Счетчик итераций, который включается во время нажатия кнопки и выключается после 7 циклов
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
     def scaling_image(self):
@@ -73,12 +74,11 @@ class Button:
 
         if self.timer > 0:
             self.timer += 1
-            self.pressed = True
-            print("what")
-        if self.timer % 20 == 0 and self.timer != 0:
+        if self.timer % 7 == 0 and self.timer != 0:
             self.pressed = False
+            self.pressed_by_mouse = False
             self.timer = 0
-            print("zero")
+
 
     def is_button_pressed(self, event):
         """
@@ -88,6 +88,9 @@ class Button:
         if self.x < event.pos[0] < self.x + self.length and self.y < event.pos[1] < self.y + self.width:
             self.pressed = True
             self.timer = 1
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.pressed_by_mouse = True
 
 
 class Menu:

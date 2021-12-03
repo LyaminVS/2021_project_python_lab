@@ -10,6 +10,7 @@ def draw_map(sc, x, y, objects):
 
     bg = pygame.image.load('pics/background.png')
     sc.blit(bg, (-x, -y))
+
     draw_objects(objects, x, y)
 
 
@@ -46,12 +47,12 @@ def change_coord_grid(grid, x0, y0, rows, columns):
     x = x0
     y = y0
     f = 0
-    for i in range(rows):
-        for j in range(columns):
-            square = grid[f]
-            square.x = -x + 1600
-            square.y = -y + 3350
-            x += 600
-            f += 1
-        x = x0
-        y += 400
+    for square in grid:
+        if f % columns == 0 and f != 0:
+            x = x0
+            y -= 400
+            f = 0
+        square.x = -x + 1800
+        square.y = -y + 3350
+        x -= 600
+        f += 1

@@ -17,7 +17,10 @@ class Objects(pygame.sprite.Sprite):
         """
         super().__init__()
         self.name = name
-        self.image = pygame.image.load(image).convert_alpha()
+        if type(image) == str:
+            self.image = pygame.image.load(image).convert_alpha()
+        else:
+            self.image = image
         self.image_name = image
         self.surface = screen
         self.width = self.image.get_width()
@@ -53,7 +56,7 @@ class Player(pygame.sprite.Sprite):
     Класс игрока, наследующий Spite для проверки коллизий.
     """
 
-    def __init__(self, screen, name, x_0, y_0, resources=[]):
+    def __init__(self, screen, name, x_0, y_0, resources=None):
         """
         Конструктор класса Player.
         :param screen: экран отрисовки
@@ -77,6 +80,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        if not resources:
+            resources = []
         self.resources = resources
         self.up = 0
         self.right = 0
