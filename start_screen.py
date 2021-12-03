@@ -43,7 +43,7 @@ class Button:
         self.text = text
         self.first_condition = pygame.image.load("pics/cat4.png")  # картинка кнопки, когда она не нажата
         self.second_condition = pygame.image.load("pics/cat5.png")  # картинка кнопки, когда она нажата
-        self.third_condition = pygame.image.load("pics/cat5.png") # картинка для того, чтобы спрятать кнопку
+        self.third_condition = pygame.image.load("pics/cat2.png") # картинка для того, чтобы спрятать кнопку
         self.image = self.first_condition  # изображение, которое отрисовывается на кнопке
         self.pressed = False  # Нажата ли сейчас кнопка?
         self.pressed_by_mouse = False # Нажата ли кнопка мышкой?
@@ -67,6 +67,7 @@ class Button:
         else:
             self.image = self.first_condition
             self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
 
         self.scaling_image()
         self.screen.blit(self.image, self.rect)

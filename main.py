@@ -104,11 +104,11 @@ class Game:
             if square.pressed_by_mouse:
                 new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image, "shawarma",
                                              self.map[0] + square.x, self.map[1] + square.y)
-                self.grid.remove(square)
                 new_object.resources = []
                 new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
                 self.all_objects.append(new_object)
-                print(square.x)
+                square.first_condition = self.player.inventory.building_pressed_item.image
+                square.second_condition = self.player.inventory.building_pressed_item.image
 
 
 
@@ -203,6 +203,10 @@ class Game:
         """
         background.draw_map(self.screen, self.map[0], self.map[1], self.all_objects)
         background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
+        if self.player.inventory.building:
+            self.set_building()
+        for square in self.grid:
+            square.update()
         self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
             if self.timer == self.FPS - 1:
@@ -212,10 +216,6 @@ class Game:
                 obj.inventory.int_update()
 
         map_logic.event_checker(event.get(), self)
-        if self.player.inventory.building:
-            self.set_building()
-        for square in self.grid:
-            square.update()
 
         self.player.draw()
         if self.inventory_opened:
