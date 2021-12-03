@@ -68,18 +68,19 @@ class Player(pygame.sprite.Sprite):
         self.y = y_0
         self.vx = 0
         self.vy = 0
+        self.v_max = 4
         self.image = pygame.image.load("pics/skin run right1.png").convert_alpha()
         self.image_name = "pics/skin run right1.png"
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.inventory = None
-        self.right = 0
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
         self.collide_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.resources = resources
         self.up = 0
-
+        self.right = 0
+    
     def draw(self):
         """
         Функция отрисовки игрока.
