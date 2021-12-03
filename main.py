@@ -111,7 +111,6 @@ class Game:
                 square.second_condition = self.player.inventory.building_pressed_item.image
 
 
-
     def name_to_class(self, name):
         if name == "taco":
             return objects.Taco(self.screen)
@@ -258,7 +257,7 @@ class Game:
         :return:
         """
         for square in self.grid:
-            square.first_condition = pygame.image.load("pics/yellow.png")
+            square.first_condition = pygame.image.load("pics/build grass.png")
             square.second_condition = pygame.image.load("pics/green.png")
 
         while not self.finished:
