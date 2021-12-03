@@ -109,6 +109,7 @@ class Game:
                 self.all_objects.append(new_object)
                 square.first_condition = self.player.inventory.building_pressed_item.image
                 square.second_condition = self.player.inventory.building_pressed_item.image
+                square.pressed_by_mouse = False
 
 
     def name_to_class(self, name):
