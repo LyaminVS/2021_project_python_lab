@@ -99,11 +99,14 @@ class Game:
 
         self.timer = 0
 
+        self.id = 0
+
     def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse:
-                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name, "shawarma",
-                                             self.map[0] + square.x, self.map[1] + square.y)
+                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name,
+                                             "shawarma_" + str(self.id), self.map[0] + square.x, self.map[1] + square.y)
+                self.id += 1
                 new_object.resources = []
                 new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
                 self.all_objects.append(new_object)
@@ -187,6 +190,12 @@ class Game:
             map_array.append(int(line))
         return map_array
 
+    def get_id_from_file(self):
+        id_in_file = open("save_files/id_save.txt")
+        build_id = id_in_file.readline()
+        id_in_file.close()
+        return int(build_id)
+
     def create_start_position(self):
         """
         создается объект игрока, а также объекты зданий в первый кадр игры
@@ -195,6 +204,7 @@ class Game:
         self.map = self.get_map_from_file()
         self.player = self.get_player_from_file()
         self.all_objects = self.get_obj_from_file()
+        self.id = self.get_id_from_file()
 
     def update_game(self, event):
         """
@@ -230,6 +240,7 @@ class Game:
         функция сохраняет игру
         :return:
         """
+        id_file = open("save_files/id_save.txt", "w")
         player_file = open("save_files/player_save.txt", "w")
         object_file = open("save_files/objects_save.txt", "w")
         player_resources_file = open("save_files/player_resources_save", "w")
@@ -243,7 +254,9 @@ class Game:
             object_file.write(str(obj) + "\n")
         for res in self.player.resources:
             player_resources_file.write((str(res.name)).lower() + "\n")
+        id_file.write(str(self.id))
         player_resources_file.close()
+        id_file.close()
         player_file.close()
         object_file.close()
         map_file.close()

@@ -12,4 +12,5 @@ arctic1;pics/arctic1_v2.png;340;170
 arctic2;pics/arctic2_v2.png;770;550
 arctic3;pics/arctic3_v2.png;770;620
 lk;pics/lk_v2.png;3540;1150
-shawarma;pics/shawarma.png;1800;3350
+shawarma_0;pics/shawarma.png;1800;3350
+shawarma_1;pics/shawarma.png;1800;3750
