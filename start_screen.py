@@ -1,9 +1,8 @@
 import pygame
 
-
-
 START_MENU_SCREEN = pygame.display.set_mode((1280, 720))
 GREY = (50, 50, 50)
+DARK_BLUE = (1, 3, 20)
 
 
 def writing(text: str, xcenter, ycenter, screen, font_size=16, font='Arial'):
@@ -27,7 +26,7 @@ class Button:
     Класс, отвечающий за прорисовку кнопок на экране, а также взаимодействие с ними.
     """
 
-    def __init__(self, x, y, length, width, text: str, screen ):
+    def __init__(self, x, y, length, width, text: str, screen):
         """
         :param x: горизонтальная координата левого верхнего угла кнопки.
         :param y: вертикальная координата левого верхнего угла кнопки.
@@ -41,15 +40,15 @@ class Button:
         self.length = length
         self.width = width
         self.text = text
-        self.first_condition = pygame.image.load("pics/cat4.png")  # картинка кнопки, когда она не нажата
-        self.second_condition = pygame.image.load("pics/cat5.png")  # картинка кнопки, когда она нажата
-        self.third_condition = pygame.image.load("pics/cat2.png") # картинка для того, чтобы спрятать кнопку
+        self.first_condition = pygame.image.load(
+            "pics/startbuttonunpressed.png")  # картинка кнопки, когда она не нажата
+        self.second_condition = pygame.image.load("pics/startbuttonpressed.png")  # картинка кнопки, когда она нажата
         self.image = self.first_condition  # изображение, которое отрисовывается на кнопке
         self.pressed = False  # Нажата ли сейчас кнопка?
-        self.pressed_by_mouse = False # Нажата ли кнопка мышкой?
+        self.pressed_by_mouse = False  # Нажата ли кнопка мышкой?
         self.timer = 0  # Счетчик итераций, который включается во время нажатия кнопки и выключается после 7 циклов
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
-        self.picture_changed = 0 # Менялась ли картинка у кнопки
+        self.picture_changed = 0  # Менялась ли картинка у кнопки
         self.building_on = False
 
     def scaling_image(self):
@@ -70,7 +69,6 @@ class Button:
             self.image = self.first_condition
             self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
-
         self.scaling_image()
         self.screen.blit(self.image, self.rect)
         writing(self.text, self.x + self.length / 2, self.y + self.width / 2, self.screen)
@@ -81,7 +79,6 @@ class Button:
             self.pressed = False
             self.pressed_by_mouse = False
             self.timer = 0
-
 
     def is_button_pressed(self, event):
         """
@@ -112,19 +109,21 @@ class Menu:
         self.variables = []  # массив с переменными, отвечающими за переключение режимов игры(пауза, старт, конец)
         self.amount = amount
         for a in range(self.amount):
-            self.buttons.append(Button(540, 200 + a * 100, 200, 75, texts[a], self.screen))  # размещает кнопки по центру экрана
+            self.buttons.append(
+                Button(366, 200 + a * 100, 548, 78, texts[a], self.screen))  # размещает кнопки по центру экрана
             self.variables.append(False)  # задает всем переменным состояний игры изначально False значение.
 
     def draw_background(self):
         """
         Функция, отвечающая за прорисовку заднего фона у меню. По умолчанию это серый прозрачный прямоугольник.
         """
-        background_surface = pygame.Surface((400, 250 + self.amount * 100))
-        background = pygame.draw.rect(background_surface, GREY, (440, 20, 400, self.amount * 100))
+        width = 250 + self.amount * 100
+        background_surface = pygame.Surface((748, width))
+        pygame.draw.rect(background_surface, DARK_BLUE, (0, 0, 748, width))
         background_surface.set_alpha(100)
-        self.screen.blit(background_surface, background)
+        self.screen.blit(background_surface, (266, (720 - width) // 2 - 50))
 
-    def create_menu(self, text: str):
+    def create_menu(self, picture):
         """
         Функция, отвечающая за создание меню. Обновляет кнопки, проверяет нажатия на них, обновляет связанные
         с ними переменные.
@@ -132,7 +131,7 @@ class Menu:
         """
         self.finished = False
         self.draw_background()
-        writing(text, 640, 100, self.screen, 64, "Impact")
+        self.screen.blit(pygame.image.load(picture), (225,50))
         for i in range(len(self.variables)):
             self.variables[i] = False
         for button in self.buttons:
@@ -167,7 +166,7 @@ class StartMenu(Menu):
         Функция, отвечающая за отрисовку стартового меню.
         :return: self.finished, self.start, self.options
         """
-        super().create_menu("DOLGOPIO")
+        super().create_menu("pics/gamename.png")
         self.start = self.variables[0]
         self.options = self.variables[1]
         return self.finished, not self.start, self.options
@@ -188,7 +187,7 @@ class OptionMenu(Menu):
         Класс, отвечающий за отрисовку меню настроек.
         :return: self.finished, self.continues, self.music
         """
-        super().create_menu("OPTIONS")
+        super().create_menu("pics/gamename.png") #TODO вставить фотку текста опций
         self.continues = self.variables[0]
         self.music = self.variables[1]
         return self.finished, self.continues, self.music
@@ -210,9 +209,8 @@ class PauseMenu(Menu):
         Функция, отвечающая за отрисовку меню паузы.
         :return: self.finished, self.continues, self.options, self.start_menu
         """
-        super().create_menu("PAUSED")
+        super().create_menu("pics/gamename.png") #TODO вставить фотку текста паузы
         self.continues = self.variables[0]
         self.options = self.variables[1]
         self.start_menu = self.variables[2]
         return self.finished, self.continues, self.options, self.start_menu
-
