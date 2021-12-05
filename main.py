@@ -109,7 +109,7 @@ class Game:
 
         self.pause_menu = start_screen.PauseMenu(self.screen)
 
-        def set_building(self):
+    def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse and not square.building_on:
                 image = pygame.image.load(self.player.inventory.building_pressed_item.image_name)
