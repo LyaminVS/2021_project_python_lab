@@ -169,7 +169,7 @@ class StartMenu(Menu):
         super().create_menu("DOLGOPIO")
         self.start = self.variables[0]
         self.options = self.variables[1]
-        return self.finished, self.start, self.options
+        return self.finished, not self.start, self.options
 
 
 class OptionMenu(Menu):
