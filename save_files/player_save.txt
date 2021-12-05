@@ -1,1 +1,1 @@
-player;pics/skin run right1.png;640;360
+player;pics/skin run stay.png;640;360

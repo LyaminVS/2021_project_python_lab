@@ -105,6 +105,10 @@ class Game:
 
         self.music = None
 
+        self.pause_menu_opened = False
+
+        self.pause_menu = start_screen.PauseMenu(self.screen)
+
     def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse and not square.building_on:
@@ -114,7 +118,6 @@ class Game:
                 square.pressed_by_mouse = False
                 new_object.resources = []
                 new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
-                print()
                 self.all_objects.append(new_object)
                 square.first_condition = self.player.inventory.building_pressed_item.image
                 square.second_condition = self.player.inventory.building_pressed_item.image
@@ -295,7 +298,12 @@ class Game:
                 self.screen.fill((255, 255, 255))
                 self.finished, self.start_menu_opened, self.music = self.option_menu.draw()
                 if self.start_menu_opened:
-                    self.option_menu_opened = False               
+                    self.option_menu_opened = False
+            elif self.pause_menu_opened:
+                self.screen.fill((255, 255, 255))
+                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened = self.pause_menu.draw()
+                if self.option_menu_opened or self.start_menu_opened:
+                    self.pause_menu_opened = False
             else:
                 self.update_game(pygame.event)
             self.clock.tick(self.FPS)
