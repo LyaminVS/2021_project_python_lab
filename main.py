@@ -314,7 +314,6 @@ class Game:
             square.first_condition = pygame.image.load("pics/build grass.png")
             square.second_condition = pygame.image.load("pics/build grass chosen.png")
         while not self.finished:
-
             if not self.player_created:
                 self.create_start_position()
                 self.player_created = True
