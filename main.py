@@ -5,7 +5,8 @@ import menu
 import objects
 # import sound
 import start_screen
-import os.path
+import os
+import shutil
 
 pygame.init()
 
@@ -251,6 +252,9 @@ class Game:
         функция сохраняет игру
         :return:
         """
+        shutil.rmtree("save_files")
+        os.mkdir("save_files")
+        os.mkdir("save_files/object_inventory_save")
         id_file = open("save_files/id_save.txt", "w")
         player_file = open("save_files/player_save.txt", "w")
         object_file = open("save_files/objects_save.txt", "w")
