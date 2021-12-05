@@ -274,10 +274,12 @@ class Game:
         map_file.write(str(self.map[0]) + "\n" + str(self.map[1]))
         player_file.write(str(self.player) + "\n")
         for obj in self.all_objects:
+            obj.resources = obj.inventory.objects_in_inventory()
             object_inventory_file = open("save_files/object_inventory_save/" + obj.name + ".txt", "w")
             for res in obj.resources:
                 object_inventory_file.write((str(res.name)).lower() + "\n")
             object_file.write(str(obj) + "\n")
+        self.player.resources = self.player.inventory.inventory.objects_in_inventory()
         for res in self.player.resources:
             player_resources_file.write((str(res.name)).lower() + "\n")
         id_file.write(str(self.id))
