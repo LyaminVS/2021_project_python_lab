@@ -5,6 +5,8 @@ import menu
 import objects
 # import sound
 import start_screen
+import os.path
+import constants
 import os
 import shutil
 
@@ -119,7 +121,8 @@ class Game:
                 collide_rect = pygame.Rect(square.x, square.y, width, height)
                 if not collide_rect.colliderect(self.player.collide_rect):
                     new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name,
-                    "shawarma_" + str(self.id), self.map[0] + square.x, self.map[1] + square.y)
+                                                 "shawarma_" + str(self.id), self.map[0] + square.x,
+                                                 self.map[1] + square.y)
                     self.id += 1
                     square.pressed_by_mouse = False
                     new_object.resources = []
@@ -128,6 +131,13 @@ class Game:
                     self.all_objects.append(new_object)
                     square.first_condition = self.player.inventory.building_pressed_item.image
                     square.second_condition = self.player.inventory.building_pressed_item.image
+
+    def update_building_position(self):
+        for square in self.grid:
+            for obj in self.all_objects:
+                if obj.x - 100 <= square.x + self.map[0] <= obj.x + 100 and \
+                        obj.y - 100 <= square.y + self.map[1] <= obj.y + 100:
+                    square.building_on = True
 
     def name_to_class(self, name):
         if name == "taco":
@@ -225,6 +235,7 @@ class Game:
         функция обновляет состояние игры
         :return:
         """
+        self.update_building_position()
         background.draw_map(self.screen, self.map[0], self.map[1])
         background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
         for square in self.grid:
@@ -299,18 +310,19 @@ class Game:
                 self.player_created = True
             pygame.display.update()
             if self.start_menu_opened:
-                self.screen.fill((255, 255, 255))
+                self.screen.fill(constants.DARK_BLUE)
                 self.finished, self.start_menu_opened, self.option_menu_opened = self.start_menu.draw()
                 if self.option_menu_opened:
                     self.start_menu_opened = False
             elif self.option_menu_opened:
-                self.screen.fill((255, 255, 255))
+                self.screen.fill(constants.DARK_BLUE)
                 self.finished, self.start_menu_opened, self.music = self.option_menu.draw()
                 if self.start_menu_opened:
                     self.option_menu_opened = False
             elif self.pause_menu_opened:
-                self.screen.fill((255, 255, 255))
-                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened = self.pause_menu.draw()
+
+                self.finished, self.pause_menu_opened, \
+                    self.option_menu_opened, self.start_menu_opened = self.pause_menu.draw()
                 if self.option_menu_opened or self.start_menu_opened:
                     self.pause_menu_opened = False
             else:

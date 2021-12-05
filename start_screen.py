@@ -98,7 +98,7 @@ class Menu:
     Функция, отвечающая за отрисовку основы меню.
     """
 
-    def __init__(self, amount, texts: list, screen):
+    def __init__(self, amount, texts: list, screen, buttons_images_up=None, buttons_images_down=None):
         """
         :param amount: количество планирующихся кнопок.
         :param texts: массив с текстами, которые необходимо разместить на кнопках
@@ -108,10 +108,16 @@ class Menu:
         self.buttons = []  # массив, в котором хранятся все кнопки, последняя кнопка - это всегда выход из игры
         self.variables = []  # массив с переменными, отвечающими за переключение режимов игры(пауза, старт, конец)
         self.amount = amount
+        self.buttons_images_down = buttons_images_down
+        self.buttons_images_up = buttons_images_up
+        print(self.buttons_images_up)
         for a in range(self.amount):
             self.buttons.append(
                 Button(366, 200 + a * 100, 548, 78, texts[a], self.screen))  # размещает кнопки по центру экрана
             self.variables.append(False)  # задает всем переменным состояний игры изначально False значение.
+            if self.buttons_images_down and self.buttons_images_up:
+                self.buttons[a].first_condition = pygame.image.load(self.buttons_images_up[a])
+                self.buttons[a].second_condition = pygame.image.load(self.buttons_images_down[a])
 
     def draw_background(self):
         """
@@ -120,18 +126,18 @@ class Menu:
         width = 250 + self.amount * 100
         background_surface = pygame.Surface((748, width))
         pygame.draw.rect(background_surface, DARK_BLUE, (0, 0, 748, width))
-        background_surface.set_alpha(100)
-        self.screen.blit(background_surface, (266, (720 - width) // 2 - 50))
+        background_surface.set_alpha(20)
+        self.screen.blit(background_surface, (266, (720 - width) // 2))
 
     def create_menu(self, picture):
         """
         Функция, отвечающая за создание меню. Обновляет кнопки, проверяет нажатия на них, обновляет связанные
         с ними переменные.
-        :param text: название меню, будет нарисовано над кнопками.
+        :param picture: название картинки, которая будет нарисовано над кнопками.
         """
         self.finished = False
         self.draw_background()
-        self.screen.blit(pygame.image.load(picture), (225,50))
+        self.screen.blit(pygame.image.load(picture), (225, 50))
         for i in range(len(self.variables)):
             self.variables[i] = False
         for button in self.buttons:
@@ -157,7 +163,10 @@ class StartMenu(Menu):
     """
 
     def __init__(self, screen):
-        super().__init__(3, ["start", "options", "exit"], screen)
+        buttons_up = ["pics/startbuttonunpressed.png", "pics/optionsbuttonunpressed.png",
+                      "pics/exitbuttonunpressed.png"]
+        buttons_down = ["pics/startbuttonpressed.png", "pics/optionsbuttonpressed.png", "pics/exitbuttonpressed.png"]
+        super().__init__(3, ["", "", ""], screen, buttons_up, buttons_down)
         self.start = False  # Если True, то надо начать игру
         self.options = False  # Если True, то надо перейти в настройки
 
@@ -178,7 +187,9 @@ class OptionMenu(Menu):
     """
 
     def __init__(self, screen):
-        super().__init__(3, ["continue", "music", "exit"], screen)
+        buttons_up = ["pics/continueunpressed.png", "pics/musicunpressed.png", "pics/exitbuttonunpressed.png"]
+        buttons_down = ["pics/continuepressed.png", "pics/musicpressed.png", "pics/exitbuttonpressed.png"]
+        super().__init__(3, ["", "", ""], screen, buttons_up, buttons_down)
         self.continues = False  # Если True, то продолжаем играть.
         self.music = False  # Если True, то надо перейти в меню выбора музыки.
 
@@ -187,7 +198,7 @@ class OptionMenu(Menu):
         Класс, отвечающий за отрисовку меню настроек.
         :return: self.finished, self.continues, self.music
         """
-        super().create_menu("pics/gamename.png") #TODO вставить фотку текста опций
+        super().create_menu("pics/options text.png")
         self.continues = self.variables[0]
         self.music = self.variables[1]
         return self.finished, self.continues, self.music
@@ -199,7 +210,11 @@ class PauseMenu(Menu):
     """
 
     def __init__(self, screen):
-        super().__init__(4, ["continue", "options", "start_menu", "exit"], screen)
+        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png", "pics/startmenuunpressed.png",
+                      "pics/exitbuttonunpressed.png"]
+        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png", "pics/startmenupressed.png",
+                        "pics/exitbuttonpressed.png"]
+        super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.continues = False  # Если True, то продолжаем игру
         self.options = False  # Если True, то переходим в меню настроек
         self.start_menu = False  # Если True, то возвращаемся в StartMenu
@@ -209,7 +224,7 @@ class PauseMenu(Menu):
         Функция, отвечающая за отрисовку меню паузы.
         :return: self.finished, self.continues, self.options, self.start_menu
         """
-        super().create_menu("pics/gamename.png") #TODO вставить фотку текста паузы
+        super().create_menu("pics/paused.png")
         self.continues = self.variables[0]
         self.options = self.variables[1]
         self.start_menu = self.variables[2]
