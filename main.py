@@ -37,7 +37,7 @@ class Game:
         часы pygame
         """
 
-        self.game_started = False
+        self.start_menu_opened = True
         """
         если была нажата кнопка старт на стартовом экране то True, иначе False
         """
@@ -74,7 +74,9 @@ class Game:
         показывает открыт ли инвентарь
         """
 
-        self.option_menu = False
+        self.option_menu = start_screen.OptionMenu(self.screen)
+
+        self.option_menu_opened = False
 
         self.start_menu = start_screen.StartMenu(self.screen)
 
@@ -100,6 +102,8 @@ class Game:
         self.timer = 0
 
         self.id = 0
+
+        self.music = None
 
     def set_building(self):
         for square in self.grid:
@@ -224,11 +228,10 @@ class Game:
         self.timer = (self.timer + 1) % self.FPS
         for obj in self.all_objects:
             if self.timer == self.FPS - 1:
-                if obj.name == "ksp" and len(obj.resources) < 16:
+                if (obj.name == "ksp" or obj.name.split("_")[0] == "shawarma") and len(obj.resources) < 16:
                     obj.resources.append(objects.Taco(self.screen))
             if obj.inventory_opened:
-                obj.inventory.int_update()
-
+                obj.inventory.int_update(obj.resources)
         map_logic.event_checker(event.get(), self)
 
         self.player.draw()
@@ -283,9 +286,16 @@ class Game:
                 self.create_start_position()
                 self.player_created = True
             pygame.display.update()
-            if not self.game_started:
+            if self.start_menu_opened:
                 self.screen.fill((255, 255, 255))
-                self.finished, self.game_started, self.option_menu = self.start_menu.draw()
+                self.finished, self.start_menu_opened, self.option_menu_opened = self.start_menu.draw()
+                if self.option_menu_opened:
+                    self.start_menu_opened = False
+            elif self.option_menu_opened:
+                self.screen.fill((255, 255, 255))
+                self.finished, self.start_menu_opened, self.music = self.option_menu.draw()
+                if self.start_menu_opened:
+                    self.option_menu_opened = False               
             else:
                 self.update_game(pygame.event)
             self.clock.tick(self.FPS)
