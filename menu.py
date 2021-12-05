@@ -148,7 +148,7 @@ class Inventory:
         # перемещаемый объект
         # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
-        self.all_objects = [] #Все объекты в инвентаре
+        self.all_objects = []  # Все объекты в инвентаре
         self.screen = screen
         self.create_inventory()
 
@@ -213,6 +213,7 @@ class Inventory:
             if slot.item:
                 self.all_objects.append(slot.item)
         return self.all_objects
+
 
 class ObjectInventory(Inventory):
     """
@@ -323,13 +324,11 @@ class PlayerInventory:
         self.building_pressed_item = None
         self.building_surface = None
 
-    def craft_items(self):
-        crafted_items = self.craft_inventory.making_items.copy()
+    def getting_resources(self, text, crafted_items):
         resource_checker = 0
-
         for i in range(2, len(crafted_items), 2):
             self.font_size = 64
-            self.text = "craft"
+            self.text = text
             for slot in self.inventory.slots:
                 if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
                     resource_checker += 1
@@ -351,9 +350,16 @@ class PlayerInventory:
         elif crafted_items:
             self.font_size = 20
             self.text = "not enough materials"
-        self.craft_inventory.making_items = []
 
-    def animation(self, event, pressed_item):
+    def craft_items(self):
+        crafted_items = self.craft_inventory.making_items.copy()
+        self.getting_resources("craft", crafted_items)
+
+    def building_buildings(self):
+        building_items = self.build_inventory.making_items.copy()
+        self.getting_resources("build", building_items)
+
+    def building_animation(self, event, pressed_item):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
 
@@ -381,6 +387,7 @@ class PlayerInventory:
             self.craft_inventory.int_update(self.font_size, self.text)
             self.build_inventory.int_update()
             self.craft_items()
+            self.building_buildings()
             self.build_items()
             self.inventory.int_update(items)
         elif self.building_pressed_item:
@@ -396,7 +403,7 @@ class PlayerInventory:
             self.inventory.visual_update(event)
         else:
             if event.type == pygame.MOUSEMOTION:
-                self.animation(event, self.pressed_building)
+                self.building_animation(event, self.pressed_building)
 
     def update_all(self, items):
         self.int_update(items)
