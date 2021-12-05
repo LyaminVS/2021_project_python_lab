@@ -50,6 +50,7 @@ class Button:
         self.timer = 0  # Счетчик итераций, который включается во время нажатия кнопки и выключается после 7 циклов
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.picture_changed = 0 # Менялась ли картинка у кнопки
+        self.building_on = False
 
     def scaling_image(self):
         """

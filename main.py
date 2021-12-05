@@ -103,16 +103,17 @@ class Game:
 
     def set_building(self):
         for square in self.grid:
-            if square.pressed_by_mouse:
+            if square.pressed_by_mouse and not square.building_on:
                 new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name,
                                              "shawarma_" + str(self.id), self.map[0] + square.x, self.map[1] + square.y)
                 self.id += 1
+                square.pressed_by_mouse = False
                 new_object.resources = []
                 new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
+                print()
                 self.all_objects.append(new_object)
                 square.first_condition = self.player.inventory.building_pressed_item.image
                 square.second_condition = self.player.inventory.building_pressed_item.image
-                square.pressed_by_mouse = False
 
 
     def name_to_class(self, name):
@@ -216,7 +217,6 @@ class Game:
         for square in self.grid:
             square.update()
         background.draw_objects(self.all_objects, self.map[0], self.map[1])
-
 
         if self.player.inventory.building:
             self.set_building()
