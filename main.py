@@ -109,19 +109,24 @@ class Game:
 
         self.pause_menu = start_screen.PauseMenu(self.screen)
 
-    def set_building(self):
+        def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse and not square.building_on:
-                new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name,
-                                             "shawarma_" + str(self.id), self.map[0] + square.x, self.map[1] + square.y)
-                self.id += 1
-                square.pressed_by_mouse = False
-                new_object.resources = []
-                new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
-                self.all_objects.append(new_object)
-                square.first_condition = self.player.inventory.building_pressed_item.image
-                square.second_condition = self.player.inventory.building_pressed_item.image
-
+                image = pygame.image.load(self.player.inventory.building_pressed_item.image_name)
+                width = image.get_width()
+                height = image.get_height()
+                collide_rect = pygame.Rect(square.x, square.y, width, height)
+                if not collide_rect.colliderect(self.player.collide_rect):
+                    new_object = objects.Objects(self.screen, self.player.inventory.building_pressed_item.image_name,
+                    "shawarma_" + str(self.id), self.map[0] + square.x, self.map[1] + square.y)
+                    self.id += 1
+                    square.pressed_by_mouse = False
+                    new_object.resources = []
+                    new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
+                    print()
+                    self.all_objects.append(new_object)
+                    square.first_condition = self.player.inventory.building_pressed_item.image
+                    square.second_condition = self.player.inventory.building_pressed_item.image
 
     def name_to_class(self, name):
         if name == "taco":
