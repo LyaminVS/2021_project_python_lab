@@ -133,7 +133,8 @@ class Menu:
         self.finished = False
         self.draw_background()
         writing(text, 640, 100, self.screen, 64, "Impact")
-
+        for i in range(len(self.variables)):
+            self.variables[i] = False
         for button in self.buttons:
             button.update()
         for event in pygame.event.get():
