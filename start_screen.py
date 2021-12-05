@@ -213,4 +213,4 @@ class PauseMenu(Menu):
         self.continues = self.variables[0]
         self.options = self.variables[1]
         self.start_menu = self.variables[2]
-        return self.finished, self.continues, self.options, self.start_menu
+        return self.finished, not self.continues, self.options, self.start_menu

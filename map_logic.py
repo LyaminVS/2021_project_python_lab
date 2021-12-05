@@ -71,6 +71,8 @@ def event_checker(event_array, game):
             else:
                 for obj in game.all_objects:
                     obj.inventory_opened = False
+
+
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             if game.player.inventory.building:
                 for square in game.grid:
@@ -84,6 +86,9 @@ def event_checker(event_array, game):
         if game.player.vx != 0 or game.player.vy != 0:
             collision(game)
             player_move(game)
+
+        if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_p):
+            game.pause_menu_opened = True
 
 
 def collision(game):
