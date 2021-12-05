@@ -148,6 +148,7 @@ class Inventory:
         # перемещаемый объект
         # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
+        self.all_objects = [] #Все объекты в инвентаре
         self.screen = screen
         self.create_inventory()
 
@@ -207,6 +208,10 @@ class Inventory:
                 slot.moving_object_from_slot = True
                 self.i += 1
 
+    def objects_in_inventory(self):
+        for slot in self.slots:
+            if slot.item:
+                self.all_objects.append(slot.item)
 
 class ObjectInventory(Inventory):
     """
