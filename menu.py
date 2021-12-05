@@ -54,7 +54,7 @@ class OneInventorySlot:
         :return: Если нажали на слот, то DARK_GREY, если навели курсор на слот, то GREY, если ничего, то LIGHT_GREY
         """
 
-        if self.i // 60 == 0 or self.i == 0:
+        if self.i // 20 == 0 or self.i == 0:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
                 if event.type == pygame.MOUSEMOTION and not self.pressed:
@@ -116,7 +116,7 @@ class OneInventorySlot:
         """
         if self.i > 0:  # таймер итераций, запускается в slot_pressed
             self.i += 1
-        if self.i % 20 == 0:
+        if self.i % 10 == 0:
             self.color = LIGHT_GREY
             self.pressed = False
             self.i = 0
@@ -135,16 +135,18 @@ class Inventory:
     """
     Класс, отвечающий за создание инвентаря у объекта.
     """
+    moving_object = None
+    moving_object_from_slot = False
 
-    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None, ):
+    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
         self.start_x = start_x  # левая верхняя координата х первой ячейки инвентаря.
         self.start_y = start_y  # левая верхняя координата y первой ячейки инвентаря.
         self.rows = rows  # количество строк в инвентаре
         self.columns = columns  # количество столбцов в инвентаре
         self.items = items  # объекты, которые должны лежать в инвентаре. Можно ничего не подавать, по умолчанию None.
         self.slots = []  # информация о ячейках инвентаря.
-        self.moving_object = None  # перемещаемый объект
-        self.moving_object_from_slot = False  # Перемещается ли сейчас какой-то объект?
+        # перемещаемый объект
+        # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
         self.screen = screen
         self.create_inventory()
@@ -185,23 +187,23 @@ class Inventory:
         """
         for slot in self.slots:
             if slot.pressed and slot.item and not slot.moving_object_from_slot \
-                    and not self.moving_object_from_slot and not self.moving_object:
+                    and not Inventory.moving_object_from_slot and not Inventory.moving_object:
                 # Если пользователь хочет достать какой-то элемент из ячейки.
-                self.moving_object = slot.item
+                Inventory.moving_object = slot.item
                 slot.item = None
-                self.moving_object_from_slot = True
-                slot.moving_object_from_slot = True  # Странно наверное так делать, но что поделать
-            elif slot.pressed and not slot.item and self.moving_object \
-                    and self.moving_object_from_slot and not slot.moving_object_from_slot:
+                Inventory.moving_object_from_slot = True
+                slot.moving_object_from_slot = True
+            elif slot.pressed and not slot.item and Inventory.moving_object \
+                    and Inventory.moving_object_from_slot and not slot.moving_object_from_slot:
                 # Если пользователь хочет положить объект, который достали в новую ячейку.
-                slot.item = self.moving_object
-                self.moving_object = None
+                slot.item = Inventory.moving_object
+                Inventory.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1  # запускает счетчик итераций, который потом отключает статус того, что перемещается объект
-            elif slot.pressed and slot.item and self.moving_object and slot.item.name == self.moving_object.name \
-                    and self.moving_object_from_slot and not slot.moving_object_from_slot:
-                slot.item.amount += self.moving_object.amount
-                self.moving_object = None
+            elif slot.pressed and slot.item and Inventory.moving_object and slot.item.name == Inventory.moving_object.name \
+                    and Inventory.moving_object_from_slot and not slot.moving_object_from_slot:
+                slot.item.amount += Inventory.moving_object.amount
+                Inventory.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1
 
@@ -224,12 +226,12 @@ class ObjectInventory(Inventory):
             items = []
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
-        if self.i % 41 == 0 and self.i != 0:
-            self.moving_object_from_slot = False
+        if self.i % 11 == 0 and self.i != 0:
+            Inventory.moving_object_from_slot = False
             self.i = 0
         for obj in self.slots:
             obj.update_one_inventory_slot()
-            if not self.moving_object_from_slot:
+            if not Inventory.moving_object_from_slot:
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
         self.fill_up_inventory(items)

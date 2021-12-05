@@ -110,7 +110,6 @@ class Menu:
         self.amount = amount
         self.buttons_images_down = buttons_images_down
         self.buttons_images_up = buttons_images_up
-        print(self.buttons_images_up)
         for a in range(self.amount):
             self.buttons.append(
                 Button(366, 200 + a * 100, 548, 78, texts[a], self.screen))  # размещает кнопки по центру экрана

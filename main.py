@@ -25,7 +25,7 @@ class Game:
         Размеры используемой карты
         """
 
-        self.FPS = 30
+        self.FPS = 60
         """
         Количество кадров в секунду
         """
@@ -127,7 +127,7 @@ class Game:
                     square.pressed_by_mouse = False
                     new_object.resources = []
                     new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4)
-                    print()
+
                     self.all_objects.append(new_object)
                     square.first_condition = self.player.inventory.building_pressed_item.image
                     square.second_condition = self.player.inventory.building_pressed_item.image
@@ -302,13 +302,14 @@ class Game:
         """
         for square in self.grid:
             square.first_condition = pygame.image.load("pics/build grass.png")
-            square.second_condition = pygame.image.load("pics/green.png")
-
+            square.second_condition = pygame.image.load("pics/build grass chosen.png")
         while not self.finished:
+
             if not self.player_created:
                 self.create_start_position()
                 self.player_created = True
             pygame.display.update()
+
             if self.start_menu_opened:
                 self.screen.fill(constants.DARK_BLUE)
                 self.finished, self.start_menu_opened, self.option_menu_opened = self.start_menu.draw()
