@@ -212,6 +212,7 @@ class Inventory:
         for slot in self.slots:
             if slot.item:
                 self.all_objects.append(slot.item)
+        return self.all_objects
 
 class ObjectInventory(Inventory):
     """
