@@ -147,7 +147,7 @@ class Game:
         if name == "brain":
             return objects.Brain(self.screen)
 
-    def line_to_object(self, line):
+    def line_to_object(self, line, objs):
         """
         преобразовывает строку в объект класса Object
         :param line: строка файла
@@ -163,8 +163,16 @@ class Game:
             line = line.strip()
             resources.append(self.name_to_class(line))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
-        new_object.resources = resources
-        new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4, resources)
+        is_same_building = False
+        if objs:
+            for obj in objs:
+                if len(obj.name.split("_")) == 2 and len(new_object.name.split("_")) == 2 and obj.name.split("_")[1] == new_object.name.split("_")[1]:
+                    new_object.resources = obj.resources
+                    new_object.inventory = obj.inventory
+                    is_same_building = True
+        if not is_same_building:
+            new_object.resources = resources
+            new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4, resources)
         return new_object
 
     def line_to_player(self, line):
@@ -202,7 +210,7 @@ class Game:
         all_objects = []
         objects_in_file = open("save_files/objects_save.txt")
         for line in objects_in_file:
-            new_obj = self.line_to_object(line)
+            new_obj = self.line_to_object(line, all_objects)
             all_objects.append(new_obj)
         objects_in_file.close()
         return all_objects
