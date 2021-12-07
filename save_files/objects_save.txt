@@ -12,4 +12,11 @@ bio;pics/bio.png;4170;600
 2_arctic;pics/arctic2.png;1270;1050
 3_arctic;pics/arctic3.png;1270;1120
 lk;pics/lk.png;4040;1650
+skamya1;pics/skamya.png;570;1450
+skamya2;pics/skamya.png;570;1720
+skamya3;pics/skamya.png;570;2000
+skamya4;pics/skamya.png;40;4360
+pool;pics/pool.png;1420;1760
+bush1;pics/bush1.png;960;1490
+bush2;pics/bush2.png;1150;1980
 shawarma_0;pics/shawarma.png;1800;3350
