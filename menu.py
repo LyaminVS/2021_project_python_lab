@@ -1,16 +1,9 @@
 import pygame
 import copy
+import constants as c
 
-# FIXME использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-LIGHT_GREY = (70, 70, 70)
-GREY = (50, 50, 50)
-DARK_GREY = (40, 40, 40)
-RED = (255, 0, 0)
-GREEN = (0, 200, 0)
-ORANGE = (220, 150, 40)  # FIXME цвет шрифта, но мне не нравится.
 
+# использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 
 class OneInventorySlot:
     """
@@ -21,7 +14,7 @@ class OneInventorySlot:
         self.one_inventory_slot_width = self.one_inventory_slot_height = 64
         self.one_slot_x = x  # координата х левого верхнего угла у ячейки инвентаря.
         self.one_slot_y = y  # координата у левого верхнего угла у ячейки инвентаря.
-        self.color = LIGHT_GREY  # цвет ячейки.
+        self.color = c.LIGHT_GREY  # цвет ячейки.
         self.pressed = False  # Нажата ли кнопка?
         self.screen = screen
         # экран, на который отрисовывается ячейка инвентаря.
@@ -39,11 +32,11 @@ class OneInventorySlot:
         """
         pygame.draw.rect(self.screen, self.color, (
             self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height))
-        pygame.draw.rect(self.screen, DARK_GREY, (
+        pygame.draw.rect(self.screen, c.DARK_GREY, (
             self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height), 3)
-        pygame.draw.rect(self.screen, BLACK, (
+        pygame.draw.rect(self.screen, c.BLACK, (
             self.one_slot_x, self.one_slot_y, self.one_inventory_slot_width, self.one_inventory_slot_height), 1)
-        pygame.draw.rect(self.screen, BLACK, (
+        pygame.draw.rect(self.screen, c.BLACK, (
             3 + self.one_slot_x, 3 + self.one_slot_y, self.one_inventory_slot_width - 6,
             self.one_inventory_slot_height - 6), 1)
 
@@ -58,10 +51,10 @@ class OneInventorySlot:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
                 if event.type == pygame.MOUSEMOTION and not self.pressed:
-                    self.color = GREY
+                    self.color = c.GREY
                     self.i += 1
                 else:
-                    self.color = DARK_GREY
+                    self.color = c.DARK_GREY
                     self.pressed = True
                     self.i += 1  # запускает таймер возврата LIGHT_GREY цвета.
 
@@ -80,7 +73,7 @@ class OneInventorySlot:
         else:
             pass
 
-        self.number = self.font.render(str(item_in_work.amount), True, ORANGE)
+        self.number = self.font.render(str(item_in_work.amount), True, c.ORANGE)
         self.number_place = self.number.get_rect(
             topright=(self.one_slot_x + self.one_inventory_slot_width - 5, self.one_slot_y + 5))
         self.screen.blit(self.number, self.number_place)
@@ -117,7 +110,7 @@ class OneInventorySlot:
         if self.i > 0:  # таймер итераций, запускается в slot_pressed
             self.i += 1
         if self.i % 10 == 0:
-            self.color = LIGHT_GREY
+            self.color = c.LIGHT_GREY
             self.pressed = False
             self.i = 0
 
@@ -170,14 +163,14 @@ class Inventory:
         """
         x = self.start_x
         y = self.start_y
-        inventary_slot = OneInventorySlot(x, y, self.screen)
+        inventory_slot = OneInventorySlot(x, y, self.screen)
         for i in range(self.columns):
             for j in range(self.rows):
-                inventary_slot = OneInventorySlot(x, y, self.screen)
-                self.slots.append(inventary_slot)
-                x += inventary_slot.one_inventory_slot_width
+                inventory_slot = OneInventorySlot(x, y, self.screen)
+                self.slots.append(inventory_slot)
+                x += inventory_slot.one_inventory_slot_width
             x = self.start_x
-            y += inventary_slot.one_inventory_slot_height
+            y += inventory_slot.one_inventory_slot_height
         self.fill_up_inventory(self.items)
 
     def moving_objects_in_inventory(self):
@@ -264,9 +257,9 @@ class Make(Inventory):
         self.making_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
     def int_update(self, font_size=64, text="craft"):
-        pygame.draw.rect(self.screen, LIGHT_GREY, (self.start_x, self.start_y - 64, self.rows * 64, 64))
-        pygame.draw.rect(self.screen, BLACK, (self.start_x, self.start_y - 64, self.rows * 64, 64), 1)
-        pygame.draw.rect(self.screen, BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.rows * 64 - 6, 64 - 6),
+        pygame.draw.rect(self.screen, c.LIGHT_GREY, (self.start_x, self.start_y - 64, self.rows * 64, 64))
+        pygame.draw.rect(self.screen, c.BLACK, (self.start_x, self.start_y - 64, self.rows * 64, 64), 1)
+        pygame.draw.rect(self.screen, c.BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.rows * 64 - 6, 64 - 6),
                          1)
         font = pygame.font.SysFont("Arial", font_size)
         words = font.render(text, True, (0, 0, 0))
@@ -314,10 +307,13 @@ class PlayerInventory:
 
     def __init__(self, screen, crafts, builds, materials=None):
         self.screen = screen
-        self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials)
+        self.inventory = ObjectInventory(screen, 500, 100, 7, 7,
+                                         materials)  # 500, 100 - начальные координаты; 7,7 - размер
+        """ координаты инвентарей для крафта и для построек ниже выбраны в соответствии с выбранным размером холста и 
+        отображаемой областью на экране """
         self.craft_inventory = Craft(screen, 948, 164, crafts)
         self.build_inventory = Build(screen, 948, 420, builds)
-        self.font_size = 64
+        self.font_size = 64  # размер шрифта
         self.text = "craft"
         self.building = False  # Строит ли игрок сейчас?
         self.pressed_building = None
@@ -348,7 +344,7 @@ class PlayerInventory:
                         if slot.item:
                             slot.item.amount = amount
         elif crafted_items:
-            self.font_size = 20
+            self.font_size = 20  # размер шрифта
             self.text = "not enough materials"
 
     def craft_items(self):
