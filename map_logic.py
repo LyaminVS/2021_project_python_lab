@@ -72,7 +72,6 @@ def event_checker(event_array, game):
                 for obj in game.all_objects:
                     obj.inventory_opened = False
 
-
         elif checked_event.type == pygame.MOUSEBUTTONUP or checked_event.type == pygame.MOUSEMOTION:
             if game.player.inventory.building:
                 for square in game.grid:

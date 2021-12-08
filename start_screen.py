@@ -5,19 +5,19 @@ GREY = (50, 50, 50)
 DARK_BLUE = (1, 3, 20)
 
 
-def writing(text: str, xcenter, ycenter, screen, font_size=16, font='Arial'):
+def writing(text: str, x_center, y_center, screen, font_size=16, font='Arial'):
     """
     Функция, отвечающая за написание текста на основном
     :param text: текст, который должен появиться
-    :param xcenter: х координата центра
-    :param ycenter: y координата центра
+    :param x_center: х координата центра
+    :param y_center: y координата центра
     :param font_size: размер шрифта, по умолчанию 16
     :param font: шрифт, который будет использован для надписи, по умолчанию Arial
     :param screen: экран, на котором будет отрисован текст
     """
     font = pygame.font.SysFont(font, font_size)
     words = font.render(text, True, (200, 0, 0))
-    place = words.get_rect(center=(xcenter, ycenter))
+    place = words.get_rect(center=(x_center, y_center))
     screen.blit(words, place)
 
 
@@ -41,8 +41,8 @@ class Button:
         self.width = width
         self.text = text
         self.first_condition = pygame.image.load(
-            "pics/startbuttonunpressed.png")  # картинка кнопки, когда она не нажата
-        self.second_condition = pygame.image.load("pics/startbuttonpressed.png")  # картинка кнопки, когда она нажата
+            "pics/start_button_unpressed.png")  # картинка кнопки, когда она не нажата
+        self.second_condition = pygame.image.load("pics/start_button_pressed.png")  # картинка кнопки, когда она нажата
         self.image = self.first_condition  # изображение, которое отрисовывается на кнопке
         self.pressed = False  # Нажата ли сейчас кнопка?
         self.pressed_by_mouse = False  # Нажата ли кнопка мышкой?
@@ -73,9 +73,10 @@ class Button:
         self.screen.blit(self.image, self.rect)
         writing(self.text, self.x + self.length / 2, self.y + self.width / 2, self.screen)
 
+        """блок кода ниже делает кнопку не нажатой после прошествия времени"""
         if self.timer > 0:
             self.timer += 1
-        if self.timer % 7 == 0 and self.timer != 0:
+        if self.timer % 7 == 0 and self.timer != 0:  # 7 - красивое число итераций
             self.pressed = False
             self.pressed_by_mouse = False
             self.timer = 0
@@ -162,24 +163,25 @@ class StartMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png","pics/newgameunpressed.png",
-                      "pics/exitbuttonunpressed.png"]
-        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png","pics/newgamepressed.png", "pics/exitbuttonpressed.png"]
+        buttons_up = ["pics/continue_unpressed.png", "pics/options_button_unpressed.png", "pics/new_game_unpressed.png",
+                      "pics/exit_button_unpressed.png"]
+        buttons_down = ["pics/continue_pressed.png", "pics/options_button_pressed.png", "pics/new_game_pressed.png",
+                        "pics/exit_button_pressed.png"]
         super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.start = False  # Если True, то надо начать игру из уже сохраненной
         self.options = False  # Если True, то надо перейти в настройки
-        self.new_game = False # Если True, то надо начать новую игру
+        self.new_game = False  # Если True, то надо начать новую игру
 
     def draw(self):
         """
         Функция, отвечающая за отрисовку стартового меню.
         :return: self.finished, self.start, self.options
         """
-        super().create_menu("pics/gamename.png")
+        super().create_menu("pics/game_name.png")
         self.start = self.variables[0]
         self.options = self.variables[1]
         self.new_game = self.variables[2]
-        return self.finished, not self.start, self.options, self.new_game
+        return self.finished, self.start, self.options, self.new_game
 
 
 class OptionMenu(Menu):
@@ -188,8 +190,8 @@ class OptionMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continueunpressed.png", "pics/musicunpressed.png", "pics/exitbuttonunpressed.png"]
-        buttons_down = ["pics/continuepressed.png", "pics/musicpressed.png", "pics/exitbuttonpressed.png"]
+        buttons_up = ["pics/continue_unpressed.png", "pics/music_unpressed.png", "pics/exit_button_unpressed.png"]
+        buttons_down = ["pics/continue_pressed.png", "pics/music_pressed.png", "pics/exit_button_pressed.png"]
         super().__init__(3, ["", "", ""], screen, buttons_up, buttons_down)
         self.continues = False  # Если True, то продолжаем играть.
         self.music = False  # Если True, то надо перейти в меню выбора музыки.
@@ -199,7 +201,7 @@ class OptionMenu(Menu):
         Класс, отвечающий за отрисовку меню настроек.
         :return: self.finished, self.continues, self.music
         """
-        super().create_menu("pics/options text.png")
+        super().create_menu("pics/options_text.png")
         self.continues = self.variables[0]
         self.music = self.variables[1]
         return self.finished, self.continues, self.music
@@ -211,10 +213,10 @@ class PauseMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png", "pics/startmenuunpressed.png",
-                      "pics/exitbuttonunpressed.png"]
-        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png", "pics/startmenupressed.png",
-                        "pics/exitbuttonpressed.png"]
+        buttons_up = ["pics/continue_unpressed.png", "pics/options_button_unpressed.png",
+                      "pics/start_menu_unpressed.png", "pics/exit_button_unpressed.png"]
+        buttons_down = ["pics/continue_pressed.png", "pics/options_button_pressed.png", "pics/start_menu_pressed.png",
+                        "pics/exit_button_pressed.png"]
         super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.continues = False  # Если True, то продолжаем игру
         self.options = False  # Если True, то переходим в меню настроек

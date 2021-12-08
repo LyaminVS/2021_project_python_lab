@@ -39,7 +39,6 @@ class Game:
         """
         часы pygame
         """
-
         self.start_menu_opened = True
         """
         если была нажата кнопка старт на стартовом экране то True, иначе False
@@ -68,7 +67,7 @@ class Game:
         переменная показывает в каком меню находится игрок
         """
 
-        self.map = [1500, 3000]  # было 758, 2986
+        self.map = [1500, 3000]
         """
         показывает положение карты
         """
@@ -76,13 +75,18 @@ class Game:
         """
         показывает открыт ли инвентарь
         """
-
         self.option_menu = start_screen.OptionMenu(self.screen)
-
+        """
+        содержит меню настроек 
+        """
         self.option_menu_opened = False
-
+        """
+        True если меню настроек открыто, иначе False
+        """
         self.start_menu = start_screen.StartMenu(self.screen)
-
+        """
+        содержит стартовое меню
+        """
         self.grid = background.create_grid(-self.map[0] + 1600, -self.map[1] + 3350, 2, 3, self.screen)
         """
         Сетка с местами, на которых можно строить
@@ -103,16 +107,35 @@ class Game:
         """
 
         self.timer = 0
-
+        """
+        таймер показывающий когда должны появиться новые ресурсы в зданиях
+        """
         self.id = 0
-
+        """
+        содержит id следующего здания для строительства
+        """
         self.music = None
 
         self.pause_menu_opened = False
-
+        """
+        True если открыто меню паузы иначе False
+        """
         self.pause_menu = start_screen.PauseMenu(self.screen)
-
+        """
+        содержит меню паузы
+        """
         self.new_game = False
+        """
+        True если начата новая игра иначе False
+        """
+        self.main_path = "new_save_files"
+        """
+        показывает папку из которой берутся сохранения
+        """
+        self.continue_game = False
+        """
+        True если продолжена игра иначе False
+        """
 
     def set_building(self):
         for square in self.grid:
@@ -142,6 +165,11 @@ class Game:
                     square.building_on = True
 
     def name_to_class(self, name):
+        """
+        переводит строку в объект
+        :param name: строка с названием объекта
+        :return: объект с названием name
+        """
         if name == "taco":
             return objects.Taco(self.screen)
         if name == "landau":
@@ -153,13 +181,14 @@ class Game:
         """
         преобразовывает строку в объект класса Object
         :param line: строка файла
+        :param objs: переменная содержит уже созданные объекты
         :return:
         """
 
         name, image, x, y = line.split(";")
         resources_in_file = []
-        if os.path.exists("save_files/object_inventory_save/" + name + ".txt"):
-            resources_in_file = open("save_files/object_inventory_save/" + name + ".txt")
+        if os.path.exists(self.main_path + "/object_inventory_save/" + name + ".txt"):
+            resources_in_file = open(self.main_path + "/object_inventory_save/" + name + ".txt")
         resources = []
         for line in resources_in_file:
             line = line.strip()
@@ -168,7 +197,8 @@ class Game:
         is_same_building = False
         if objs:
             for obj in objs:
-                if len(obj.name.split("_")) == 2 and len(new_object.name.split("_")) == 2 and obj.name.split("_")[1] == new_object.name.split("_")[1]:
+                if len(obj.name.split("_")) == 2 and len(new_object.name.split("_")) == 2 \
+                        and obj.name.split("_")[1] == new_object.name.split("_")[1]:
                     new_object.resources = obj.resources
                     new_object.inventory = obj.inventory
                     is_same_building = True
@@ -183,7 +213,7 @@ class Game:
         :param line: строка файла
         :return:
         """
-        resources_in_file = open("save_files/player_resources_save")
+        resources_in_file = open(self.main_path + "/player_resources_save")
         resources = []
         for resource in resources_in_file:
             resource = resource.strip()
@@ -198,7 +228,7 @@ class Game:
         преобразовывает файл в объект класса Player
         :return: объект класса Player
         """
-        player_file = open("save_files/player_save.txt")
+        player_file = open(self.main_path + "/player_save.txt")
         player_line = player_file.readline()
         player = self.line_to_player(player_line)
         player_file.close()
@@ -210,7 +240,7 @@ class Game:
         :return: массив объектов класса Object
         """
         all_objects = []
-        objects_in_file = open("save_files/objects_save.txt")
+        objects_in_file = open(self.main_path + "/objects_save.txt")
         for line in objects_in_file:
             new_obj = self.line_to_object(line, all_objects)
             all_objects.append(new_obj)
@@ -219,13 +249,13 @@ class Game:
 
     def get_map_from_file(self):
         map_array = []
-        map_in_file = open("save_files/map_save.txt")
+        map_in_file = open(self.main_path + "/map_save.txt")
         for line in map_in_file:
             map_array.append(int(line))
         return map_array
 
     def get_id_from_file(self):
-        id_in_file = open("save_files/id_save.txt")
+        id_in_file = open(self.main_path + "/id_save.txt")
         build_id = id_in_file.readline()
         id_in_file.close()
         return int(build_id)
@@ -239,6 +269,9 @@ class Game:
         self.player = self.get_player_from_file()
         self.all_objects = self.get_obj_from_file()
         self.id = self.get_id_from_file()
+        for square in self.grid:
+            square.first_condition = pygame.image.load("pics/build grass.png")
+            square.second_condition = pygame.image.load("pics/build grass chosen.png")
 
     def update_game(self, event):
         """
@@ -304,7 +337,8 @@ class Game:
         функция обрабатывает закрытие окна игры
         :return:
         """
-        self.save_game()
+        if self.player is not None:
+            self.save_game()
         pygame.quit()
 
     def main(self):
@@ -312,29 +346,26 @@ class Game:
         основной цикл программы
         :return:
         """
-        for square in self.grid:
-            square.first_condition = pygame.image.load("pics/build grass.png")
-            square.second_condition = pygame.image.load("pics/build grass chosen.png")
         while not self.finished:
-            if not self.player_created:
-                self.create_start_position()
-                self.player_created = True
             pygame.display.update()
-
             if self.start_menu_opened:
                 self.screen.fill(constants.DARK_BLUE)
-                self.finished, self.start_menu_opened, self.option_menu_opened, self.new_game = self.start_menu.draw()
-                if self.option_menu_opened:
+                self.finished, self.continue_game, self.option_menu_opened, self.new_game = self.start_menu.draw()
+                if self.option_menu_opened or self.continue_game or self.new_game:
                     self.start_menu_opened = False
+                if self.continue_game:
+                    self.main_path = "save_files"
+                if not self.player_created and (self.new_game or self.continue_game):
+                    self.create_start_position()
+                    self.player_created = True
             elif self.option_menu_opened:
                 self.screen.fill(constants.DARK_BLUE)
                 self.finished, self.start_menu_opened, self.music = self.option_menu.draw()
                 if self.start_menu_opened:
                     self.option_menu_opened = False
             elif self.pause_menu_opened:
-
-                self.finished, self.pause_menu_opened, \
-                    self.option_menu_opened, self.start_menu_opened = self.pause_menu.draw()
+                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened =\
+                    self.pause_menu.draw()
                 if self.option_menu_opened or self.start_menu_opened:
                     self.pause_menu_opened = False
             else:
