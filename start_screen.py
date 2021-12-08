@@ -179,7 +179,7 @@ class StartMenu(Menu):
         self.start = self.variables[0]
         self.options = self.variables[1]
         self.new_game = self.variables[2]
-        return self.finished, not self.start, self.options, self.new_game
+        return self.finished, self.start, self.options, self.new_game
 
 
 class OptionMenu(Menu):
