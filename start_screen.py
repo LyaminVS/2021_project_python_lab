@@ -165,7 +165,7 @@ class StartMenu(Menu):
         buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png","pics/newgameunpressed.png",
                       "pics/exitbuttonunpressed.png"]
         buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png","pics/newgamepressed.png", "pics/exitbuttonpressed.png"]
-        super().__init__(3, ["", "", ""], screen, buttons_up, buttons_down)
+        super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.start = False  # Если True, то надо начать игру из уже сохраненной
         self.options = False  # Если True, то надо перейти в настройки
         self.new_game = False # Если True, то надо начать новую игру
