@@ -247,7 +247,7 @@ class Game:
         """
         self.update_building_position()
         background.draw_map(self.screen, self.map[0], self.map[1])
-        background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
+        background.change_coord_grid(self.grid, self.map[0], self.map[1], 3)
         for square in self.grid:
             square.update()
         background.draw_objects(self.all_objects, self.map[0], self.map[1])

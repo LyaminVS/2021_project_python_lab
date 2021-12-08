@@ -323,9 +323,15 @@ class PlayerInventory:
         self.pressed_building = None
         self.building_pressed_item = None
         self.building_surface = None
+        self.can_build = True
 
-    def getting_resources(self, text, crafted_items):
+    def getting_resources(self, text, inventory_or_building):
+        if inventory_or_building:
+            crafted_items = self.craft_inventory.making_items.copy()
+        else:
+            crafted_items = self.build_inventory.making_items.copy()
         resource_checker = 0
+        crafted_items = crafted_items.copy()
         for i in range(2, len(crafted_items), 2):
             self.font_size = 64
             self.text = text
@@ -334,6 +340,10 @@ class PlayerInventory:
                     resource_checker += 1
         if crafted_items and resource_checker >= (len(crafted_items) - 1) // 2:
             amount = crafted_items[0]
+            if not inventory_or_building:
+                self.can_build = True
+                print(resource_checker)
+                print((len(crafted_items)-1) //2)
             for slot in self.inventory.slots:
                 for i in range(2, len(crafted_items), 2):
                     if slot.item and crafted_items[-1] and slot.item.name == crafted_items[-1].name:
@@ -342,22 +352,28 @@ class PlayerInventory:
                     elif slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
                         slot.item.amount -= crafted_items[i - 1]
                         crafted_items[i - 1] = 0
-                    elif not slot.item:
+                    elif not slot.item and inventory_or_building:
                         slot.item = copy.copy(crafted_items[-1])
                         crafted_items[-1] = None
                         if slot.item:
                             slot.item.amount = amount
+
         elif crafted_items:
             self.font_size = 20
             self.text = "not enough materials"
+            if not inventory_or_building:
+                self.can_build = False
+                print("mem")
+        if inventory_or_building:
+            self.craft_inventory.making_items = []
+        else:
+            self.build_inventory.making_items = []
 
     def craft_items(self):
-        crafted_items = self.craft_inventory.making_items.copy()
-        self.getting_resources("craft", crafted_items)
+        self.getting_resources("craft", True)
 
     def building_buildings(self):
-        building_items = self.build_inventory.making_items.copy()
-        self.getting_resources("build", building_items)
+        self.getting_resources("build", False)
 
     def building_animation(self, event, pressed_item):
         mouse_x = event.pos[0]
@@ -386,9 +402,9 @@ class PlayerInventory:
         if not self.building:
             self.craft_inventory.int_update(self.font_size, self.text)
             self.build_inventory.int_update()
+            self.build_items()
             self.craft_items()
             self.building_buildings()
-            self.build_items()
             self.inventory.int_update(items)
         elif self.building_pressed_item:
             for slot in self.build_inventory.slots:
@@ -396,18 +412,10 @@ class PlayerInventory:
             self.screen.blit(self.building_pressed_item.image, self.building_surface)
 
     def visual_update(self, event):
-
         if not self.building:
             self.craft_inventory.visual_update(event)
             self.build_inventory.visual_update(event)
             self.inventory.visual_update(event)
         else:
-            if event.type == pygame.MOUSEMOTION:
+            if event.type == pygame.MOUSEMOTION and self.can_build:
                 self.building_animation(event, self.pressed_building)
-
-    def update_all(self, items):
-        self.int_update(items)
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
-                self.inventory.visual_update(event)
-                self.craft_inventory.visual_update(event)
