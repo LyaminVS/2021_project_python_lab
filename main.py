@@ -39,7 +39,6 @@ class Game:
         """
         часы pygame
         """
-
         self.start_menu_opened = True
         """
         если была нажата кнопка старт на стартовом экране то True, иначе False
@@ -68,7 +67,7 @@ class Game:
         переменная показывает в каком меню находится игрок
         """
 
-        self.map = [1500, 3000]  # было 758, 2986
+        self.map = [1500, 3000]
         """
         показывает положение карты
         """
@@ -76,13 +75,18 @@ class Game:
         """
         показывает открыт ли инвентарь
         """
-
         self.option_menu = start_screen.OptionMenu(self.screen)
-
+        """
+        содержит меню настроек 
+        """
         self.option_menu_opened = False
-
+        """
+        True если меню настроек открыто, иначе False
+        """
         self.start_menu = start_screen.StartMenu(self.screen)
-
+        """
+        содержит стартовое меню
+        """
         self.grid = background.create_grid(-self.map[0] + 1600, -self.map[1] + 3350, 2, 3, self.screen)
         """
         Сетка с местами, на которых можно строить
@@ -103,20 +107,35 @@ class Game:
         """
 
         self.timer = 0
-
+        """
+        таймер показывающий когда должны появиться новые ресурсы в зданиях
+        """
         self.id = 0
-
+        """
+        содержит id следующего здания для строительства
+        """
         self.music = None
 
         self.pause_menu_opened = False
-
+        """
+        True если открыто меню паузы иначе False
+        """
         self.pause_menu = start_screen.PauseMenu(self.screen)
-
+        """
+        содержит меню паузы
+        """
         self.new_game = False
-
+        """
+        True если начата новая игра иначе False
+        """
         self.main_path = "new_save_files"
-
+        """
+        показывает папку из которой берутся сохранения
+        """
         self.continue_game = False
+        """
+        True если продолжена игра иначе False
+        """
 
     def set_building(self):
         for square in self.grid:
@@ -146,6 +165,11 @@ class Game:
                     square.building_on = True
 
     def name_to_class(self, name):
+        """
+        переводит строку в объект
+        :param name: строка с названием объекта
+        :return: объект с названием name
+        """
         if name == "taco":
             return objects.Taco(self.screen)
         if name == "landau":
@@ -157,6 +181,7 @@ class Game:
         """
         преобразовывает строку в объект класса Object
         :param line: строка файла
+        :param objs: переменная содержит уже созданные объекты
         :return:
         """
 
@@ -172,7 +197,8 @@ class Game:
         is_same_building = False
         if objs:
             for obj in objs:
-                if len(obj.name.split("_")) == 2 and len(new_object.name.split("_")) == 2 and obj.name.split("_")[1] == new_object.name.split("_")[1]:
+                if len(obj.name.split("_")) == 2 and len(new_object.name.split("_")) == 2 \
+                        and obj.name.split("_")[1] == new_object.name.split("_")[1]:
                     new_object.resources = obj.resources
                     new_object.inventory = obj.inventory
                     is_same_building = True
@@ -254,7 +280,7 @@ class Game:
         """
         self.update_building_position()
         background.draw_map(self.screen, self.map[0], self.map[1])
-        background.change_coord_grid(self.grid, self.map[0], self.map[1], 2, 3)
+        background.change_coord_grid(self.grid, self.map[0], self.map[1], 3)
         for square in self.grid:
             square.update()
         background.draw_objects(self.all_objects, self.map[0], self.map[1])
@@ -338,9 +364,8 @@ class Game:
                 if self.start_menu_opened:
                     self.option_menu_opened = False
             elif self.pause_menu_opened:
-
-                self.finished, self.pause_menu_opened, \
-                    self.option_menu_opened, self.start_menu_opened = self.pause_menu.draw()
+                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened =\
+                    self.pause_menu.draw()
                 if self.option_menu_opened or self.start_menu_opened:
                     self.pause_menu_opened = False
             else:
