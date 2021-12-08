@@ -162,12 +162,13 @@ class StartMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/startbuttonunpressed.png", "pics/optionsbuttonunpressed.png",
+        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png","pics/newgameunpressed.png",
                       "pics/exitbuttonunpressed.png"]
-        buttons_down = ["pics/startbuttonpressed.png", "pics/optionsbuttonpressed.png", "pics/exitbuttonpressed.png"]
+        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png","pics/newgamepressed.png", "pics/exitbuttonpressed.png"]
         super().__init__(3, ["", "", ""], screen, buttons_up, buttons_down)
-        self.start = False  # Если True, то надо начать игру
+        self.start = False  # Если True, то надо начать игру из уже сохраненной
         self.options = False  # Если True, то надо перейти в настройки
+        self.new_game = False # Если True, то надо начать новую игру
 
     def draw(self):
         """
@@ -177,7 +178,8 @@ class StartMenu(Menu):
         super().create_menu("pics/gamename.png")
         self.start = self.variables[0]
         self.options = self.variables[1]
-        return self.finished, not self.start, self.options
+        self.new_game = self.variables[2]
+        return self.finished, not self.start, self.options, self.new_game
 
 
 class OptionMenu(Menu):

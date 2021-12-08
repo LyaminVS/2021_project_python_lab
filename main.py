@@ -112,6 +112,8 @@ class Game:
 
         self.pause_menu = start_screen.PauseMenu(self.screen)
 
+        self.new_game = False
+
     def set_building(self):
         for square in self.grid:
             if square.pressed_by_mouse and not square.building_on:
@@ -313,7 +315,7 @@ class Game:
 
             if self.start_menu_opened:
                 self.screen.fill(constants.DARK_BLUE)
-                self.finished, self.start_menu_opened, self.option_menu_opened = self.start_menu.draw()
+                self.finished, self.start_menu_opened, self.option_menu_opened, self.new_game = self.start_menu.draw()
                 if self.option_menu_opened:
                     self.start_menu_opened = False
             elif self.option_menu_opened:
