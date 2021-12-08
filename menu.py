@@ -73,7 +73,7 @@ class OneInventorySlot:
         else:
             pass
 
-        self.number = self.font.render(str(item_in_work.amount), True, c.ORANGE)
+        self.number = self.font.render(str(item_in_work.amount), True, c.LIGHT_GREEN)
         self.number_place = self.number.get_rect(
             topright=(self.one_slot_x + self.one_inventory_slot_width - 5, self.one_slot_y + 5))
         self.screen.blit(self.number, self.number_place)
@@ -194,7 +194,8 @@ class Inventory:
                 Inventory.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1  # запускает счетчик итераций, который потом отключает статус того, что перемещается объект
-            elif slot.pressed and slot.item and Inventory.moving_object and slot.item.name == Inventory.moving_object.name \
+            elif slot.pressed and slot.item and Inventory.moving_object \
+                    and slot.item.name == Inventory.moving_object.name \
                     and Inventory.moving_object_from_slot and not slot.moving_object_from_slot:
                 slot.item.amount += Inventory.moving_object.amount
                 Inventory.moving_object = None
