@@ -5,7 +5,6 @@ from start_screen import Button
 def draw_map(sc, x, y):
     """
     рисует карту
-    :return:
     """
 
     bg = pygame.image.load('pics/background.png')
@@ -15,7 +14,6 @@ def draw_map(sc, x, y):
 def draw_objects(objects_list, x, y):
     """
     рисует объекты
-    :return:
     """
 
     for obj in objects_list:
@@ -41,7 +39,14 @@ def create_grid(x0, y0, rows, columns, screen):
     return grid
 
 
-def change_coord_grid(grid, x0, y0, rows, columns):
+def change_coord_grid(grid, x0, y0, columns):
+    """
+    функция, которая отвечает за изменение координат сетки
+    :param grid: сетка, координаты которы
+    :param x0: начальная координата сетки по горизонтали
+    :param y0: начальная координата сетки по вертикали
+    :param columns: столбцы
+    """
     x = x0
     y = y0
     f = 0
