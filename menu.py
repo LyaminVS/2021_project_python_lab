@@ -274,6 +274,8 @@ class Make(Inventory):
             obj.slot_pressed(event)
             if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
                 self.making_items = self.makes[obj.item]
+                if obj.i % 2 == 0:
+                    obj.pressed = False
 
     def update(self):
         """
@@ -340,7 +342,7 @@ class PlayerInventory:
             if not inventory_or_building:
                 self.can_build = True
                 print(resource_checker)
-                print((len(crafted_items)-1) //2)
+                print((len(crafted_items) - 1) // 2)
             for slot in self.inventory.slots:
                 for i in range(2, len(crafted_items), 2):
                     if slot.item and crafted_items[-1] and slot.item.name == crafted_items[-1].name:

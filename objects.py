@@ -173,7 +173,7 @@ class Landau(Resources):
 
 class Brain(Resources):
     def __init__(self, screen):
-        super(Brain, self).__init__(screen, "pics/cat.png", "Brain", False)
+        super(Brain, self).__init__(screen, "pics/brain.png", "Brain", False)
 
 
 class Palatka(Resources):
