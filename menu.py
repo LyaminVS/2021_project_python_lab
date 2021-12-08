@@ -5,6 +5,18 @@ import constants as c
 
 # использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
 
+def resource_checker(crafted_items, slots):
+    resource_check = 0
+    for i in range(2, len(crafted_items), 2):
+        for slot in slots:
+            if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                resource_check += 1
+    if crafted_items and resource_check >= (len(crafted_items) - 1) // 2:
+        return True
+    else:
+        return False
+
+
 class OneInventorySlot:
     """
     отображение ячейки инвентаря
@@ -322,17 +334,6 @@ class PlayerInventory:
         self.building_surface = None
         self.can_build = True
 
-    def resource_checker(self, crafted_items, slots):
-        resource_checker = 0
-        for i in range(2, len(crafted_items), 2):
-            for slot in slots:
-                if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
-                    resource_checker += 1
-        if crafted_items and resource_checker >= (len(crafted_items) - 1) // 2:
-            return True
-        else:
-            return False
-
     def getting_resources(self, text, inventory_or_building):
         check_resources = False
         if inventory_or_building:
@@ -343,7 +344,7 @@ class PlayerInventory:
         for i in range(2, len(crafted_items), 2):
             self.font_size = 64
             self.text = text
-            check_resources = self.resource_checker(crafted_items, self.inventory.slots)
+            check_resources = resource_checker(crafted_items, self.inventory.slots)
         if check_resources:
             amount = crafted_items[0]
             if not inventory_or_building:
@@ -397,7 +398,6 @@ class PlayerInventory:
                                                                       (pressed_item.width, pressed_item.height))
         if self.building:
             self.building_surface = self.building_pressed_item.image.get_rect(center=(mouse_x, mouse_y))
-
 
     def build_items(self):
         for slot in self.build_inventory.slots:
