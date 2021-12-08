@@ -156,6 +156,7 @@ class Game:
                     self.all_objects.append(new_object)
                     square.first_condition = self.player.inventory.building_pressed_item.image
                     square.second_condition = self.player.inventory.building_pressed_item.image
+                    game.player.inventory.building = False
 
     def update_building_position(self):
         for square in self.grid:

@@ -274,8 +274,6 @@ class Make(Inventory):
             obj.slot_pressed(event)
             if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
                 self.making_items = self.makes[obj.item]
-                if obj.i % 2 == 0:
-                    obj.pressed = False
 
     def update(self):
         """
@@ -324,20 +322,29 @@ class PlayerInventory:
         self.building_surface = None
         self.can_build = True
 
+    def resource_checker(self, crafted_items, slots):
+        resource_checker = 0
+        for i in range(2, len(crafted_items), 2):
+            for slot in slots:
+                if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                    resource_checker += 1
+        if crafted_items and resource_checker >= (len(crafted_items) - 1) // 2:
+            return True
+        else:
+            return False
+
     def getting_resources(self, text, inventory_or_building):
+        check_resources = False
         if inventory_or_building:
             crafted_items = self.craft_inventory.making_items.copy()
         else:
             crafted_items = self.build_inventory.making_items.copy()
-        resource_checker = 0
         crafted_items = crafted_items.copy()
         for i in range(2, len(crafted_items), 2):
             self.font_size = 64
             self.text = text
-            for slot in self.inventory.slots:
-                if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
-                    resource_checker += 1
-        if crafted_items and resource_checker >= (len(crafted_items) - 1) // 2:
+            check_resources = self.resource_checker(crafted_items, self.inventory.slots)
+        if check_resources:
             amount = crafted_items[0]
             if not inventory_or_building:
                 self.can_build = True
@@ -371,12 +378,10 @@ class PlayerInventory:
         self.getting_resources("craft", True)
 
     def building_buildings(self):
-
         self.getting_resources("build", False)
-
         if not self.can_build:
             self.building = False
-        print(self.can_build)
+
     def building_animation(self, event, pressed_item):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
@@ -390,7 +395,9 @@ class PlayerInventory:
             self.building_pressed_item = copy.copy(pressed_item)
             self.building_pressed_item.image = pygame.transform.scale(pressed_item.image,
                                                                       (pressed_item.width, pressed_item.height))
-        self.building_surface = self.building_pressed_item.image.get_rect(center=(mouse_x, mouse_y))
+        if self.building:
+            self.building_surface = self.building_pressed_item.image.get_rect(center=(mouse_x, mouse_y))
+
 
     def build_items(self):
         for slot in self.build_inventory.slots:
@@ -418,6 +425,5 @@ class PlayerInventory:
             self.craft_inventory.visual_update(event)
             self.build_inventory.visual_update(event)
             self.inventory.visual_update(event)
-        else:
-            if event.type == pygame.MOUSEMOTION and self.can_build:
-                self.building_animation(event, self.pressed_building)
+        elif event.type == pygame.MOUSEMOTION and self.can_build:
+            self.building_animation(event, self.pressed_building)
