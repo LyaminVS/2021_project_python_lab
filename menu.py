@@ -341,8 +341,6 @@ class PlayerInventory:
             amount = crafted_items[0]
             if not inventory_or_building:
                 self.can_build = True
-                print(resource_checker)
-                print((len(crafted_items) - 1) // 2)
             for slot in self.inventory.slots:
                 for i in range(2, len(crafted_items), 2):
                     if slot.item and crafted_items[-1] and slot.item.name == crafted_items[-1].name:
@@ -362,6 +360,7 @@ class PlayerInventory:
             self.text = "not enough materials"
             if not inventory_or_building:
                 self.can_build = False
+
                 print("mem")
         if inventory_or_building:
             self.craft_inventory.making_items = []
@@ -372,8 +371,12 @@ class PlayerInventory:
         self.getting_resources("craft", True)
 
     def building_buildings(self):
+
         self.getting_resources("build", False)
 
+        if not self.can_build:
+            self.building = False
+        print(self.can_build)
     def building_animation(self, event, pressed_item):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
@@ -391,7 +394,7 @@ class PlayerInventory:
 
     def build_items(self):
         for slot in self.build_inventory.slots:
-            if slot.pressed and slot.item:
+            if slot.pressed and slot.item and self.can_build:
                 self.building = True
                 self.pressed_building = slot.item
 
