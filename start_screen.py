@@ -213,8 +213,8 @@ class PauseMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continue_unpressed.png", "pics/options_button_unpressed.png", "pics/start_menu_unpressed.png",
-                      "pics/exit_button_unpressed.png"]
+        buttons_up = ["pics/continue_unpressed.png", "pics/options_button_unpressed.png",
+                      "pics/start_menu_unpressed.png", "pics/exit_button_unpressed.png"]
         buttons_down = ["pics/continue_pressed.png", "pics/options_button_pressed.png", "pics/start_menu_pressed.png",
                         "pics/exit_button_pressed.png"]
         super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
