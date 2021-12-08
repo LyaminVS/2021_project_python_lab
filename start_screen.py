@@ -73,9 +73,10 @@ class Button:
         self.screen.blit(self.image, self.rect)
         writing(self.text, self.x + self.length / 2, self.y + self.width / 2, self.screen)
 
+        """блок кода ниже делает кнопку не нажатой после прошествия времени"""
         if self.timer > 0:
             self.timer += 1
-        if self.timer % 7 == 0 and self.timer != 0:
+        if self.timer % 7 == 0 and self.timer != 0:  # 7 - красивое число итераций
             self.pressed = False
             self.pressed_by_mouse = False
             self.timer = 0
@@ -162,13 +163,14 @@ class StartMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png","pics/newgameunpressed.png",
+        buttons_up = ["pics/continueunpressed.png", "pics/optionsbuttonunpressed.png", "pics/newgameunpressed.png",
                       "pics/exitbuttonunpressed.png"]
-        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png","pics/newgamepressed.png", "pics/exitbuttonpressed.png"]
+        buttons_down = ["pics/continuepressed.png", "pics/optionsbuttonpressed.png", "pics/newgamepressed.png",
+                        "pics/exitbuttonpressed.png"]
         super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.start = False  # Если True, то надо начать игру из уже сохраненной
         self.options = False  # Если True, то надо перейти в настройки
-        self.new_game = False # Если True, то надо начать новую игру
+        self.new_game = False  # Если True, то надо начать новую игру
 
     def draw(self):
         """
