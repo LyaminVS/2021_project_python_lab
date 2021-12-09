@@ -250,6 +250,10 @@ class Game:
         return all_objects
 
     def get_map_from_file(self):
+        """
+        функция получает координаты игрока из файла map_save.txt
+        :return: координаты игрока
+        """
         map_array = []
         map_in_file = open(self.main_path + "/map_save.txt")
         for line in map_in_file:
@@ -257,6 +261,11 @@ class Game:
         return map_array
 
     def get_id_from_file(self):
+        """
+        функция получает id последней постройки из файла id_save.txt
+        :return: id последней постройки
+        """
+
         id_in_file = open(self.main_path + "/id_save.txt")
         build_id = id_in_file.readline()
         id_in_file.close()
@@ -264,7 +273,7 @@ class Game:
 
     def create_start_position(self):
         """
-        создается объект игрока, а также объекты зданий в первый кадр игры
+        достает из файлов начальное состояние игрока карты, объектов и т д
         :return:
         """
         self.map = self.get_map_from_file()
@@ -276,6 +285,9 @@ class Game:
             square.second_condition = pygame.image.load("pics/build grass chosen.png")
 
     def repair_buildings(self):
+        """
+        функция проверяет хватает ли ресурсов для починки зданий и вычитает ресурсы если они необходимы для ремонта
+        """
         for obj in self.all_objects:
             if menu.resource_checker(self.resources_for_repair, obj.inventory.slots) and obj.image_name.find("shadow_"):
                 obj.image_name = obj.image_name.replace("shadow_", "")
@@ -286,9 +298,27 @@ class Game:
                     if slot.item and slot.item.name == self.resources_for_repair[2]:
                         slot.item.amount -= self.resources_for_repair[1]
 
+    def add_resources(self):
+
+        self.timer += 1
+        self.timer = self.timer % (3 * self.FPS)
+        for obj in self.all_objects:
+            if self.timer == 3 * self.FPS - 1:
+
+                if (obj.name == "ksp" or obj.name.split("_")[0] == "shawarma") and len(obj.resources) < 16:
+                    obj.resources.append(objects.Taco(self.screen))
+                if obj.name == "ksp" and not obj.image_name.find("shadow_") and len(obj.resources) < 16:
+                    obj.resources.append(objects.Taco(self.screen))
+
+            if obj.inventory_opened:
+                print(obj.inventory.objects_in_inventory())
+                print("+++++++++")
+                print(obj.resources)
+                obj.inventory.int_update(obj.resources)
+
     def update_game(self, event):
         """
-        функция обновляет состояние игры
+        функция отрисовывает игрока, карту, объекты на ней, места для сторительства, проверяет починку зданий
         :return:
         """
         self.repair_buildings()
@@ -298,26 +328,18 @@ class Game:
         for square in self.grid:
             square.update()
         background.draw_objects(self.all_objects, self.map[0], self.map[1])
-
         if self.player.inventory.building:
             self.set_building()
-
-        self.timer = (self.timer + 1) % self.FPS
-        for obj in self.all_objects:
-            if self.timer == self.FPS - 1:
-                if (obj.name == "ksp" or obj.name.split("_")[0] == "shawarma") and len(obj.resources) < 16:
-                    obj.resources.append(objects.Taco(self.screen))
-            if obj.inventory_opened:
-                obj.inventory.int_update(obj.resources)
+        self.add_resources()
         map_logic.event_checker(event.get(), self)
-
         self.player.draw()
         if self.inventory_opened:
             self.player.inventory.int_update()
 
     def save_game(self):
         """
-        функция сохраняет игру
+        функция сохраняет игрока, его инвентарь, объекты, инвентари объектов, id последнего построенного здания и
+        положение игрока
         :return:
         """
         shutil.rmtree("save_files")
@@ -358,6 +380,7 @@ class Game:
     def main(self):
         """
         основной цикл программы
+        функция управляет открытием и закрытием различных окон меню (start_screen, pause_menu, option_menu, game)
         :return:
         """
         while not self.finished:
