@@ -136,6 +136,7 @@ class Game:
         """
         True если продолжена игра иначе False
         """
+        self.resources_for_repair = [1, 100, "Brain", None]
 
     def set_building(self):
         for square in self.grid:
@@ -274,11 +275,23 @@ class Game:
             square.first_condition = pygame.image.load("pics/build grass.png")
             square.second_condition = pygame.image.load("pics/build grass chosen.png")
 
+    def repair_buildings(self):
+        for obj in self.all_objects:
+            if menu.resource_checker(self.resources_for_repair, obj.inventory.slots) and obj.image_name.find("shadow_"):
+                obj.image_name = obj.image_name.replace("shadow_", "")
+                obj.image = pygame.image.load(obj.image_name).convert_alpha()
+        for obj in self.all_objects:
+            if menu.resource_checker(self.resources_for_repair, obj.inventory.slots) and obj.image_name.find("shadow_"):
+                for slot in obj.inventory.slots:
+                    if slot.item and slot.item.name == self.resources_for_repair[2]:
+                        slot.item.amount -= self.resources_for_repair[1]
+
     def update_game(self, event):
         """
         функция обновляет состояние игры
         :return:
         """
+        self.repair_buildings()
         self.update_building_position()
         background.draw_map(self.screen, self.map[0], self.map[1])
         background.change_coord_grid(self.grid, self.map[0], self.map[1], 3)
@@ -365,7 +378,7 @@ class Game:
                 if self.start_menu_opened:
                     self.option_menu_opened = False
             elif self.pause_menu_opened:
-                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened =\
+                self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened = \
                     self.pause_menu.draw()
                 if self.option_menu_opened or self.start_menu_opened:
                     self.pause_menu_opened = False
