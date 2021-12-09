@@ -132,6 +132,10 @@ class Game:
         """
         показывает папку из которой берутся сохранения
         """
+        self.music_on = True
+        """
+        True если фоновая музыка включена иначе False
+        """
         self.continue_game = False
         """
         True если продолжена игра иначе False
@@ -396,6 +400,8 @@ class Game:
         функция управляет открытием и закрытием различных окон меню (start_screen, pause_menu, option_menu, game)
         :return:
         """
+        pygame.mixer.music.load("background_music.mp3")
+        pygame.mixer.music.play(-1)
         while not self.finished:
             pygame.display.update()
             if self.start_menu_opened:
@@ -413,6 +419,12 @@ class Game:
                 self.finished, self.start_menu_opened, self.music = self.option_menu.draw()
                 if self.start_menu_opened:
                     self.option_menu_opened = False
+                if self.music:
+                    self.music_on = not self.music_on
+                    if self.music_on:
+                        pygame.mixer.music.unpause()
+                    else:
+                        pygame.mixer.music.pause()
             elif self.pause_menu_opened:
                 self.finished, self.pause_menu_opened, self.option_menu_opened, self.start_menu_opened = \
                     self.pause_menu.draw()
