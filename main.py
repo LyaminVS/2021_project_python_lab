@@ -313,7 +313,9 @@ class Game:
                         slot.item.amount -= self.resources_for_repair[1]
 
     def add_resources(self):
-
+        """
+        добавляет ресурсы в ksp и shawarma
+        """
         self.timer += 1
         self.timer = self.timer % (3 * self.FPS)
         for obj in self.all_objects:
