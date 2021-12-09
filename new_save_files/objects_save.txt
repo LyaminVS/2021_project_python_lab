@@ -1,6 +1,6 @@
 appliedmath;pics/shadow_applied_math.png;610;2670
-1_nk;pics/shadow_nk1.png;660;2520
-2_nk;pics/shadow_nk2.png;1590;2970
+1_nk;pics/shadow_nk1.png;660;2530
+2_nk;pics/shadow_nk2.png;1590;2980
 6;pics/shadow_6.png;520;3870
 ksp;pics/shadow_ksp.png;4260;3050
 1_cifra;pics/shadow_cifra1.png;2690;660
