@@ -39,7 +39,6 @@ def event_checker(event_array, game):
             if game.player.inventory.building:
                 for square in game.grid:
                     square.is_button_pressed(checked_event)
-
             if game.inventory_opened:
                 game.player.inventory.visual_update(checked_event)
             for obj in game.all_objects:
@@ -137,13 +136,12 @@ def player_move(game):
     game.player.vy = 0
 
 
-def keys_checker(game):
+def keys_checker_y(game, keys):
     """
-    В зависимости от нажатых клавиш меняет скин и скорость игрока
+    В зависимости от нажатых клавиш меняет скин и скорость игрока по вертикали
     Args:
         game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
-    keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and not keys[pygame.K_s]:
         game.player.vy = game.player.v_max
         if game.player.up == 1:
@@ -159,6 +157,14 @@ def keys_checker(game):
     else:
         game.player.up = 0
         game.player.vy = 0
+
+
+def keys_checker_x(game, keys):
+    """
+    В зависимости от нажатых клавиш меняет скин и скорость игрока по горизонтали
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
     if keys[pygame.K_d] and not keys[pygame.K_a]:
         game.player.vx = game.player.v_max
         if game.player.right == 1:
@@ -174,6 +180,17 @@ def keys_checker(game):
     else:
         game.player.vx = 0
         game.player.right = 0
+
+
+def keys_checker(game):
+    """
+    В зависимости от нажатых клавиш меняет скин и скорость игрока
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
+    keys = pygame.key.get_pressed()
+    keys_checker_y(game, keys)
+    keys_checker_x(game, keys)
 
 
 def motion(game):
