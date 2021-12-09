@@ -3,7 +3,6 @@ import background
 import map_logic
 import menu
 import objects
-# import sound
 import start_screen
 import os.path
 import constants
