@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite):
         :param y_0: координата игрока по оси у
         """
         super().__init__()
-        self.name = "player"
+        self.name = name
         self.surface = screen
         self.x = x_0
         self.y = y_0

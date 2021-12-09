@@ -139,6 +139,10 @@ class Game:
         self.resources_for_repair = [1, 100, "Brain", None]
 
     def set_building(self):
+        """
+        Функция, отвечающая за постройку здания на карте.
+        Здание не будет строиться если игрок стоит в зоне коллизии будущей постройки.
+        """
         for square in self.grid:
             if square.pressed_by_mouse and not square.building_on:
                 image = pygame.image.load(self.player.inventory.building_pressed_item.image_name)
@@ -160,6 +164,9 @@ class Game:
                     game.player.inventory.building = False
 
     def update_building_position(self):
+        """
+        Обновляет координаты сетки и построек на них
+        """
         for square in self.grid:
             for obj in self.all_objects:
                 if obj.x - 100 <= square.x + self.map[0] <= obj.x + 100 and \
@@ -274,7 +281,6 @@ class Game:
     def create_start_position(self):
         """
         достает из файлов начальное состояние игрока карты, объектов и т д
-        :return:
         """
         self.map = self.get_map_from_file()
         self.player = self.get_player_from_file()

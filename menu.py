@@ -244,8 +244,8 @@ class ObjectInventory(Inventory):
     Класс, отвечающий за инвентарь у объектов.
     """
 
-    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
-        super().__init__(screen, start_x, start_y, rows, columns, items)
+    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None, amounting_of_items=None):
+        super().__init__(screen, start_x, start_y, rows, columns, items, amounting_of_items)
 
     def visual_update(self, event):
         """
