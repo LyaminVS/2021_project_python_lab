@@ -136,32 +136,38 @@ def player_move(game):
     game.player.vy = 0
 
 
-def move_checker(game, keys, move_keys, direction):
+def keys_checker_general(game, keys, key1, key2, dimension, direction):
     """
-    В зависимости от нажатых клавиш меняет скин и скорость игрока по вертикали
+    В зависимости от нажатых клавиш меняет скин и скорость игрока в общем случае
     Args:
         game - аргумент, которому должно присвоиться значение объекта game класса Game
+        keys - массив нажатых клавиш
+        key1 - клавиша 1 (w для вертикали и d для горизонтали)
+        key2 - клавиша 2 (s для вертикали и a для горизонтали)
+        dimension - значение скина (up/right)
+        direction - направление движения 'x'/'y'
     """
-    if direction == "y":
-        direction = game.player.up
-    elif direction == "x":
-        direction = game.player.right
-    if keys[move_keys[0]] and not keys[move_keys[1]]:
-        v = game.player.v_max
-        if direction == 1:
-            direction = 2
+    if keys[key1] and not keys[key2]:
+        speed_dimension = game.player.v_max
+        if dimension == 1:
+            dimension = 2
         else:
-            direction = 1
-    elif keys[move_keys[1]] and not keys[move_keys[0]]:
-        v = -game.player.v_max
-        if direction == -1:
-            direction = -2
+            dimension = 1
+    elif keys[key2] and not keys[key1]:
+        speed_dimension = -game.player.v_max
+        if dimension == -1:
+            dimension = -2
         else:
-            direction = -1
+            dimension = -1
     else:
-        direction = 0
-        v = 0
-    return direction, v
+        dimension = 0
+        speed_dimension = 0
+    if direction == 'x':
+        game.player.vx = speed_dimension
+        game.player.right = dimension
+    elif direction == 'y':
+        game.player.vy = speed_dimension
+        game.player.up = dimension
 
 
 def keys_checker(game):
@@ -171,8 +177,8 @@ def keys_checker(game):
         game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
     keys = pygame.key.get_pressed()
-    game.player.up, game.player.vy = move_checker(game, keys, [pygame.K_w, pygame.K_s], "y")
-    game.player.right, game.player.vx = move_checker(game, keys, [pygame.K_d, pygame.K_a], "x")
+    keys_checker_general(game, keys, pygame.K_d, pygame.K_a, game.player.right, 'x')
+    keys_checker_general(game, keys, pygame.K_w, pygame.K_s, game.player.up, 'y')
 
 
 def motion(game):
