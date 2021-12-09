@@ -400,7 +400,7 @@ class Game:
         функция управляет открытием и закрытием различных окон меню (start_screen, pause_menu, option_menu, game)
         :return:
         """
-        pygame.mixer.music.load("background_music.mp3")
+        pygame.mixer.music.load("music/background_music.mp3")
         pygame.mixer.music.play(-1)
         while not self.finished:
             pygame.display.update()
