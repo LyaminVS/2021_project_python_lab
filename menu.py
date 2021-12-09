@@ -63,7 +63,7 @@ class OneInventorySlot:
         :return: Если нажали на слот, то DARK_GREY, если навели курсор на слот, то GREY, если ничего, то LIGHT_GREY
         """
 
-        if self.i // 20 == 0 or self.i == 0:
+        if self.i // 10 == 0 or self.i == 0:
             if self.one_slot_x <= event.pos[0] <= self.one_slot_x + self.one_inventory_slot_width and \
                     self.one_slot_y <= event.pos[1] <= self.one_slot_y + self.one_inventory_slot_height:
                 if event.type == pygame.MOUSEMOTION and not self.pressed:
@@ -125,7 +125,7 @@ class OneInventorySlot:
         """
         if self.i > 0:  # таймер итераций, запускается в slot_pressed
             self.i += 1
-        if self.i % 10 == 0:
+        if self.i % 5 == 0:
             self.color = c.LIGHT_GREY
             self.pressed = False
             self.i = 0
@@ -265,7 +265,7 @@ class ObjectInventory(Inventory):
             items = []
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
             self.i += 1
-        if self.i % 11 == 0 and self.i != 0:
+        if self.i % 6 == 0 and self.i != 0:
             Inventory.moving_object_from_slot = False
             self.i = 0
         for obj in self.slots:
