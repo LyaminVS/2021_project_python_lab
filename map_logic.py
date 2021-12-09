@@ -79,13 +79,11 @@ def event_checker(event_array, game):
             for obj in game.all_objects:
                 if obj.inventory_opened:
                     obj.inventory.visual_update(checked_event)
-        if game.player.vx != 0 or game.player.vy != 0:
-            collision(game)
-            player_move(game)
-
         if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_p):
             game.pause_menu_opened = True
-
+    if game.player.vx != 0 or game.player.vy != 0:
+            collision(game)
+            player_move(game)
 
 def collision(game):
     """
