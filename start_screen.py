@@ -229,3 +229,7 @@ class PauseMenu(Menu):
         self.options = self.variables[1]
         self.start_menu = self.variables[2]
         return self.finished, not self.continues, self.options, self.start_menu
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

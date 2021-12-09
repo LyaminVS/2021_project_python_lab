@@ -61,3 +61,7 @@ def change_coord_grid(grid, x0, y0, columns):
         square.y = -y + 3850  # начальное положение сетки по абсолютной вертикальной координате
         x -= 600  # смещение сетки по горизонтали
         f += 1
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

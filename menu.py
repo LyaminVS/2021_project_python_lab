@@ -515,3 +515,7 @@ class PlayerInventory:
             self.inventory.visual_update(event)
         elif event.type == pygame.MOUSEMOTION and self.can_build:
             self.building_animation(event, self.pressed_building)
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

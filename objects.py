@@ -83,7 +83,7 @@ class Player(pygame.sprite.Sprite):
         self.resources = resources
         self.up = 0
         self.right = 0
-    
+
     def draw(self):
         """
         Функция отрисовки игрока.
@@ -177,3 +177,7 @@ class Brain(Resources):
 class Palatka(Resources):
     def __init__(self, screen):
         super(Palatka, self).__init__(screen, "pics/shawarma.png", "Palatka", True)
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

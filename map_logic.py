@@ -150,3 +150,7 @@ def player_move(game):
     game.map[1] -= game.player.vy
     game.player.vx = 0
     game.player.vy = 0
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")
