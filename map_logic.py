@@ -13,54 +13,21 @@ def event_checker(event_array, game):
         event_array - массив событий для обработки
         game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
+    motion(game)
     for checked_event in event_array:
         if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_e):
             game.inventory_opened = not game.inventory_opened
-        if checked_event.type == pygame.QUIT:
+        elif checked_event.type == pygame.QUIT:
             game.finished = True
-        if checked_event.type == pygame.KEYUP:
+        elif checked_event.type == pygame.KEYUP:
             game.player.move = 0
-        if pygame.key.get_pressed()[pygame.K_w]:  # Pycharm пишет, что эта строка повторяется с 15 строкой снизу от этой
-            game.player.vy = game.player.v_max
-            if game.player.up == 1:
-                game.player.up = 2
-            else:
-                game.player.up = 1
-        if pygame.key.get_pressed()[pygame.K_s]:
-            game.player.vy = -game.player.v_max
-            if game.player.up == -1:
-                game.player.up = -2
-            else:
-                game.player.up = -1
-        if pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_w]:
-            game.player.vy = 0
-            game.player.up = 0
-        if pygame.key.get_pressed()[pygame.K_d]:  # Pycharm пишет что эта строка повторяется с 15 строкой сверху от этой
-            game.player.vx = game.player.v_max
-            if game.player.right == 1:
-                game.player.right = 2
-            else:
-                game.player.right = 1  #
-        if pygame.key.get_pressed()[pygame.K_a]:
-            game.player.vx = -game.player.v_max
-            if game.player.right == -1:
-                game.player.right = -2
-            else:
-                game.player.right = -1
-        if pygame.key.get_pressed()[pygame.K_d] and pygame.key.get_pressed()[pygame.K_a]:
-            game.player.vx = 0
-            game.player.right = 0
-        if game.player.vx == 0:
-            game.player.right = 0
-        if game.player.vy == 0:
-            game.player.up = 0
-        if checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
+        elif checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
                 if obj.x < pos[0] + game.map[0] < obj.x + obj.width and \
                         obj.y < pos[1] + game.map[1] < obj.y + obj.height:
                     obj.inventory_opened = True
-        if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_ESCAPE):
+        elif (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_ESCAPE):
             if game.player.inventory.building:
                 game.player.inventory.building = False
             elif game.inventory_opened:
@@ -78,17 +45,14 @@ def event_checker(event_array, game):
             for obj in game.all_objects:
                 if obj.inventory_opened:
                     obj.inventory.visual_update(checked_event)
-        if (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_p):
+        elif (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_p):
             game.pause_menu_opened = True
-    if game.player.vx != 0 or game.player.vy != 0:
-        collision(game)
-        player_move(game)
 
 
-def collision(game):
+def map_collision(game):
     """
-    Совершает предварительное перемещение на number_of_steps шагов вперёд, проверяет столкнулся ли игрок с каким-то
-    объектом или вышел ли за границы карты, и в зависимости от данного факта присваевает нулевое значение составляющим
+    Совершает предварительное перемещение на number_of_steps шагов вперёд, проверяет вышел ли за игрок границы карты,
+    и в зависимости от данного факта присваевает нулевое значение составляющим
     скорости игрока, после этого возвращает в исходное до предварительного перемещения состояние.
     Args:
         game - аргумент, которому должно присвоиться значение объекта game класса Game
@@ -108,6 +72,17 @@ def collision(game):
         game.player.up = 0
     else:
         game.map[1] += number_of_steps * game.player.vy
+
+
+def objects_collision(game):
+    """
+    Совершает предварительное перемещение на number_of_steps шагов вперёд, проверяет столкнулся ли игрок с каким-то
+    объектом, и в зависимости от данного факта присваевает нулевое значение составляющим
+    скорости игрока, после этого возвращает в исходное до предварительного перемещения состояние.
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
+    number_of_steps = 1
     for obj in game.all_objects:
         game.map[0] += number_of_steps * game.player.vx
         obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
@@ -140,6 +115,16 @@ def collision(game):
             game.map[1] += number_of_steps * game.player.vy
 
 
+def collision(game):
+    """
+    Обращает скорость в ноль при столкновении с объектами и границами карты
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
+    map_collision(game)
+    objects_collision(game)
+
+
 def player_move(game):
     """
     Изменяет координату карты относительно экрана
@@ -150,6 +135,57 @@ def player_move(game):
     game.map[1] -= game.player.vy
     game.player.vx = 0
     game.player.vy = 0
+
+
+def keys_checker(game):
+    """
+    В зависимости от нажатых клавиш меняет скин и скорость игрока
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w] and not keys[pygame.K_s]:
+        game.player.vy = game.player.v_max
+        if game.player.up == 1:
+            game.player.up = 2
+        else:
+            game.player.up = 1
+    elif keys[pygame.K_s] and not keys[pygame.K_w]:
+        game.player.vy = -game.player.v_max
+        if game.player.up == -1:
+            game.player.up = -2
+        else:
+            game.player.up = -1
+    else:
+        game.player.up = 0
+        game.player.vy = 0
+    if keys[pygame.K_d] and not keys[pygame.K_a]:
+        game.player.vx = game.player.v_max
+        if game.player.right == 1:
+            game.player.right = 2
+        else:
+            game.player.right = 1  #
+    elif keys[pygame.K_a] and not keys[pygame.K_d]:
+        game.player.vx = -game.player.v_max
+        if game.player.right == -1:
+            game.player.right = -2
+        else:
+            game.player.right = -1
+    else:
+        game.player.vx = 0
+        game.player.right = 0
+
+
+def motion(game):
+    """
+    Проверяет зажатие клавиш, коллизию и передвигает игрока в случае надобности
+    Args:
+        game - аргумент, которому должно присвоиться значение объекта game класса Game
+    """
+    keys_checker(game)
+    if game.player.vx != 0 or game.player.vy != 0:
+        collision(game)
+        player_move(game)
 
 
 if __name__ == "__main__":
