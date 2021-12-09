@@ -161,13 +161,14 @@ class Inventory:
         self.amounting_of_items = []  # массив с количеством элементов
         self.create_inventory(amounting_of_items)  # Первичное создание инвентаря.
 
-    def fill_up_inventory(self, items):
+    def fill_up_inventory(self, items, amounting_of_items):
         """
         Функция, отвечающая за наполнение инвентаря. Наполняет его элементами из items.
         :param items: элементы, которыми надо заполнить инвентарь.
         """
         i = 0
-
+        if amounting_of_items:
+            self.amounting_of_items = amounting_of_items
         if items:
             for material in items:
                 slot = self.slots[i]
@@ -191,9 +192,7 @@ class Inventory:
                 x += inventory_slot.one_inventory_slot_width
             x = self.start_x
             y += inventory_slot.one_inventory_slot_height
-        self.fill_up_inventory(self.items)
-        if amounting_of_items:
-            self.amounting_of_items = amounting_of_items
+        self.fill_up_inventory(self.items, amounting_of_items)
 
     def moving_objects_in_inventory(self):
         """
@@ -273,7 +272,7 @@ class ObjectInventory(Inventory):
             if not Inventory.moving_object_from_slot:
                 # Если закончилось перетаскивание объектов, то выключаем его всем ячейкам.
                 obj.moving_object_from_slot = False
-        self.fill_up_inventory(items)
+        self.fill_up_inventory(items, self.amounting_of_items)
 
     def update(self, items=None):
         """
