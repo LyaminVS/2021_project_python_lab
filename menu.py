@@ -374,9 +374,9 @@ class PlayerInventory:
     Класс, отвечающий за инвентарь игрока и его отрисовку.
     """
 
-    def __init__(self, screen, crafts, builds, materials=None):
+    def __init__(self, screen, crafts, builds, materials=None, amounting_of_items=None):
         self.screen = screen
-        self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials)
+        self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials, amounting_of_items)
 
         # 500, 100 - начальные координаты; 7,7 - размер
         """ координаты инвентарей для крафта и для построек ниже выбраны в соответствии с выбранным размером холста и 
