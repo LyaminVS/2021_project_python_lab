@@ -1,1 +1,0 @@
-player;pics/skin run stay.png;640;360

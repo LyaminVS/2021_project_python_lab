@@ -350,7 +350,8 @@ class Game:
         положение игрока
         :return:
         """
-        shutil.rmtree("save_files")
+        if os.path.exists("save_files"):
+            shutil.rmtree("save_files")
         os.mkdir("save_files")
         os.mkdir("save_files/object_inventory_save")
         id_file = open("save_files/id_save.txt", "w")
@@ -402,7 +403,7 @@ class Game:
                 self.finished, self.continue_game, self.option_menu_opened, self.new_game = self.start_menu.draw()
                 if self.option_menu_opened or self.continue_game or self.new_game:
                     self.start_menu_opened = False
-                if self.continue_game:
+                if self.continue_game and os.path.exists("save_files"):
                     self.main_path = "save_files"
                 if not self.player_created and (self.new_game or self.continue_game):
                     self.create_start_position()

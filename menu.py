@@ -165,6 +165,7 @@ class Inventory:
         """
         Функция, отвечающая за наполнение инвентаря. Наполняет его элементами из items.
         :param items: элементы, которыми надо заполнить инвентарь.
+        :param amounting_of_items: количество элементов
         """
         i = 0
         if amounting_of_items:
