@@ -20,7 +20,7 @@ class Game:
         Холст для рисования
         """
 
-        self.map_dimensions = [5120, 4320]
+        self.map_dimensions = [6120, 5320]
         """
         Размеры используемой карты
         """
