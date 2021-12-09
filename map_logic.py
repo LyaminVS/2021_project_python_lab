@@ -54,9 +54,6 @@ def event_checker(event_array, game):
             game.player.right = 0
         if game.player.vy == 0:
             game.player.up = 0
-        if pygame.key.get_pressed()[pygame.K_LSHIFT]:  # Бег работает только если двигать курсором
-            game.player.vx *= 2
-            game.player.vy *= 2
         if checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
