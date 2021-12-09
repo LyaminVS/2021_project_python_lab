@@ -156,8 +156,10 @@ class Inventory:
         self.slots = []  # информация о ячейках инвентаря.
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
         self.all_objects = []  # Все объекты в инвентаре.
+        self.amount_of_all_objects = []  # Количество обьектов в инвентаре
         self.screen = screen  # Экран, на который рисуется инвентарь.
         self.create_inventory()  # Первичное создание инвентаря.
+        self.amount_of_items = []  # массив с количеством элементов
 
     def fill_up_inventory(self, items):
         """
@@ -167,10 +169,12 @@ class Inventory:
         i = 0
         if items:
             for material in items:
-                slot = self.slots[i]
-                material.surface = slot.screen
-                slot.update_one_inventory_slot(material)
-                i += 1
+                if len(self.amount_of_items) > 0:
+                    slot = self.slots[i]
+                    material.surface = slot.screen
+                    material.amount = self.amount_of_items.pop(0)
+                    slot.update_one_inventory_slot(material)
+                    i += 1
 
     def create_inventory(self):
         """
@@ -222,13 +226,14 @@ class Inventory:
     def objects_in_inventory(self):
         """
         Функция, которая выдает массив со всеми объектами в инвентаре.
-        :return: массив, в котором содержатся все элементы из инвентаря.
+        :return: массив, в котором содержатся все элементы из инвентаря и массив, в котором количество каждого элемента.
         """
         self.all_objects = []
         for slot in self.slots:
             if slot.item:
                 self.all_objects.append(slot.item)
-        return self.all_objects
+                self.amount_of_all_objects.append(slot.item.amount)
+        return self.all_objects, self.amount_of_all_objects
 
 
 class ObjectInventory(Inventory):
@@ -449,6 +454,8 @@ class PlayerInventory:
         """
         Функция, отвечающая за анимацию строительства. При нажатии на постройку инвентарь закрывается
         и на экране появляется постройка, которую можно разместить на спеуиальных местах.
+        :param event: событие клика или движения мыши
+        :param pressed_item: новый нажатый элемент
         """
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
@@ -475,21 +482,29 @@ class PlayerInventory:
                 self.pressed_building = slot.item
 
     def int_update(self, items=None):
+        """
+        Функция, отвечающая за внутреннее обновление инвентаря.
+        :param items: элементы, которые должны появляться в инвентаре.
+        """
         if not items:
             items = []
-        if not self.building:
+        if not self.building:  # если не строим
             self.craft_inventory.int_update(self.font_size, self.text)
             self.build_inventory.int_update()
             self.build_items()
             self.craft_items()
             self.building_buildings()
             self.inventory.int_update(items)
-        elif self.building_pressed_item:
+        elif self.building_pressed_item:  # если нажали на какой-то объект
             for slot in self.build_inventory.slots:
                 slot.pressed = False
             self.screen.blit(self.building_pressed_item.image, self.building_surface)
 
     def visual_update(self, event):
+        """
+        Функция, отвечающая за внешнее обновление инвентаря.
+        :param event: событие перемещения или клика мыши.
+        """
         if not self.building:
             self.craft_inventory.visual_update(event)
             self.build_inventory.visual_update(event)
