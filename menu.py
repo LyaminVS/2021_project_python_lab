@@ -3,9 +3,13 @@ import copy
 import constants as c
 
 
-# использую шрифт cambria, не уверен что он есть у всех и везде, без него очень плохо выглядят цифры
-
 def resource_checker(crafted_items, slots):
+    """
+    Функция, отвечающая за проверку достаточности ресурсов в инвентаре для какого-то действия.
+    :param crafted_items: массив с элементами, которые будут крафтиться
+    :param slots: слоты, в которых будет проведен поиск элементов
+    :return: True, если ресурсов хватает; False, если ресурсов не хватает
+    """
     resource_check = 0
     for i in range(2, len(crafted_items), 2):
         for slot in slots:
@@ -19,7 +23,7 @@ def resource_checker(crafted_items, slots):
 
 class OneInventorySlot:
     """
-    отображение ячейки инвентаря
+    Класс, отвечающий за отображение ячейки инвентаря
     """
 
     def __init__(self, x, y, screen):
@@ -127,9 +131,9 @@ class OneInventorySlot:
             self.i = 0
 
         self.one_inventory_slot()
-        if self.item and self.item.amount == 0:
+        if self.item and self.item.amount == 0:  # если обьект заканчивается, то удаляем его
             self.item = None
-        if self.call == 0:  # если ни разу не запускали и подаем объект, то работать будем с ним
+        if self.call == 0 and item:  # если ни разу не запускали и подаем объект, то работать будем с ним
             self.display_item(item)
             self.call += 1
         else:
@@ -140,8 +144,8 @@ class Inventory:
     """
     Класс, отвечающий за создание инвентаря у объекта.
     """
-    moving_object = None
-    moving_object_from_slot = False
+    moving_object = None  # перемещаемый объект.
+    moving_object_from_slot = False  # Перемещается ли сейчас какой-то объект?
 
     def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
         self.start_x = start_x  # левая верхняя координата х первой ячейки инвентаря.
@@ -150,16 +154,15 @@ class Inventory:
         self.columns = columns  # количество столбцов в инвентаре
         self.items = items  # объекты, которые должны лежать в инвентаре. Можно ничего не подавать, по умолчанию None.
         self.slots = []  # информация о ячейках инвентаря.
-        # перемещаемый объект
-        # Перемещается ли сейчас какой-то объект?
         self.i = 0  # счетчик времени, который говорит можно ли двигать обьект в инвентаре. Можно после 40 итераций.
-        self.all_objects = []  # Все объекты в инвентаре
-        self.screen = screen
-        self.create_inventory()
+        self.all_objects = []  # Все объекты в инвентаре.
+        self.screen = screen  # Экран, на который рисуется инвентарь.
+        self.create_inventory()  # Первичное создание инвентаря.
 
     def fill_up_inventory(self, items):
         """
-        Функция, отвечающая за наполнение инвентаря. Наполняет его элементами из self.items.
+        Функция, отвечающая за наполнение инвентаря. Наполняет его элементами из items.
+        :param items: элементы, которыми надо заполнить инвентарь.
         """
         i = 0
         if items:
@@ -190,6 +193,7 @@ class Inventory:
         Функция, отвечающая за перемещение объектов внутри инвентаря.
         Для перемещения необходимо нажать левой кнопкой мыши на объект, который надо переместить и
         левой кнопкой мыши на ячейку, куда надо переместить.
+        Также предусмотрен вариант складывание двух одинаковых объектов.
         """
         for slot in self.slots:
             if slot.pressed and slot.item and not slot.moving_object_from_slot \
@@ -209,12 +213,18 @@ class Inventory:
             elif slot.pressed and slot.item and Inventory.moving_object \
                     and slot.item.name == Inventory.moving_object.name \
                     and Inventory.moving_object_from_slot and not slot.moving_object_from_slot:
+                # Если пользователь хочет добавить объект к такому же в соседней ячейке.
                 slot.item.amount += Inventory.moving_object.amount
                 Inventory.moving_object = None
                 slot.moving_object_from_slot = True
                 self.i += 1
 
     def objects_in_inventory(self):
+        """
+        Функция, которая выдает массив со всеми объектами в инвентаре.
+        :return: массив, в котором содержатся все элементы из инвентаря.
+        """
+        self.all_objects = []
         for slot in self.slots:
             if slot.item:
                 self.all_objects.append(slot.item)
@@ -223,18 +233,26 @@ class Inventory:
 
 class ObjectInventory(Inventory):
     """
-    инвентарь объектов
+    Класс, отвечающий за инвентарь у объектов.
     """
 
     def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
         super().__init__(screen, start_x, start_y, rows, columns, items)
 
     def visual_update(self, event):
+        """
+        Функция, отвечающая за визуальное обновление инвентаря.
+        :param event: событие щелчка или движения мыши.
+        """
         for obj in self.slots:
             obj.slot_pressed(event)
         self.moving_objects_in_inventory()
 
     def int_update(self, items=None):
+        """
+        Функция, отвечающая за внутреннее обновление инвентаря.
+        :param items: массив с элементами инвентаря, которым должен инвентарь заполнится.
+        """
         if not items:
             items = []
         if self.i > 0:  # счетчик итераций. Включается в moving_objects_in_inventory
@@ -269,19 +287,35 @@ class Make(Inventory):
         super().__init__(screen, start_x, start_y, rows, columns, self.makes)
         self.making_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
-    def int_update(self, font_size=64, text="craft"):
+    def nameplate(self, font_size, text):
+        """
+        Функция, отвечающая за отрисовку таблички над инвентарем.
+        :param font_size: размер шрифта, которым будет написан текст над инвентарем.
+        :param text: текст, который необходимо написать в окошке над инвентарем.
+        """
         pygame.draw.rect(self.screen, c.LIGHT_GREY, (self.start_x, self.start_y - 64, self.rows * 64, 64))
         pygame.draw.rect(self.screen, c.BLACK, (self.start_x, self.start_y - 64, self.rows * 64, 64), 1)
-        pygame.draw.rect(self.screen, c.BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.rows * 64 - 6, 64 - 6),
-                         1)
+        pygame.draw.rect(self.screen, c.BLACK, (self.start_x + 3, self.start_y - 64 + 3, self.rows * 64 - 6, 64 - 6), 1)
         font = pygame.font.SysFont("Arial", font_size)
         words = font.render(text, True, (0, 0, 0))
         place = words.get_rect(center=(self.start_x + self.rows * 32, self.start_y - 32))
         self.screen.blit(words, place)
+
+    def int_update(self, font_size=64, text="craft"):
+        """
+        Функция, отвечающая за внутреннее обновление инвентаря.
+        :param font_size: размер шрифта, которым будет написан текст над инвентарем.
+        :param text: текст, который необходимо написать в окошке над инвентарем.
+        """
+        self.nameplate(font_size, text)
         for obj in self.slots:
             obj.update_one_inventory_slot()
 
     def visual_update(self, event):
+        """
+        Функция, отвечающая за внешнее обновление инвентаря.
+        :param event: событие щелчка или движения мыши.
+        """
         for obj in self.slots:
             obj.slot_pressed(event)
             if obj.pressed and obj.item and event.type != pygame.MOUSEMOTION:
@@ -298,96 +332,128 @@ class Make(Inventory):
 
 
 class Craft(Make):
+    """
+    Класс, который отвечает за крафтовое меню в инвентаре игрока.
+    """
+
     def __init__(self, screen, start_x, start_y, crafts):
         super(Craft, self).__init__(screen, start_x, start_y, 3, 3, crafts)
 
     def int_update(self, font_size=64, text="craft"):
+        """
+        Функция, отвечающая за внутреннее обновление инвентаря.
+        """
         super().int_update(font_size, text)
 
 
 class Build(Make):
+    """
+    Класс, который отвечает за меню строительства в инвентаре игрока.
+    """
+
     def __init__(self, screen, start_x, start_y, builds):
         super(Build, self).__init__(screen, start_x, start_y, 3, 2, builds)
 
     def int_update(self, font_size=64, text="Build"):
+        """
+        Функция, отвечающая за внутреннее обновление инвентаря.
+        """
         super().int_update(font_size, text)
 
 
 class PlayerInventory:
     """
-    инвентарь игрока и его отрисовка
+    Класс, отвечающий за инвентарь игрока и его отрисовку.
     """
 
     def __init__(self, screen, crafts, builds, materials=None):
         self.screen = screen
-        self.inventory = ObjectInventory(screen, 500, 100, 7, 7,
-                                         materials)  # 500, 100 - начальные координаты; 7,7 - размер
+        self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials)
+        # 500, 100 - начальные координаты; 7,7 - размер
         """ координаты инвентарей для крафта и для построек ниже выбраны в соответствии с выбранным размером холста и 
         отображаемой областью на экране """
-        self.craft_inventory = Craft(screen, 948, 164, crafts)
-        self.build_inventory = Build(screen, 948, 420, builds)
+        self.craft_inventory = Craft(screen, 948, 164, crafts)  # инвентарь крафта у игрока
+        self.build_inventory = Build(screen, 948, 420, builds)  # меню строительства у игрока
         self.font_size = 64  # размер шрифта
         self.text = "craft"
         self.building = False  # Строит ли игрок сейчас?
         self.pressed_building = None
-        self.building_pressed_item = None
-        self.building_surface = None
-        self.can_build = True
+        # постройка на которую игрок нажал в меню строительства и которую он хочет построить.
+        self.building_pressed_item = None  # объект, который отображается в анимации строительства.
+        self.building_surface = None  # поверхность, на которой необходимо отрисовать поставленный объект.
+        self.can_build = True  # можно ли сейчас строить? False, если не хватает в инвентаре ресурсов.
 
     def getting_resources(self, text, inventory_or_building):
+        """
+        Функция, отвечающая за проверку ресурсов в инвентаре для строительства и крафта, а также трату ресурсов.
+        :param text: "craft"/"build" если ресурсов хватает; "not enough materials" если ресурсов не хватает.
+        :param inventory_or_building: инвентарь крафта - True, меню строительства - False.
+        """
         check_resources = False
         if inventory_or_building:
             crafted_items = self.craft_inventory.making_items.copy()
         else:
             crafted_items = self.build_inventory.making_items.copy()
         crafted_items = crafted_items.copy()
-        for i in range(2, len(crafted_items), 2):
+        for i in range(2, len(crafted_items), 2):  # проверяем хватает ли ресурсов на определенный крафт.
             self.font_size = 64
             self.text = text
             check_resources = resource_checker(crafted_items, self.inventory.slots)
-        if check_resources:
+        if check_resources:  # если хватает ресурсов
             amount = crafted_items[0]
             if not inventory_or_building:
                 self.can_build = True
             for slot in self.inventory.slots:
                 for i in range(2, len(crafted_items), 2):
                     if slot.item and crafted_items[-1] and slot.item.name == crafted_items[-1].name:
+                        # если ресурс такого вида уже есть, то увеличиваем только его количество
                         slot.item.amount += crafted_items[0]
                         crafted_items[-1] = None
                     elif slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                        # если это необходимый материал для крафта, то уменьшаем его количество.
                         slot.item.amount -= crafted_items[i - 1]
                         crafted_items[i - 1] = 0
                     elif not slot.item and inventory_or_building:
+                        # добавляем обьект в инвентарь.
                         slot.item = copy.copy(crafted_items[-1])
                         crafted_items[-1] = None
                         if slot.item:
                             slot.item.amount = amount
 
-        elif crafted_items:
+        elif crafted_items:  # если ресурсов не хватает
             self.font_size = 20  # размер шрифта
             self.text = "not enough materials"
             if not inventory_or_building:
                 self.can_build = False
-
-                print("mem")
+        # опустошаем массив с крафтами, чтобы производство не происходило вечно
         if inventory_or_building:
             self.craft_inventory.making_items = []
         else:
             self.build_inventory.making_items = []
 
     def craft_items(self):
+        """
+        Функция, отвечающая за крафт
+        """
         self.getting_resources("craft", True)
 
     def building_buildings(self):
+        """
+        Функция, отвечающая за строительство
+        """
         self.getting_resources("build", False)
-        if not self.can_build:
+        if not self.can_build:  # если ресурсов на строительство не хватает, то выключаем все анимации строительства.
             self.building = False
 
     def building_animation(self, event, pressed_item):
+        """
+        Функция, отвечающая за анимацию строительства. При нажатии на постройку инвентарь закрывается
+        и на экране появляется постройка, которую можно разместить на спеуиальных местах.
+        """
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
 
-        if pressed_item != self.building_pressed_item:
+        if pressed_item != self.building_pressed_item:  # нужно ли скейлить объект?
             scaling = 0
         else:
             scaling = 1
@@ -400,6 +466,9 @@ class PlayerInventory:
             self.building_surface = self.building_pressed_item.image.get_rect(center=(mouse_x, mouse_y))
 
     def build_items(self):
+        """
+        Функция, отвечающая за строительство объектов.
+        """
         for slot in self.build_inventory.slots:
             if slot.pressed and slot.item and self.can_build:
                 self.building = True

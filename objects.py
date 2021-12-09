@@ -148,7 +148,7 @@ class Resources:
         self.width = self.image.get_width()
         self.height = self.image.get_width()
         self.surface = screen
-        self.amount = 15
+        self.amount = 1
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.is_building = is_building

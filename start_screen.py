@@ -1,8 +1,5 @@
 import pygame
-
-START_MENU_SCREEN = pygame.display.set_mode((1280, 720))
-GREY = (50, 50, 50)
-DARK_BLUE = (1, 3, 20)
+import constants as c
 
 
 def writing(text: str, x_center, y_center, screen, font_size=16, font='Arial'):
@@ -125,7 +122,7 @@ class Menu:
         """
         width = 250 + self.amount * 100
         background_surface = pygame.Surface((748, width))
-        pygame.draw.rect(background_surface, DARK_BLUE, (0, 0, 748, width))
+        pygame.draw.rect(background_surface, c.DARK_BLUE, (0, 0, 748, width))
         background_surface.set_alpha(20)
         self.screen.blit(background_surface, (266, (720 - width) // 2))
 
@@ -163,9 +160,9 @@ class StartMenu(Menu):
     """
 
     def __init__(self, screen):
-        buttons_up = ["pics/continue_unpressed.png", "pics/options_button_unpressed.png", "pics/new_game_unpressed.png",
+        buttons_up = ["pics/continue_unpressed.png", "pics/new_game_unpressed.png", "pics/options_button_unpressed.png",
                       "pics/exit_button_unpressed.png"]
-        buttons_down = ["pics/continue_pressed.png", "pics/options_button_pressed.png", "pics/new_game_pressed.png",
+        buttons_down = ["pics/continue_pressed.png", "pics/new_game_pressed.png", "pics/options_button_pressed.png",
                         "pics/exit_button_pressed.png"]
         super().__init__(4, ["", "", "", ""], screen, buttons_up, buttons_down)
         self.start = False  # Если True, то надо начать игру из уже сохраненной
@@ -179,8 +176,8 @@ class StartMenu(Menu):
         """
         super().create_menu("pics/game_name.png")
         self.start = self.variables[0]
-        self.options = self.variables[1]
-        self.new_game = self.variables[2]
+        self.options = self.variables[2]
+        self.new_game = self.variables[1]
         return self.finished, self.start, self.options, self.new_game
 
 

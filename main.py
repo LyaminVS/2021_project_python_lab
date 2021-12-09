@@ -311,8 +311,8 @@ class Game:
                     obj.resources.append(objects.Taco(self.screen))
 
             if obj.inventory_opened:
-                print(obj.inventory.objects_in_inventory())
                 print("+++++++++")
+                print(obj.inventory.objects_in_inventory())
                 print(obj.resources)
                 obj.inventory.int_update(obj.resources)
 
