@@ -147,7 +147,7 @@ class Inventory:
     moving_object = None  # перемещаемый объект.
     moving_object_from_slot = False  # Перемещается ли сейчас какой-то объект?
 
-    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None):
+    def __init__(self, screen, start_x=100, start_y=100, rows=1, columns=1, items=None, amounting_of_items=None):
         self.start_x = start_x  # левая верхняя координата х первой ячейки инвентаря.
         self.start_y = start_y  # левая верхняя координата y первой ячейки инвентаря.
         self.rows = rows  # количество строк в инвентаре
@@ -158,8 +158,8 @@ class Inventory:
         self.all_objects = []  # Все объекты в инвентаре.
         self.amount_of_all_objects = []  # Количество обьектов в инвентаре
         self.screen = screen  # Экран, на который рисуется инвентарь.
-        self.create_inventory()  # Первичное создание инвентаря.
-        self.amount_of_items = []  # массив с количеством элементов
+        self.amounting_of_items = []  # массив с количеством элементов
+        self.create_inventory(amounting_of_items)  # Первичное создание инвентаря.
 
     def fill_up_inventory(self, items):
         """
@@ -167,16 +167,17 @@ class Inventory:
         :param items: элементы, которыми надо заполнить инвентарь.
         """
         i = 0
+
         if items:
             for material in items:
-                if len(self.amount_of_items) > 0:
-                    slot = self.slots[i]
-                    material.surface = slot.screen
-                    material.amount = self.amount_of_items.pop(0)
-                    slot.update_one_inventory_slot(material)
-                    i += 1
+                slot = self.slots[i]
+                material.surface = slot.screen
+                if len(self.amounting_of_items) > 0:
+                    material.amount = self.amounting_of_items.pop(0)
+                slot.update_one_inventory_slot(material)
+                i += 1
 
-    def create_inventory(self):
+    def create_inventory(self, amounting_of_items):
         """
         Функция, отвечающая за создание инвентаря у объекта в первый раз.
         """
@@ -191,6 +192,8 @@ class Inventory:
             x = self.start_x
             y += inventory_slot.one_inventory_slot_height
         self.fill_up_inventory(self.items)
+        if amounting_of_items:
+            self.amounting_of_items = amounting_of_items
 
     def moving_objects_in_inventory(self):
         """
@@ -289,7 +292,7 @@ class Make(Inventory):
 
     def __init__(self, screen, start_x, start_y, rows, columns, makes):
         self.makes = makes  # объекты, которые можно скрафтить.
-        super().__init__(screen, start_x, start_y, rows, columns, self.makes)
+        super().__init__(screen, start_x, start_y, rows, columns, self.makes, len(self.makes) * [1])
         self.making_items = []  # материалы, необходимые для крафта элемента, на который игрок нажал
 
     def nameplate(self, font_size, text):
@@ -374,6 +377,7 @@ class PlayerInventory:
     def __init__(self, screen, crafts, builds, materials=None):
         self.screen = screen
         self.inventory = ObjectInventory(screen, 500, 100, 7, 7, materials)
+
         # 500, 100 - начальные координаты; 7,7 - размер
         """ координаты инвентарей для крафта и для построек ниже выбраны в соответствии с выбранным размером холста и 
         отображаемой областью на экране """
