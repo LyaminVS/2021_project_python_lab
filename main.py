@@ -414,6 +414,7 @@ class Game:
                     self.main_path = "save_files"
                 if not self.player_created and (self.new_game or self.continue_game):
                     self.create_start_position()
+                    self.update_game(pygame.event)
                     self.player_created = True
             elif self.option_menu_opened:
                 self.screen.fill(constants.DARK_BLUE)
@@ -432,6 +433,7 @@ class Game:
                 if self.option_menu_opened or self.start_menu_opened:
                     self.pause_menu_opened = False
             else:
+
                 self.update_game(pygame.event)
             self.clock.tick(self.FPS)
         self.game_quit()
