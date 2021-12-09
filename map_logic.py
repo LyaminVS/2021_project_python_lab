@@ -136,50 +136,32 @@ def player_move(game):
     game.player.vy = 0
 
 
-def keys_checker_y(game, keys):
+def move_checker(game, keys, move_keys, direction):
     """
     В зависимости от нажатых клавиш меняет скин и скорость игрока по вертикали
     Args:
         game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
-    if keys[pygame.K_w] and not keys[pygame.K_s]:
-        game.player.vy = game.player.v_max
-        if game.player.up == 1:
-            game.player.up = 2
+    if direction == "y":
+        direction = game.player.up
+    elif direction == "x":
+        direction = game.player.right
+    if keys[move_keys[0]] and not keys[move_keys[1]]:
+        v = game.player.v_max
+        if direction == 1:
+            direction = 2
         else:
-            game.player.up = 1
-    elif keys[pygame.K_s] and not keys[pygame.K_w]:
-        game.player.vy = -game.player.v_max
-        if game.player.up == -1:
-            game.player.up = -2
+            direction = 1
+    elif keys[move_keys[1]] and not keys[move_keys[0]]:
+        v = -game.player.v_max
+        if direction == -1:
+            direction = -2
         else:
-            game.player.up = -1
+            direction = -1
     else:
-        game.player.up = 0
-        game.player.vy = 0
-
-
-def keys_checker_x(game, keys):
-    """
-    В зависимости от нажатых клавиш меняет скин и скорость игрока по горизонтали
-    Args:
-        game - аргумент, которому должно присвоиться значение объекта game класса Game
-    """
-    if keys[pygame.K_d] and not keys[pygame.K_a]:
-        game.player.vx = game.player.v_max
-        if game.player.right == 1:
-            game.player.right = 2
-        else:
-            game.player.right = 1  #
-    elif keys[pygame.K_a] and not keys[pygame.K_d]:
-        game.player.vx = -game.player.v_max
-        if game.player.right == -1:
-            game.player.right = -2
-        else:
-            game.player.right = -1
-    else:
-        game.player.vx = 0
-        game.player.right = 0
+        direction = 0
+        v = 0
+    return direction, v
 
 
 def keys_checker(game):
@@ -189,8 +171,8 @@ def keys_checker(game):
         game - аргумент, которому должно присвоиться значение объекта game класса Game
     """
     keys = pygame.key.get_pressed()
-    keys_checker_y(game, keys)
-    keys_checker_x(game, keys)
+    game.player.up, game.player.vy = move_checker(game, keys, [pygame.K_w, pygame.K_s], "y")
+    game.player.right, game.player.vx = move_checker(game, keys, [pygame.K_d, pygame.K_a], "x")
 
 
 def motion(game):
