@@ -199,9 +199,11 @@ class Game:
         if os.path.exists(self.main_path + "/object_inventory_save/" + name + ".txt"):
             resources_in_file = open(self.main_path + "/object_inventory_save/" + name + ".txt")
         resources = []
+        amount = []
         for line in resources_in_file:
-            line = line.strip()
-            resources.append(self.name_to_class(line))
+            line = line.split(";")
+            amount.append(int(line[1]))
+            resources.append(self.name_to_class(line[0]))
         new_object = objects.Objects(self.screen, image, name, int(x), int(y))
         is_same_building = False
         if objs:
@@ -213,7 +215,7 @@ class Game:
                     is_same_building = True
         if not is_same_building:
             new_object.resources = resources
-            new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4, resources)
+            new_object.inventory = menu.ObjectInventory(self.screen, 100, 100, 4, 4, resources, amount)
         return new_object
 
     def line_to_player(self, line):
@@ -224,12 +226,15 @@ class Game:
         """
         resources_in_file = open(self.main_path + "/player_resources_save")
         resources = []
+        amount = []
         for resource in resources_in_file:
-            resource = resource.strip()
-            resources.append(self.name_to_class(resource))
+            resource = resource.split(";")
+            material = resource[0].strip()
+            amount.append(int(resource[1]))
+            resources.append(self.name_to_class(material))
         name, image, x, y = line.split(";")
         new_player = objects.Player(self.screen, name, int(x), int(y), resources)
-        new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, self.builds, resources)
+        new_player.inventory = menu.PlayerInventory(self.screen, self.crafts, self.builds, resources, amount)
         return new_player
 
     def get_player_from_file(self):
@@ -317,9 +322,6 @@ class Game:
                     obj.resources.append(objects.Taco(self.screen))
 
             if obj.inventory_opened:
-                print("+++++++++")
-                print(obj.inventory.objects_in_inventory())
-                print(obj.resources)
                 obj.inventory.int_update(obj.resources)
 
     def update_game(self, event):
@@ -359,14 +361,18 @@ class Game:
         map_file.write(str(self.map[0]) + "\n" + str(self.map[1]))
         player_file.write(str(self.player) + "\n")
         for obj in self.all_objects:
-            obj.resources = obj.inventory.objects_in_inventory()
+            obj.resources, amount = obj.inventory.objects_in_inventory()
             object_inventory_file = open("save_files/object_inventory_save/" + obj.name + ".txt", "w")
+            number = 0
             for res in obj.resources:
-                object_inventory_file.write((str(res.name)).lower() + "\n")
+                object_inventory_file.write((str(res.name)).lower() + ";" + str(amount[number]) + "\n")
+                number += 1
             object_file.write(str(obj) + "\n")
-        self.player.resources = self.player.inventory.inventory.objects_in_inventory()
+        self.player.resources, player_amount = self.player.inventory.inventory.objects_in_inventory()
+        number = 0
         for res in self.player.resources:
-            player_resources_file.write((str(res.name)).lower() + "\n")
+            player_resources_file.write((str(res.name)).lower() + ";" + str(player_amount[number]) + "\n")
+            number += 1
         id_file.write(str(self.id))
         player_resources_file.close()
         id_file.close()
