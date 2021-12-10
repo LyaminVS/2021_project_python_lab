@@ -92,7 +92,7 @@ class Game:
         self.crafts = {
             objects.Taco(self.screen): [1, 2, "Landau", objects.Taco(self.screen)],
             objects.Landau(self.screen): [1, 3, "Taco", objects.Landau(self.screen)],
-            objects.Brain(self.screen): [1, 5, "Taco", 5, "Landau", objects.Brain(self.screen)]
+            objects.Brain(self.screen): [2, 5, "Taco", 5, "Landau", objects.Brain(self.screen)]
         }
         """
         словарь содержащий все рецепты крафта

@@ -8,11 +8,12 @@ def event_checker(event_array, game):
     вправо соответственно
     2. клавиша P - пауза
     3. кнопка закрытия - выход из игры
-    2. Клавиша E - открытие общего инвентаря
+    2. Клавиша E - открытие и закрытие общего инвентаря
     3. Нажатие на объект при неоткрытом общем инвентаре - 
     открытие инвентаря объекта
     4. клавиша ESCAPE - закрытие инвентаря объектов, общего
     5. передвижение мыши или отпускание клавиши - перезагрузка инвентаря
+    6. Shift (левый) - удвоение скорости
     Args:
         event_array - массив событий для обработки
         game - аргумент, которому должно присвоиться значение объекта game класса Game
@@ -26,6 +27,7 @@ def event_checker(event_array, game):
         elif checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
+                obj.collide_rect = pygame.Rect(-game.map[0] + obj.x, -game.map[1] + obj.y, obj.width, obj.height)
                 if obj.collide_rect.collidepoint(pos):
                     obj.inventory_opened = True
         elif (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_ESCAPE):
@@ -163,6 +165,8 @@ def keys_checker_general(game, keys, key1, key2, dimension, direction):
     else:
         dimension = 0
         speed_dimension = 0
+    if keys[pygame.K_LSHIFT]:
+        speed_dimension *= 2
     if direction == 'x':
         game.player.vx = speed_dimension
         game.player.right = dimension
