@@ -1,12 +1,13 @@
 import pygame
+import os
+import shutil
 import background
 import map_logic
 import menu
 import objects
 import start_screen
 import constants
-import os
-import shutil
+
 
 pygame.init()
 
