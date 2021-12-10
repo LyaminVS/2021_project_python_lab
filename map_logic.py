@@ -19,13 +19,10 @@ def event_checker(event_array, game):
             game.inventory_opened = not game.inventory_opened
         elif checked_event.type == pygame.QUIT:
             game.finished = True
-        elif checked_event.type == pygame.KEYUP:
-            game.player.move = 0
         elif checked_event.type == pygame.MOUSEBUTTONDOWN and not game.inventory_opened:
             pos = pygame.mouse.get_pos()
             for obj in game.all_objects:
-                if obj.x < pos[0] + game.map[0] < obj.x + obj.width and \
-                        obj.y < pos[1] + game.map[1] < obj.y + obj.height:
+                if obj.collide_rect.collidepoint(pos):
                     obj.inventory_opened = True
         elif (checked_event.type == pygame.KEYDOWN) and (checked_event.key == pygame.K_ESCAPE):
             if game.player.inventory.building:
