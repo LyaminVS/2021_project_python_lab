@@ -163,6 +163,8 @@ def keys_checker_general(game, keys, key1, key2, dimension, direction):
     else:
         dimension = 0
         speed_dimension = 0
+    if keys[pygame.K_LSHIFT]:
+        speed_dimension *= 2
     if direction == 'x':
         game.player.vx = speed_dimension
         game.player.right = dimension
