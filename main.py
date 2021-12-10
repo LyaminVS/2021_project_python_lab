@@ -4,7 +4,6 @@ import map_logic
 import menu
 import objects
 import start_screen
-import os.path
 import constants
 import os
 import shutil

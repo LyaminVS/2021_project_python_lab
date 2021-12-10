@@ -11,11 +11,13 @@ def resource_checker(crafted_items, slots):
     :return: True, если ресурсов хватает; False, если ресурсов не хватает
     """
     resource_check = 0
+    crafted_items = crafted_items.copy()
     for i in range(2, len(crafted_items), 2):
         for slot in slots:
-            if slot.item and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+            if slot.item and crafted_items[i-1] and slot.item.name == crafted_items[i] and slot.item.amount >= crafted_items[i - 1]:
+                crafted_items[i-1] = None
                 resource_check += 1
-    if crafted_items and resource_check >= (len(crafted_items) - 1) // 2:
+    if crafted_items and resource_check >= (len(crafted_items)-1) // 2:
         return True
     else:
         return False
